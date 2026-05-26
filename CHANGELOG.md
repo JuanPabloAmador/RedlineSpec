@@ -11,6 +11,12 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 
 - Nothing yet.
 
+## [0.1.2] - 2026-05-27
+
+### Fixed
+
+- Installer harness selection is compatible with macOS Bash 3.2 by avoiding empty arrays under `set -u`.
+
 ## [0.1.1] - 2026-05-27
 
 ### Added

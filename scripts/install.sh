@@ -51,26 +51,35 @@ REPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 UPDATE_SYSTEM=0
 UPDATE_HARNESS=0
 TARGET_PATH=""
-SELECTED_HARNESSES=()
-SUPPORTED_HARNESSES=(opencode windsurf)
+SELECTED_HARNESSES=""
+SUPPORTED_HARNESSES="opencode windsurf"
 
 is_supported_harness() {
   local candidate supported
   candidate="$1"
-  for supported in "${SUPPORTED_HARNESSES[@]}"; do
+  for supported in $SUPPORTED_HARNESSES; do
     [[ "$supported" == "$candidate" ]] && return 0
   done
   return 1
 }
 
+harness_count() {
+  set -- $SELECTED_HARNESSES
+  printf '%s\n' "$#"
+}
+
 add_harness() {
   local candidate existing
   candidate="$1"
-  is_supported_harness "$candidate" || fail "Unsupported harness: $candidate. Supported values: ${SUPPORTED_HARNESSES[*]}."
-  for existing in "${SELECTED_HARNESSES[@]}"; do
+  is_supported_harness "$candidate" || fail "Unsupported harness: $candidate. Supported values: $SUPPORTED_HARNESSES."
+  for existing in $SELECTED_HARNESSES; do
     [[ "$existing" == "$candidate" ]] && return 0
   done
-  SELECTED_HARNESSES+=("$candidate")
+  if [[ -z "$SELECTED_HARNESSES" ]]; then
+    SELECTED_HARNESSES="$candidate"
+  else
+    SELECTED_HARNESSES="$SELECTED_HARNESSES $candidate"
+  fi
 }
 
 add_harness_selection() {
@@ -82,7 +91,7 @@ add_harness_selection() {
 }
 
 prompt_for_harness() {
-  local choice item selected_count
+  local choice item selected_count selected_before
 
   if [[ ! -t 0 || ! -t 1 ]]; then
     fail "Harness selection is required. Pass --harness opencode, --harness windsurf, or repeat --harness for multiple harnesses."
@@ -95,7 +104,8 @@ prompt_for_harness() {
   while true; do
     printf 'Harnesses [1,2]: '
     read -r choice
-    selected_count="${#SELECTED_HARNESSES[@]}"
+    selected_count="$(harness_count)"
+    selected_before="$SELECTED_HARNESSES"
     choice="${choice//,/ }"
     for item in $choice; do
       case "$item" in
@@ -107,12 +117,12 @@ prompt_for_harness() {
           ;;
         *)
           printf 'Invalid selection: %s. Choose 1, 2, or both as 1,2.\n' "$item" >&2
-          SELECTED_HARNESSES=("${SELECTED_HARNESSES[@]:0:$selected_count}")
+          SELECTED_HARNESSES="$selected_before"
           continue 2
           ;;
       esac
     done
-    if [[ "${#SELECTED_HARNESSES[@]}" -gt "$selected_count" ]]; then
+    if [[ "$(harness_count)" -gt "$selected_count" ]]; then
       return 0
     fi
     printf 'Select at least one harness.\n' >&2
@@ -316,7 +326,7 @@ harness_is_installed() {
 
 detect_installed_harnesses() {
   local harness
-  for harness in "${SUPPORTED_HARNESSES[@]}"; do
+  for harness in $SUPPORTED_HARNESSES; do
     if harness_is_installed "$harness"; then
       add_harness "$harness"
       log "Detected installed harness: $harness"
@@ -371,10 +381,10 @@ bootstrap_project_files() {
 
 log "Installing RedlineSpec into: $TARGET_DIR"
 
-if [[ "${#SELECTED_HARNESSES[@]}" -eq 0 ]]; then
+if [[ -z "$SELECTED_HARNESSES" ]]; then
   if [[ "$UPDATE_HARNESS" -eq 1 ]]; then
     detect_installed_harnesses
-    if [[ "${#SELECTED_HARNESSES[@]}" -eq 0 ]]; then
+    if [[ -z "$SELECTED_HARNESSES" ]]; then
       fail "No installed harness bindings detected. Pass --harness opencode or --harness windsurf to install one."
     fi
   elif [[ "$UPDATE_SYSTEM" -eq 1 ]]; then
@@ -394,7 +404,7 @@ fi
 
 bootstrap_project_files
 
-for harness in "${SELECTED_HARNESSES[@]}"; do
+for harness in $SELECTED_HARNESSES; do
   install_harness "$harness"
 done
 

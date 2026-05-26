@@ -6,7 +6,7 @@ It organizes product change around a living functional truth, temporary change c
 
 ## Status
 
-Current version: `0.1.1`
+Current version: `0.1.2`
 
 This release provides the first usable framework surface, but it is still early. The installer includes the first harness bindings for OpenCode and Windsurf.
 
@@ -83,4 +83,4 @@ Start with:
 
 RedlineSpec uses SemVer.
 
-Version `0.1.1` adds the first harness-native installation bindings. Breaking changes may still happen while the framework remains below `1.0.0`.
+Version `0.1.2` fixes installer compatibility with macOS Bash 3.2. Breaking changes may still happen while the framework remains below `1.0.0`.
