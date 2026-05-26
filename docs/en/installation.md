@@ -1,8 +1,8 @@
 # Installing RedlineSpec in a Project
 
-This document defines the target structure and behavior of RedlineSpec's current bash installer.
+This document defines the target structure and behavior of RedlineSpec's bash installer.
 
-It does not yet describe a user-facing command integrated into a specific harness. It describes what the installer creates and copies inside the user's repository.
+The installer creates RedlineSpec project state, installs framework templates, and can optionally install harness-native bindings for supported agents.
 
 The current implementation lives in:
 
@@ -11,10 +11,12 @@ The current implementation lives in:
 Current usage:
 
 ```bash
-bash scripts/install.sh TARGET_PATH [--update-system]
+bash scripts/install.sh TARGET_PATH [--update] [--update-system] [--harness opencode[,windsurf]]... [--update-harness]
 ```
 
 `TARGET_PATH` is required.
+
+A harness selection is also required. In an interactive terminal, the installer prompts for one when `--harness` is omitted. In non-interactive shells, `--harness` must be passed explicitly.
 
 The expected model is:
 
@@ -28,13 +30,19 @@ git clone <redlinespec-repo> ~/tools/RedlineSpec
 bash ~/tools/RedlineSpec/scripts/install.sh ~/work/my-project
 ```
 
+For scripts and CI, use an explicit harness:
+
+```bash
+bash ~/tools/RedlineSpec/scripts/install.sh ~/work/my-project --harness opencode
+```
+
 RedlineSpec acts as the source repository for the installer. It must not be embedded inside the user's destination repository.
 
 ## 1. Script goal
 
 The installation script must leave the project with a canonical `.redline/` structure, separating:
 
-- framework-distributed internals,
+- framework-distributed templates,
 - and project documents.
 
 The target root is:
@@ -43,7 +51,6 @@ The target root is:
 .redline/
   system/
     templates/
-    skills/
   project/
     functional-truth/
     rules/
@@ -55,10 +62,12 @@ The target root is:
 The installer must follow these principles:
 
 - avoid polluting the repository root with framework artifacts,
-- keep all of RedlineSpec self-contained inside `.redline/`,
+- keep RedlineSpec project state self-contained inside `.redline/`,
 - clearly separate `system` from `project`,
 - keep the RedlineSpec source repository separate from the user's destination repository,
 - create a predictable structure for agents and scripts,
+- install skills only into harness-visible folders when a harness is explicitly selected,
+- require a harness selection through `--harness` or an interactive prompt,
 - be idempotent as far as possible,
 - and not overwrite real project documents without an explicit policy.
 
@@ -70,7 +79,6 @@ The script must create, at minimum:
 .redline/
   system/
     templates/
-    skills/
   project/
     functional-truth/
     rules/
@@ -97,26 +105,18 @@ Currently includes at minimum:
 - `rules.index.template.md`
 - `rule.template.md`
 
-#### `.redline/system/skills/`
+The installer validates that the templates required by the minimum flow exist in the source repository before copying assets into the destination project.
 
-Must receive the skills distributed by the framework.
+#### Skills
 
-Currently includes at minimum:
+Skills are not installed under `.redline/system/skills/` by default.
 
-- `interview-first/`
-- `write-spec/`
-- `redlinespec-spec-authoring/`
-- `write-plan/`
-- `write-tasks/`
-- `write-rules/`
-- `implement/`
-- `bootstrap-functional-truth/`
-- `close-spec/`
-- `merge-functional-truth/`
+The canonical skill source remains the RedlineSpec distribution repository or package:
 
-If the framework distributes more skills in the future, the installer must be able to add them without breaking the base structure.
+- `skills/`
+- `redline-skills/`
 
-The installer validates that the templates and workflows required by the minimum flow exist in the source repository before copying assets into the destination project.
+When a harness is selected, the installer copies those skills into the harness-native skill folder where that agent can discover and invoke them.
 
 ### 3.2 `.redline/project/`
 
@@ -184,27 +184,56 @@ Using this framework repository as the source, the installation script should ap
 
 ### Skills
 
-- `skills/interview-first/` -> `.redline/system/skills/interview-first/`
-- `redline-skills/write-spec/` -> `.redline/system/skills/write-spec/`
-- `redline-skills/redlinespec-spec-authoring/` -> `.redline/system/skills/redlinespec-spec-authoring/`
-- `redline-skills/write-plan/` -> `.redline/system/skills/write-plan/`
-- `redline-skills/write-tasks/` -> `.redline/system/skills/write-tasks/`
-- `redline-skills/write-rules/` -> `.redline/system/skills/write-rules/`
-- `redline-skills/implement/` -> `.redline/system/skills/implement/`
-- `redline-skills/bootstrap-functional-truth/` -> `.redline/system/skills/bootstrap-functional-truth/`
-- `redline-skills/close-spec/` -> `.redline/system/skills/close-spec/`
-- `redline-skills/merge-functional-truth/` -> `.redline/system/skills/merge-functional-truth/`
+Skills are copied only when a harness is selected.
 
-If the framework adds new skills or templates, this map must be expanded while keeping the same `system/templates` and `system/skills` separation.
+For OpenCode:
+
+- `skills/interview-first/` -> `.opencode/skills/interview-first/`
+- `redline-skills/write-spec/` -> `.opencode/skills/write-spec/`
+- `redline-skills/redlinespec-spec-authoring/` -> `.opencode/skills/redlinespec-spec-authoring/`
+- `redline-skills/write-plan/` -> `.opencode/skills/write-plan/`
+- `redline-skills/write-tasks/` -> `.opencode/skills/write-tasks/`
+- `redline-skills/write-rules/` -> `.opencode/skills/write-rules/`
+- `redline-skills/implement/` -> `.opencode/skills/implement/`
+- `redline-skills/bootstrap-functional-truth/` -> `.opencode/skills/bootstrap-functional-truth/`
+- `redline-skills/close-spec/` -> `.opencode/skills/close-spec/`
+- `redline-skills/merge-functional-truth/` -> `.opencode/skills/merge-functional-truth/`
+
+For Windsurf:
+
+- `skills/interview-first/` -> `.windsurf/skills/interview-first/`
+- `redline-skills/write-spec/` -> `.windsurf/skills/write-spec/`
+- `redline-skills/redlinespec-spec-authoring/` -> `.windsurf/skills/redlinespec-spec-authoring/`
+- `redline-skills/write-plan/` -> `.windsurf/skills/write-plan/`
+- `redline-skills/write-tasks/` -> `.windsurf/skills/write-tasks/`
+- `redline-skills/write-rules/` -> `.windsurf/skills/write-rules/`
+- `redline-skills/implement/` -> `.windsurf/skills/implement/`
+- `redline-skills/bootstrap-functional-truth/` -> `.windsurf/skills/bootstrap-functional-truth/`
+- `redline-skills/close-spec/` -> `.windsurf/skills/close-spec/`
+- `redline-skills/merge-functional-truth/` -> `.windsurf/skills/merge-functional-truth/`
+
+If the framework adds new skills or templates, this map must be expanded through the source skill directories and harness adapter manifests.
+
+### Harness launchers
+
+OpenCode launchers are copied from:
+
+- `harnesses/opencode/commands/` -> `.opencode/commands/`
+
+Windsurf launchers are copied from:
+
+- `harnesses/windsurf/workflows/` -> `.windsurf/workflows/`
 
 ## 6. Recommended overwrite policy
 
 The installer should follow this default policy:
 
 - create missing folders,
-- copy `system` assets when they do not exist,
-- allow an explicit `--update-system` mode to refresh `system` assets,
-- treat `.redline/system/` as an area managed by the framework,
+- copy `system` templates when they do not exist,
+- allow an explicit `--update-system` mode to refresh `.redline/system/templates/`,
+- allow an explicit `--update` mode to refresh templates and all detected harness-native bindings,
+- allow an explicit `--update-harness` mode to refresh selected or detected harness-native skills and launchers,
+- treat `.redline/system/templates/` and selected harness binding folders as framework-managed areas for RedlineSpec artifact names,
 - do not overwrite existing documents under `.redline/project/` by default,
 - do not regenerate `functional.index.md` if the project has already edited it, unless the user asks for it,
 - and do not regenerate `rules.index.md` if the project has already edited it, unless the user asks for it.
@@ -235,17 +264,6 @@ After a correct minimum installation, the repository should look at least like t
       functional.global.entry.template.md
       rules.index.template.md
       rule.template.md
-    skills/
-      interview-first/
-      write-spec/
-      redlinespec-spec-authoring/
-      write-plan/
-      write-tasks/
-      write-rules/
-      implement/
-      bootstrap-functional-truth/
-      close-spec/
-      merge-functional-truth/
   project/
     functional-truth/
       functional.index.md
@@ -254,13 +272,94 @@ After a correct minimum installation, the repository should look at least like t
     specs/
 ```
 
-## 9. Current scope of this document
+## 9. Harness installation
+
+Harness bindings are installed only when requested.
+
+Examples:
+
+```bash
+bash scripts/install.sh ~/work/my-project --harness opencode
+bash scripts/install.sh ~/work/my-project --harness windsurf
+bash scripts/install.sh ~/work/my-project --harness opencode --harness windsurf
+bash scripts/install.sh ~/work/my-project --harness opencode,windsurf
+```
+
+To refresh an already installed project, including templates and all detected harness bindings:
+
+```bash
+bash scripts/install.sh ~/work/my-project --update
+```
+
+To refresh one specific harness:
+
+```bash
+bash scripts/install.sh ~/work/my-project --harness opencode --update-harness
+```
+
+When `--update-harness` is used without `--harness`, the installer detects installed harnesses from their native paths and refreshes those only.
+
+### OpenCode result
+
+```txt
+.opencode/
+  skills/
+    interview-first/
+    write-spec/
+    redlinespec-spec-authoring/
+    write-plan/
+    write-tasks/
+    write-rules/
+    implement/
+    bootstrap-functional-truth/
+    close-spec/
+    merge-functional-truth/
+  commands/
+    bootstrap-functional-truth.md
+    interview.md
+    write-spec.md
+    write-plan.md
+    write-rules.md
+    write-tasks.md
+    implement.md
+    close-spec.md
+    merge-functional-truth.md
+```
+
+### Windsurf result
+
+```txt
+.windsurf/
+  skills/
+    interview-first/
+    write-spec/
+    redlinespec-spec-authoring/
+    write-plan/
+    write-tasks/
+    write-rules/
+    implement/
+    bootstrap-functional-truth/
+    close-spec/
+    merge-functional-truth/
+  workflows/
+    bootstrap-functional-truth.md
+    interview.md
+    write-spec.md
+    write-plan.md
+    write-rules.md
+    write-tasks.md
+    implement.md
+    close-spec.md
+    merge-functional-truth.md
+```
+
+## 10. Current scope of this document
 
 This document establishes the structure and behavior of the current bash installer.
 
-The following concerns are outside the 0.1.0 installer scope:
+The following concerns are outside the current installer scope:
 
-- specific integrations with concrete harnesses,
 - possible additional flags such as `--force`,
-- automatic installation or update of harness-specific configurations,
-- and additional harness-specific command bindings for the distributed skills.
+- global harness installation into user home directories,
+- automatic modification of existing user harness configuration files,
+- and shared `.agents/skills/` optimization for harnesses that support the common agent-skills convention.

@@ -91,7 +91,7 @@ The official task-writing workflow must use:
 
 - `.redline/system/templates/tasks.template.md`,
 - `.redline/system/templates/task.template.md`,
-- and `.redline/system/skills/write-tasks/`.
+- and the harness-visible `write-tasks` skill installed for the active agent.
 
 `/write-tasks` only writes contracts. It does not implement code or update the final functional truth.
 

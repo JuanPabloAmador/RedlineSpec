@@ -11,6 +11,30 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 
 - Nothing yet.
 
+## [0.1.1] - 2026-05-27
+
+### Added
+
+- Harness-native installation bindings for OpenCode and Windsurf.
+- OpenCode command launchers under `.opencode/commands/`.
+- Windsurf workflow launchers under `.windsurf/workflows/`.
+- Harness adapter manifests for scalable future harness support.
+- Installer support for repeated and comma-separated `--harness` selections.
+- Interactive harness selection for terminal installs.
+- `--update` mode to refresh templates and all detected installed harness bindings.
+
+### Changed
+
+- Skills are now installed only into harness-visible skill folders such as `.opencode/skills/` and `.windsurf/skills/`.
+- `.redline/system/skills/` is no longer installed by default; the RedlineSpec distribution remains the canonical skill source.
+- `--update-system` now refreshes framework templates only.
+
+### Fixed
+
+- Installer failures before harness resolution no longer leave partial `.redline/` directories behind.
+- `--update` detects installed harnesses without installing missing harnesses.
+- Harness refresh preserves unrelated user-defined skills, commands, and workflows.
+
 ## [0.1.0] - 2026-05-26
 
 ### Added
