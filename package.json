@@ -1,0 +1,17 @@
+{
+  "name": "redline-spec",
+  "version": "0.1.0",
+  "description": "Contract-first SDD framework for AI coding workflows",
+  "type": "module",
+  "scripts": {},
+  "keywords": [
+    "sdd",
+    "specification-driven-development",
+    "ai",
+    "coding",
+    "contracts",
+    "redlines"
+  ],
+  "author": "",
+  "license": "MIT"
+}

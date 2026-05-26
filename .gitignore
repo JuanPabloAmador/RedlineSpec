@@ -1,0 +1,9 @@
+docs/es/
+
+# Local agent and workspace configuration
+.opencode/
+.pi/
+opencode.json
+
+# Framework construction notes
+notes/
