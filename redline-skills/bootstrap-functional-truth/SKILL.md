@@ -252,6 +252,14 @@ Before finishing, verify:
 - no temporary spec, plan, or task was created,
 - no application code was modified.
 
+### Step 9: Recommend the next startup workflow
+
+Before the final response, check whether the project has any real `*.rule.md` files under `.redline/project/rules/`.
+
+If no project rules exist yet, recommend `/write-rules` as the next workflow for capturing reusable technical practices before the first planned implementation flow.
+
+This recommendation is non-blocking. Do not create or modify rules from this workflow.
+
 ## Blocked Report Format
 
 When blocking, report:
@@ -270,7 +278,8 @@ A good result from this workflow is:
 - explicit coverage and gaps,
 - no invented functionality,
 - small navigable files,
-- and a clear final report of what was documented and what remains to discover.
+- a clear final report of what was documented and what remains to discover,
+- and, when no project rules exist yet, a recommendation to run `/write-rules` next.
 
 ## Final Checklist
 
@@ -286,3 +295,4 @@ Before finishing, confirm all of these:
 - Created entries use the official templates.
 - All generated functional truth is in English.
 - No code, spec, plan, task, or rules files were modified by this workflow.
+- If no project rules exist yet, `/write-rules` was recommended as the next startup workflow.

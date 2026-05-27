@@ -130,16 +130,23 @@ Also inspect the relevant repository code and any existing supporting context fi
 
 ### Step 3: Load project rules
 
-If the project has rules, read:
+Check the project rules state under:
+
+- `.redline/project/rules/`
+
+Treat project rules as active only when at least one real `*.rule.md` file exists.
+
+If the project has active rules, read:
 
 - `.redline/project/rules/rules.index.md`
 
 Then read the specific `*.rule.md` files likely to apply to the plan.
 
-If the project has no rules yet:
+If the project has no active rules yet:
 
-- warn clearly,
-- continue if the user still wants the plan drafted,
+- warn clearly that no project rules are currently defined or active,
+- explain that planning can continue, but `/write-rules` is recommended first because rules improve the technical contract and later task contracts,
+- ask whether the user wants to continue with the plan anyway or pause to run `/write-rules`, unless the user already explicitly chose to skip rules for this plan,
 - use `Rules` subsections carefully,
 - and do not invent fake rule file paths.
 

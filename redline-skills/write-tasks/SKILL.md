@@ -104,6 +104,8 @@ It must contain enough information to derive:
 
 If the Plan is not ready or lacks essential implementation constraints, do not patch the Plan from this workflow. Block and list what is missing.
 
+If the Plan intentionally has no project rules, task generation may continue, but report that the resulting task contracts will use `None.` for `Relevant Rules` where appropriate and will not benefit from reusable project-level technical constraints. Recommend `/write-rules` followed by `/write-plan` revision if the user wants project rules reflected in task contracts before implementation.
+
 ## Non-Goals
 
 Do not use this workflow to:
@@ -173,6 +175,8 @@ Block if:
 - affected areas are not concrete enough,
 - new artifacts are unclear,
 - or rules referenced by the Plan cannot be resolved when they are needed for task contracts.
+
+If the ready Plan references no project rules, do not block only for that reason. Continue only after making the limitation explicit: generated task files may use `None.` in `Relevant Rules`, and implementation will rely on the Plan, task contracts, and repository context rather than expanded project rules.
 
 Report missing information directly and stop.
 

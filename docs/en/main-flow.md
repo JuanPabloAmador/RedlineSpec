@@ -26,6 +26,8 @@ This structure must favor progressive disclosure: small or medium-sized files th
 
 In addition to the functional truth, the project may maintain persistent technical rules under `.redline/project/rules/`. Those rules are not part of the functional truth, but they are part of the persistent context that `Plan` and `Tasks` can consume.
 
+Creating an initial rules catalog is recommended after the functional truth baseline exists. It is not mandatory, because some projects or changes may not have reusable technical rules yet, but it gives the first technical planning step stronger project-specific constraints.
+
 ## 2. Flow activation
 
 The framework's operational question is:
@@ -52,6 +54,8 @@ After installation, startup refinement can take three shapes:
 The result of startup is an initial functional truth, even if it is still partial.
 
 At the user-facing command level, `/bootstrap-functional-truth` refines this startup baseline after installation. It can leave an empty project at a minimal indexed state, map large repositories at a high level with discovery gaps, or create detailed `*.entry.md` and `*.global.entry.md` files when the functional surface is bounded and clear.
+
+After that baseline exists, `/write-rules` is the recommended next startup workflow for capturing persistent technical practices. This recommendation is non-blocking: the user may skip rules explicitly, and the project can add or refine rules later as reusable constraints become clear.
 
 ## 4. Change flow structure
 
@@ -135,7 +139,7 @@ Produces:
 
 This step is optional. It appears when the `Spec` must be translated into implementable technical contracts.
 
-In this step, the project can also reference its persistent technical rules to constrain the solution.
+This is the first technical point where persistent project rules become important. The `Plan` can reference those rules to constrain the solution. If no rules are defined yet, planning can continue, but the workflow should warn the user and recommend `/write-rules` before finalizing the technical contract.
 
 ### 4. Tasks
 
@@ -149,6 +153,8 @@ This step appears when `Plan` exists. `Tasks` decompose the work into concrete e
 `Tasks` organizes work into functionally verifiable vertical phases. Each phase contains small contractual tasks.
 
 The `*.tasks.md` index defines phases, order, explicit parallelization, and coverage. Each `*.task.md` contains the actionable contract for a specific task and can expand the rules referenced by the `Plan`.
+
+This is where rules have their strongest operational effect: task files expand the relevant rule content so implementation can proceed from compact self-contained contracts. If the `Plan` intentionally has no rules, tasks may use `None.`, but that absence should be treated as an explicit limitation of the task contracts.
 
 ### 5. Implementation
 
@@ -199,7 +205,7 @@ When finished, the living functional truth captures the current state of the pro
 ## 8. Operational summary
 
 - The project starts by creating `functional.index.md` and the necessary functional documents.
-- The project may also maintain reusable persistent technical rules.
+- The project should normally initialize reusable persistent technical rules after startup, while still allowing the user to skip them explicitly.
 - Each change is evaluated with the question: `Does this change modify existing functional truth or add new functional truth?`.
 - If the answer is yes, the minimum is a `Spec`.
 - If the change requires more decomposition, `Plan` and `Tasks` are added.

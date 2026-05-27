@@ -69,7 +69,9 @@ Its expected result is a `*.plan.md` describing technical blocks, technical unit
 
 Its purpose is to create or update the project's persistent rules.
 
-It should be used when the project needs to initialize its rules catalog, add a new rule, refine existing rules, or keep `rules.index.md` aligned.
+It should be used after the initial functional truth baseline when the project should capture reusable technical practices before the first planned implementation flow. It can also be used later whenever the project needs to add a new rule, refine existing rules, or keep `rules.index.md` aligned.
+
+`/write-rules` is recommended but not mandatory. A project can continue without rules, but `/write-plan` should warn before drafting a technical contract when no project rules are currently defined.
 
 Its expected result is an updated `rules.index.md` and the required `*.rule.md` files inside `.redline/project/rules/`.
 
@@ -129,16 +131,19 @@ Its expected result is updated `functional.index.md`, updated or created `*.entr
 
 ## 3. Expected flow
 
-The minimum operational sequence is:
+The recommended operational sequence for a first project flow is:
 
 ```txt
 /bootstrap-functional-truth  (when the project needs an initial baseline)
    |
    v
+/write-rules                 (recommended after initial baseline; optional)
+   |
+   v
 /interview
    |
    v
-/write-spec | /write-plan | /write-rules | /write-tasks
+/write-spec -> /write-plan -> /write-tasks
    |
    v
 /implement
@@ -152,9 +157,11 @@ The minimum operational sequence is:
 
 `/bootstrap-functional-truth` prepares the persistent baseline when needed.
 
+`/write-rules` is the recommended next startup step for capturing persistent project technical practices. It may be skipped explicitly, and it may be run again later as the project discovers new reusable constraints.
+
 `/interview` opens a specific change flow.
 
-The `/write-*` commands write or update the appropriate contract depending on the current point in the work.
+The change-writing commands then create the required contracts for the current change. Simple changes may stop at `Spec`; planned changes continue through `Plan` and `Tasks`.
 
 `/implement` consumes `Tasks`; it does not write a new contract.
 
@@ -186,10 +193,10 @@ The following concerns are intentionally outside the 0.1.0 command surface:
 RedlineSpec's initial minimum surface is:
 
 - `/bootstrap-functional-truth` to create or refine the initial functional baseline,
+- `/write-rules` to initialize or maintain persistent project technical rules,
 - `/interview` to discover and align,
 - `/write-spec` to write `Spec`,
 - `/write-plan` to write `Plan`,
-- `/write-rules` to write `Rules`,
 - `/write-tasks` to write `Tasks`,
 - `/implement` to execute `Tasks`,
 - `/close-spec` to align the final `Spec` with implementation,

@@ -11,6 +11,16 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 
 - Nothing yet.
 
+## [0.1.3] - 2026-05-27
+
+### Changed
+
+- Documented `/write-rules` as the recommended post-bootstrap workflow for initializing persistent project technical rules.
+- Updated the main flow to clarify that rules are optional but should normally be initialized before the first planned implementation flow.
+- Updated `/bootstrap-functional-truth` to recommend `/write-rules` when no project rules exist yet.
+- Updated `/write-plan` to warn and ask before continuing when no active project rules are defined.
+- Updated `/write-tasks` to make rule-less task generation an explicit limitation rather than a silent default.
+
 ## [0.1.2] - 2026-05-27
 
 ### Fixed
