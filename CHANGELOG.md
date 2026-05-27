@@ -11,6 +11,12 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 
 - Nothing yet.
 
+## [0.1.4] - 2026-05-28
+
+### Changed
+
+- Tightened `/write-rules` so project rules are classified as persistent implementation constraints rather than general project decisions.
+
 ## [0.1.3] - 2026-05-27
 
 ### Changed

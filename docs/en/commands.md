@@ -67,9 +67,11 @@ Its expected result is a `*.plan.md` describing technical blocks, technical unit
 
 ### 2.5 `/write-rules`
 
-Its purpose is to create or update the project's persistent rules.
+Its purpose is to create or update the project's persistent implementation rules.
 
-It should be used after the initial functional truth baseline when the project should capture reusable technical practices before the first planned implementation flow. It can also be used later whenever the project needs to add a new rule, refine existing rules, or keep `rules.index.md` aligned.
+It should be used after the initial functional truth baseline when the project should capture reusable implementation constraints before the first planned implementation flow. It can also be used later whenever the project needs to add a new rule, refine existing rules, or keep `rules.index.md` aligned.
+
+Rules are not every persistent project decision. They should constrain how future agents write, modify, verify, or approve code, not restate stack choices, tool settings, release procedures, documentation, or collaboration preferences.
 
 `/write-rules` is recommended but not mandatory. A project can continue without rules, but `/write-plan` should warn before drafting a technical contract when no project rules are currently defined.
 
@@ -157,7 +159,7 @@ The recommended operational sequence for a first project flow is:
 
 `/bootstrap-functional-truth` prepares the persistent baseline when needed.
 
-`/write-rules` is the recommended next startup step for capturing persistent project technical practices. It may be skipped explicitly, and it may be run again later as the project discovers new reusable constraints.
+`/write-rules` is the recommended next startup step for capturing persistent project implementation constraints. It may be skipped explicitly, and it may be run again later as the project discovers new reusable constraints.
 
 `/interview` opens a specific change flow.
 
@@ -193,7 +195,7 @@ The following concerns are intentionally outside the 0.1.0 command surface:
 RedlineSpec's initial minimum surface is:
 
 - `/bootstrap-functional-truth` to create or refine the initial functional baseline,
-- `/write-rules` to initialize or maintain persistent project technical rules,
+- `/write-rules` to initialize or maintain persistent project implementation rules,
 - `/interview` to discover and align,
 - `/write-spec` to write `Spec`,
 - `/write-plan` to write `Plan`,

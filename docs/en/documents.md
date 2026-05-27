@@ -49,7 +49,7 @@ If the answer is yes, the change enters the flow and the minimum required docume
 Persistent project documents are divided into two families:
 
 - functional truth,
-- persistent technical rules.
+- persistent implementation rules.
 
 Rules are not part of the functional truth, but they are part of the project's official and persistent catalog.
 
@@ -146,7 +146,9 @@ Structural rules:
 - the body is free-form Markdown,
 - and a rule must not become a temporary document for a specific change.
 
-Their function is to capture persistent technical practices or constraints of the project so they can be referenced by `Plan` and later expanded in `Tasks`.
+Their function is to capture persistent implementation constraints that future agents must apply while changing, verifying, or approving code so they can be referenced by `Plan` and later expanded in `Tasks`.
+
+Rules are not every persistent project decision. Stack choices, tool settings, release procedures, general documentation, functional truth, and collaboration preferences should stay in their proper documents unless they need a separate implementation or verification constraint that agents must follow while editing code.
 
 ## 4. Temporary change documents
 

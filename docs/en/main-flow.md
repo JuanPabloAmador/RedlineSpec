@@ -1,6 +1,6 @@
 # RedlineSpec Main Flow
 
-RedlineSpec organizes work around a living functional truth, a persistent system of project technical rules, and a small set of temporary documents that allow the application to be modified in a controlled way.
+RedlineSpec organizes work around a living functional truth, a persistent system of project implementation rules, and a small set of temporary documents that allow the application to be modified in a controlled way.
 
 This document describes when the flow is activated, what each step produces, and how the result is consolidated.
 
@@ -24,9 +24,9 @@ The `*.global.entry.md` files describe cross-cutting functional truth when it is
 
 This structure must favor progressive disclosure: small or medium-sized files that are easy to navigate and easy to load only when needed.
 
-In addition to the functional truth, the project may maintain persistent technical rules under `.redline/project/rules/`. Those rules are not part of the functional truth, but they are part of the persistent context that `Plan` and `Tasks` can consume.
+In addition to the functional truth, the project may maintain persistent implementation rules under `.redline/project/rules/`. Those rules are not part of the functional truth, but they are part of the persistent context that `Plan` and `Tasks` can consume.
 
-Creating an initial rules catalog is recommended after the functional truth baseline exists. It is not mandatory, because some projects or changes may not have reusable technical rules yet, but it gives the first technical planning step stronger project-specific constraints.
+Creating an initial rules catalog is recommended after the functional truth baseline exists. It is not mandatory, because some projects or changes may not have reusable implementation rules yet, but it gives the first technical planning step stronger project-specific constraints.
 
 ## 2. Flow activation
 
@@ -55,7 +55,7 @@ The result of startup is an initial functional truth, even if it is still partia
 
 At the user-facing command level, `/bootstrap-functional-truth` refines this startup baseline after installation. It can leave an empty project at a minimal indexed state, map large repositories at a high level with discovery gaps, or create detailed `*.entry.md` and `*.global.entry.md` files when the functional surface is bounded and clear.
 
-After that baseline exists, `/write-rules` is the recommended next startup workflow for capturing persistent technical practices. This recommendation is non-blocking: the user may skip rules explicitly, and the project can add or refine rules later as reusable constraints become clear.
+After that baseline exists, `/write-rules` is the recommended next startup workflow for capturing persistent implementation constraints. This recommendation is non-blocking: the user may skip rules explicitly, and the project can add or refine rules later as reusable constraints become clear.
 
 ## 4. Change flow structure
 
@@ -185,7 +185,7 @@ The final result is a living functional truth aligned with what was implemented.
 
 - Every change in the flow produces a `Spec`.
 - `Plan` appears when the technical solution must be detailed.
-- `Plan` can reference the project's persistent technical rules.
+- `Plan` can reference the project's persistent implementation rules.
 - `Tasks` appear when `Plan` exists.
 - `Tasks` always live in their own document family.
 - `Tasks` can expand rules to produce self-sufficient execution contracts.
@@ -205,7 +205,7 @@ When finished, the living functional truth captures the current state of the pro
 ## 8. Operational summary
 
 - The project starts by creating `functional.index.md` and the necessary functional documents.
-- The project should normally initialize reusable persistent technical rules after startup, while still allowing the user to skip them explicitly.
+- The project should normally initialize reusable persistent implementation rules after startup, while still allowing the user to skip them explicitly.
 - Each change is evaluated with the question: `Does this change modify existing functional truth or add new functional truth?`.
 - If the answer is yes, the minimum is a `Spec`.
 - If the change requires more decomposition, `Plan` and `Tasks` are added.

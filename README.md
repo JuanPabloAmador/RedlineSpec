@@ -6,7 +6,7 @@ It organizes product change around a living functional truth, temporary change c
 
 ## Status
 
-Current version: `0.1.3`
+Current version: `0.1.4`
 
 This release provides the first usable framework surface, but it is still early. The installer includes the first harness bindings for OpenCode and Windsurf.
 
@@ -15,7 +15,7 @@ This release provides the first usable framework surface, but it is still early.
 RedlineSpec separates persistent project truth from temporary change contracts:
 
 - `.redline/project/functional-truth/` stores the living functional truth.
-- `.redline/project/rules/` stores persistent technical rules.
+- `.redline/project/rules/` stores persistent implementation rules.
 - `.redline/project/specs/` stores temporary contracts for active changes.
 - `.redline/system/templates/` stores framework-distributed templates.
 
@@ -83,4 +83,4 @@ Start with:
 
 RedlineSpec uses SemVer.
 
-Version `0.1.3` strengthens the recommended rules workflow after functional truth bootstrap and adds non-blocking rule-awareness to planning and task generation. Breaking changes may still happen while the framework remains below `1.0.0`.
+Version `0.1.4` tightens `/write-rules` so project rules are persistent implementation or verification constraints rather than general project decisions. Breaking changes may still happen while the framework remains below `1.0.0`.

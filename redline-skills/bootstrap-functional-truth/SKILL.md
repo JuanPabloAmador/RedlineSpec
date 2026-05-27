@@ -109,7 +109,7 @@ Do not use this workflow to:
 - close or update a spec after implementation,
 - document planned functionality,
 - create tasks or implementation plans,
-- write project technical rules,
+- write project implementation rules,
 - or implement application code.
 
 ## Workflow
@@ -256,7 +256,7 @@ Before finishing, verify:
 
 Before the final response, check whether the project has any real `*.rule.md` files under `.redline/project/rules/`.
 
-If no project rules exist yet, recommend `/write-rules` as the next workflow for capturing reusable technical practices before the first planned implementation flow.
+If no project rules exist yet, recommend `/write-rules` as the next workflow for capturing reusable implementation constraints before the first planned implementation flow.
 
 This recommendation is non-blocking. Do not create or modify rules from this workflow.
 

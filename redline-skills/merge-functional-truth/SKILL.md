@@ -101,7 +101,7 @@ Do not use this workflow to:
 - create the initial functional truth baseline from repository discovery,
 - write a new spec,
 - write a plan or tasks,
-- write project technical rules,
+- write project implementation rules,
 - or implement application code.
 
 ## Workflow
