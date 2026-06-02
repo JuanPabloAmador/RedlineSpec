@@ -283,7 +283,7 @@ Install command files to:
 .opencode/
   skills/
     bootstrap-functional-truth/
-    interview-first/
+    interview/
     write-spec/
     write-plan/
     write-rules/
@@ -330,7 +330,7 @@ Install workflow files to:
 .windsurf/
   skills/
     bootstrap-functional-truth/
-    interview-first/
+    interview/
     write-spec/
     write-plan/
     write-rules/
@@ -527,11 +527,11 @@ bash scripts/install.sh ~/work/my-project --update
 ## Open Questions
 
 1. Should harness bindings be committed by default in consumer projects, or should teams add harness folders to `.gitignore` when they want local-only activation?
-2. Should `interview-first` be exposed as `/interview` only, or also as `/interview-first` to match the skill name?
+2. Should `interview` be exposed only through `/interview`, or should another alias be supported?
 3. Should `.agents/skills/` be supported as an optimization flag for compatible harnesses, or avoided until more harnesses are reviewed?
 
 Recommended defaults:
 
 1. Treat harness bindings as project artifacts that can be committed.
-2. Expose `/interview` as the user-facing command and keep `interview-first` as the internal skill name.
+2. Expose `/interview` as the user-facing command and keep `interview` as the internal skill name.
 3. Use native harness skill folders by default; add `.agents/skills/` only as an explicit shared strategy.

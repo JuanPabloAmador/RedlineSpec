@@ -194,7 +194,7 @@ REQUIRED_TEMPLATES=(
   rule.template.md
 )
 REQUIRED_SKILLS=(
-  interview-first
+  interview
   write-spec
   redlinespec-spec-authoring
   write-plan

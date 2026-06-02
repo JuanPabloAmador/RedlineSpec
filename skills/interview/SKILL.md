@@ -1,5 +1,5 @@
 ---
-name: interview-first
+name: interview
 description: Help the user and agent reach shared understanding of a problem, plan, or design by asking focused questions one at a time before producing the requested output.
 ---
 
@@ -20,7 +20,8 @@ Each question must include clear options:
 A) [Option 1]
 B) [Option 2]
 C) [Option 3]
-D) Other (please specify)
+
+After the options, tell the user they can either choose A, B, or C, or write their own answer in plain text. If the user replies with free-form text instead of explicitly choosing A, B, or C, treat that reply as their custom answer. Do not ask for clarification unless the answer is ambiguous or conflicts with the question.
 
 For each question, provide your recommended answer and a brief justification.
 

@@ -188,7 +188,7 @@ Skills are copied only when a harness is selected.
 
 For OpenCode:
 
-- `skills/interview-first/` -> `.opencode/skills/interview-first/`
+- `skills/interview/` -> `.opencode/skills/interview/`
 - `redline-skills/write-spec/` -> `.opencode/skills/write-spec/`
 - `redline-skills/redlinespec-spec-authoring/` -> `.opencode/skills/redlinespec-spec-authoring/`
 - `redline-skills/write-plan/` -> `.opencode/skills/write-plan/`
@@ -201,7 +201,7 @@ For OpenCode:
 
 For Windsurf:
 
-- `skills/interview-first/` -> `.windsurf/skills/interview-first/`
+- `skills/interview/` -> `.windsurf/skills/interview/`
 - `redline-skills/write-spec/` -> `.windsurf/skills/write-spec/`
 - `redline-skills/redlinespec-spec-authoring/` -> `.windsurf/skills/redlinespec-spec-authoring/`
 - `redline-skills/write-plan/` -> `.windsurf/skills/write-plan/`
@@ -304,7 +304,7 @@ When `--update-harness` is used without `--harness`, the installer detects insta
 ```txt
 .opencode/
   skills/
-    interview-first/
+    interview/
     write-spec/
     redlinespec-spec-authoring/
     write-plan/
@@ -331,7 +331,7 @@ When `--update-harness` is used without `--harness`, the installer detects insta
 ```txt
 .windsurf/
   skills/
-    interview-first/
+    interview/
     write-spec/
     redlinespec-spec-authoring/
     write-plan/

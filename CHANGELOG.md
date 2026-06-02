@@ -10,6 +10,7 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 ### Changed
 
 - Reduced task index traceability noise by keeping task indexes focused on execution structure and moving task-level source traceability to individual task contracts.
+- Renamed the internal interview skill from `interview-first` to `interview` across installer docs and harness bindings.
 
 ## [0.1.4] - 2026-05-28
 
