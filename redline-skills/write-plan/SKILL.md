@@ -16,6 +16,7 @@ It tells you what to read, what to infer from the repo, when to ask follow-up qu
 Before doing anything else, read these files:
 
 - `.redline/system/templates/plan.template.md`
+- `.redline/system/templates/plan-technical-unit.template.md`
 
 When available, also read:
 
@@ -27,7 +28,7 @@ When available, also read:
 
 This workflow must stay portable. At runtime it should depend only on the distributed template, the rules embedded in this skill, the project documents, and the repository itself.
 
-Template resolution is installation-relative: locate the target project root that contains `.redline/system/templates/`, then read templates from that directory. If `.redline/system/templates/plan.template.md` is missing, stop and report that the RedlineSpec system installation is incomplete or must be refreshed.
+Template resolution is installation-relative: locate the target project root that contains `.redline/system/templates/`, then read templates from that directory. If `.redline/system/templates/plan.template.md` or `.redline/system/templates/plan-technical-unit.template.md` is missing, stop and report that the RedlineSpec system installation is incomplete or must be refreshed.
 
 ## Purpose of /write-plan
 
@@ -35,7 +36,7 @@ Template resolution is installation-relative: locate the target project root tha
 
 The `Plan` defines the how.
 
-It does not restate the functional what from the `Spec`. It translates that functional contract into technical structure, technical units, signatures, dependencies, affected areas, and applicable rules.
+It does not restate the functional what from the `Spec`. It translates that functional contract into a technical index plus technical unit contracts covering structure, signatures, dependencies, affected areas, and applicable rules.
 
 A RedlineSpec `Plan` is:
 
@@ -55,13 +56,13 @@ Always apply these rules:
 3. The plan defines how the change will be built: components, services, endpoints, modules, models, interfaces, signatures, dependencies, and technical decomposition.
 4. The plan is optional in the overall framework flow, but once you are writing one, do not encode that optionality inside the document itself.
 5. Do not turn the plan into a task timeline or execution sequence. Temporal decomposition belongs to `Tasks`.
-6. Use the exact section names and overall shape from `.redline/system/templates/plan.template.md`.
+6. Use the exact section names and overall shapes from `.redline/system/templates/plan.template.md` and `.redline/system/templates/plan-technical-unit.template.md`.
 7. Keep the entire plan in English.
 8. Use the source `Spec` as the upstream contract, but do not force the technical decomposition to mirror the functional block structure.
 9. Every technical block must trace the functional blocks it resolves via `Resolves`.
-10. Detailed signatures and shapes live in `Technical Units`, not at block level.
+10. Detailed signatures and shapes live in technical unit files, not in the plan index or at block level.
 11. A `ready` Plan must cover the source Spec's in-scope functional obligations through technical blocks and responsibilities.
-12. Validate Spec coverage through `Resolves`, block responsibilities, and technical units.
+12. Validate Spec coverage through `Resolves`, block responsibilities, and technical unit contracts.
 13. Every technical block must include a `Rules` subsection, even if it only contains `- None.`.
 14. `Plan-Wide Context` is conditional. When present, use only these subsections: `Shared Decisions`, `Open Questions`, `Rules`, `Supporting Context`.
 15. Supporting documents must be linked explicitly and accompanied by a short description.
@@ -117,8 +118,9 @@ Follow this sequence.
 Read:
 
 - `.redline/system/templates/plan.template.md`
+- `.redline/system/templates/plan-technical-unit.template.md`
 
-Treat that template and the rules embedded in this skill as canonical.
+Treat those templates and the rules embedded in this skill as canonical.
 
 ### Step 2: Load the upstream context
 
@@ -160,7 +162,7 @@ You need enough information to write:
 
 - `Affected Areas`,
 - optional `Plan-Wide Context`,
-- and at least one `Technical Block` with complete `Technical Units`.
+- and at least one `Technical Block` with declared technical unit files.
 
 You must also be able to answer, technically:
 
@@ -177,6 +179,10 @@ If any of that is missing, ask focused follow-up questions before writing.
 The canonical project path is:
 
 - `.redline/project/specs/<change>/plan/<change>.plan.md`
+
+Technical unit contracts live under:
+
+- `.redline/project/specs/<change>/plan/technical-units/tu-01-<slug>.plan.md`
 
 Rules:
 
@@ -198,7 +204,8 @@ Rules:
 - do not hide open questions in prose.
 
 Global open questions belong in `Plan-Wide Context > Open Questions`.
-Local open questions belong in the corresponding technical block.
+Block-level open questions belong in the corresponding technical block.
+Unit-level open questions belong in the corresponding technical unit file.
 
 ### Step 7: Write `Affected Areas`
 
@@ -278,22 +285,35 @@ Rules:
 
 `Technical Units` are mandatory in every technical block.
 
-All detailed signatures and shapes belong here.
+In the plan index, `Technical Units` is a navigation table.
 
-Each technical unit must define:
+Each technical unit row must define:
 
-- `Name`
+- `Unit` ID such as `TU-01`
 - `Type`
+- `File`
+- `Contract Summary`
+
+Each technical unit file must define:
+
+- `Source Trace`
 - `Responsibility`
+- `Affected Artifacts`
 - `Inputs`
 - `Outputs`
 - `Dependencies`
 - `Public Surface`
 - `Key Internal Functions`
+- `Contract Shapes`
+- `Relevant Rules`
+- optional `Supporting Context`
+- optional `Open Questions`
 
 Rules:
 
-- keep units implementation-constraining but code-free,
+- keep unit contracts implementation-constraining but code-free,
+- use stable `TU-*` IDs across the whole plan,
+- use file names such as `technical-units/tu-01-<slug>.plan.md`,
 - define real shapes where they matter,
 - show public and important internal signatures,
 - use dependencies to clarify injection or collaboration boundaries,
@@ -301,7 +321,7 @@ Rules:
 
 ### Step 11: Write `Rules` correctly
 
-At plan level or block level, each rule entry must contain:
+At plan index level, block level, or technical unit level, each rule entry must contain:
 
 - the real path to the rule file,
 - and the human-readable title.
@@ -312,8 +332,9 @@ Recommended format:
 
 Rules:
 
-- block-level `Rules` are mandatory,
-- if no block-specific rule applies beyond plan-wide context, write `- None.`,
+- block-level `Rules` are mandatory in the plan index,
+- unit-level `Relevant Rules` are mandatory in technical unit files,
+- if no specific rule applies beyond broader context, write `None.`,
 - do not inline rule bodies in the plan.
 
 ### Step 12: Link supporting context
@@ -337,11 +358,13 @@ Before finalizing, verify:
 - the Plan covers every in-scope functional obligation from the source `Spec`,
 - the technical decomposition is repo-aware,
 - every block has `Resolves`, `Artifacts`, `Responsibility`, `Technical Units`, and `Rules`,
-- every unit has signatures or shapes detailed enough to constrain implementation,
+- every technical unit listed in the plan index has a corresponding file,
+- every technical unit file is `ready` when the plan index is `ready`,
+- every technical unit file has signatures or shapes detailed enough to constrain implementation,
 - global and local open questions are not hidden,
 - and rules reference real project rule files or explicitly remain absent.
 
-Validate Spec-to-Plan coverage by checking the source Spec's functional blocks, requirements, and acceptance material against the Plan's `Resolves`, block responsibilities, artifacts, and technical units. If any functional obligation is not technically addressed, keep the Plan at `draft` and state the missing coverage as an open question or required revision.
+Validate Spec-to-Plan coverage by checking the source Spec's functional blocks, requirements, and acceptance material against the Plan index's `Resolves`, block responsibilities, artifacts, and linked technical unit contracts. If any functional obligation is not technically addressed, keep the Plan at `draft` and state the missing coverage as an open question or required revision.
 
 If open technical questions remain, keep the plan at `draft`.
 
@@ -350,19 +373,23 @@ If open technical questions remain, keep the plan at `draft`.
 Create or update:
 
 - `.redline/project/specs/<change>/plan/<change>.plan.md`
+- `.redline/project/specs/<change>/plan/technical-units/tu-01-<slug>.plan.md`
 
-If the user asked only for the content first, present the draft before writing. Otherwise write the file directly when appropriate.
+Create `.redline/project/specs/<change>/plan/technical-units/` when technical unit files are written.
+
+If the user asked only for the content first, present the draft before writing. Otherwise write the plan index and technical unit files directly when appropriate.
 
 ## Special Case: Updating an Existing Plan During Implementation
 
 If the user wants to revise a plan mid-implementation:
 
 1. read the current plan,
-2. preserve valid block and unit structure where possible,
-3. change only the technical contract that truly needs to move,
-4. keep `Rules` references aligned,
-5. keep open questions explicit,
-6. and do not create a post-implementation closing section.
+2. read the affected technical unit files,
+3. preserve valid block and unit structure where possible,
+4. change only the technical contract that truly needs to move,
+5. keep `Rules` and `Relevant Rules` references aligned,
+6. keep open questions explicit,
+7. and do not create a post-implementation closing section.
 
 A `Plan` may change during implementation if the technical contract must be realigned, but it is not closed after implementation in the same way as a `Spec`.
 
@@ -371,6 +398,7 @@ A `Plan` may change during implementation if the technical contract must be real
 A good result from this workflow is:
 
 - one valid `*.plan.md`,
+- valid technical unit files under `plan/technical-units/`,
 - technical and repo-aware,
 - centered on blocks and technical units,
 - rich in signatures and shapes,
@@ -383,15 +411,18 @@ Before finishing, confirm all of these:
 
 - The source `Spec` exists and is correctly referenced.
 - The plan path follows `.redline/project/specs/<change>/plan/<change>.plan.md`.
+- Technical unit files live under `.redline/project/specs/<change>/plan/technical-units/`.
 - `id` matches the change base name.
 - The plan is fully in English.
-- `status` is `draft` or `ready`.
+- plan and technical unit `status` values are `draft` or `ready`.
 - `Affected Areas` is present and grouped correctly.
 - `Plan-Wide Context` appears only when needed.
 - Every technical block uses `TB-*` IDs.
 - The Plan covers the source Spec's in-scope functional obligations through its technical blocks and units.
 - Every block has `Change Type`, `Affected Areas`, `Resolves`, `Artifacts`, `Responsibility`, `Technical Units`, and `Rules`.
-- Every technical unit defines the required signature-first fields.
+- Every technical unit listed in the index has a matching file.
+- Every technical unit file is `ready` when the plan index is `ready`.
+- Every technical unit file defines the required signature-first fields.
 - Block `Rules` exists even when the content is `- None.`.
 - Supporting documents are linked rather than pasted.
 - No block relies on code bodies to explain its contract.

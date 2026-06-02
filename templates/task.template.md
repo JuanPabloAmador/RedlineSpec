@@ -22,7 +22,11 @@ plan: .redline/project/specs/{{change-base-name}}/plan/{{change-base-name}}.plan
 
 - `.redline/project/specs/{{change-base-name}}/plan/{{change-base-name}}.plan.md`
 - {{TB references}}
-- {{Technical unit references}}
+
+### Technical Units
+
+- `.redline/project/specs/{{change-base-name}}/plan/technical-units/tu-01-{{slug}}.plan.md`
+- {{Additional technical unit references}}
 
 ### Rules
 

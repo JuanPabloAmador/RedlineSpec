@@ -35,15 +35,15 @@ spec: .redline/project/specs/{{change-base-name}}/{{change-base-name}}.spec.md
 
 ### Shared Decisions
 
-- {{Decision that applies across multiple technical blocks}}
-- {{Decision that applies across multiple technical blocks}}
+- {{Decision that applies across multiple technical blocks or units}}
+- {{Decision that applies across multiple technical blocks or units}}
 
 <!-- Omit if not applicable. -->
 
 ### Open Questions
 
-- {{Open technical question affecting multiple technical blocks}}
-- {{Open technical question affecting multiple technical blocks}}
+- {{Open technical question affecting multiple technical blocks or units}}
+- {{Open technical question affecting multiple technical blocks or units}}
 
 <!-- Omit if not applicable. If any open question remains, status should stay draft. -->
 
@@ -88,70 +88,10 @@ spec: .redline/project/specs/{{change-base-name}}/{{change-base-name}}.spec.md
 
 #### Technical Units
 
-##### {{Technical unit name}}
-
-**Name:** {{Technical unit name}}
-
-**Type:** component | service | endpoint | controller | repository | model | module | hook | utility | other
-
-**Responsibility**
-
-{{Describe what this technical unit is responsible for.}}
-
-**Inputs**
-
-- {{Input shape / source / type}}
-- {{Input shape / source / type}}
-
-**Outputs**
-
-- {{Output shape / effect / type}}
-- {{Output shape / effect / type}}
-
-**Dependencies**
-
-- {{Injected dependency or collaborator}}
-- {{Injected dependency or collaborator}}
-
-**Public Surface**
-
-- `{{public signature}}`
-- `{{public signature}}`
-
-**Key Internal Functions**
-
-- `{{internal signature}}`
-- `{{internal signature}}`
-
-##### {{Technical unit name}}
-
-**Name:** {{Technical unit name}}
-
-**Type:** component | service | endpoint | controller | repository | model | module | hook | utility | other
-
-**Responsibility**
-
-{{Describe what this technical unit is responsible for.}}
-
-**Inputs**
-
-- {{Input shape / source / type}}
-
-**Outputs**
-
-- {{Output shape / effect / type}}
-
-**Dependencies**
-
-- {{Injected dependency or collaborator}}
-
-**Public Surface**
-
-- `{{public signature}}`
-
-**Key Internal Functions**
-
-- `{{internal signature}}`
+| Unit | Type | File | Contract Summary |
+| --- | --- | --- | --- |
+| TU-01 | component | technical-units/tu-01-{{slug}}.plan.md | {{Short technical unit contract summary}} |
+| TU-02 | service | technical-units/tu-02-{{slug}}.plan.md | {{Short technical unit contract summary}} |
 
 #### Open Questions
 
@@ -196,35 +136,9 @@ spec: .redline/project/specs/{{change-base-name}}/{{change-base-name}}.spec.md
 
 #### Technical Units
 
-##### {{Technical unit name}}
-
-**Name:** {{Technical unit name}}
-
-**Type:** component | service | endpoint | controller | repository | model | module | hook | utility | other
-
-**Responsibility**
-
-{{Describe what this technical unit is responsible for.}}
-
-**Inputs**
-
-- {{Input shape / source / type}}
-
-**Outputs**
-
-- {{Output shape / effect / type}}
-
-**Dependencies**
-
-- {{Injected dependency or collaborator}}
-
-**Public Surface**
-
-- `{{public signature}}`
-
-**Key Internal Functions**
-
-- `{{internal signature}}`
+| Unit | Type | File | Contract Summary |
+| --- | --- | --- | --- |
+| TU-03 | endpoint | technical-units/tu-03-{{slug}}.plan.md | {{Short technical unit contract summary}} |
 
 #### Rules
 

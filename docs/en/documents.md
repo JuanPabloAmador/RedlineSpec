@@ -189,10 +189,11 @@ The `Spec` starts as a change proposal, but at the end it must be updated to ref
 Canonical path:
 
 - `.redline/project/specs/<change>/plan/<change>.plan.md`
+- `.redline/project/specs/<change>/plan/technical-units/tu-01-<slug>.plan.md`
 
 It is an optional document in the flow, used when technical complexity requires an explicit technical contract.
 
-Its function is to translate the `Spec` into a technical form executable by humans or agents:
+Its function is to translate the `Spec` into a technical form executable by humans or agents through a compact plan index and detailed technical unit contracts:
 
 - technical blocks,
 - technical units,
@@ -205,6 +206,8 @@ Its function is to translate the `Spec` into a technical form executable by huma
 - and supporting technical context when needed.
 
 The `Plan` defines the technical how. It does not define an execution timeline; that dimension belongs to `Tasks`.
+
+The `<change>.plan.md` file at the root of `plan/` is the plan index. It keeps affected areas, plan-wide context, and technical blocks. Technical unit files under `plan/technical-units/` carry the detailed signatures, shapes, dependencies, and unit-level rule context.
 
 ### 4.3 `Tasks`
 
@@ -309,6 +312,8 @@ The goal is to prevent future agents from being contaminated by historical contr
         <change>.spec.md
         plan/
           <change>.plan.md
+          technical-units/
+            tu-01-<slug>.plan.md
         tasks/
           <change>.tasks.md
           phase-01-task-01-<slug>.task.md

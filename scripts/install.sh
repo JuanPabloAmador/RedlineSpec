@@ -185,6 +185,7 @@ RULES_INDEX_TEMPLATE_SOURCE="$REPO_ROOT/templates/rules.index.template.md"
 REQUIRED_TEMPLATES=(
   spec.template.md
   plan.template.md
+  plan-technical-unit.template.md
   tasks.template.md
   task.template.md
   functional.index.template.md

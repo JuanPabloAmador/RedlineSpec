@@ -5,12 +5,17 @@ All notable changes to RedlineSpec are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [0.2.0] - 2026-06-03
+
+### Added
+
+- `plan-technical-unit.template.md` template for detailed technical unit contracts linked from plan indexes.
 
 ### Changed
 
 - Reduced task index traceability noise by keeping task indexes focused on execution structure and moving task-level source traceability to individual task contracts.
-- Renamed the internal interview skill from `interview-first` to `interview` across installer docs and harness bindings.
+- Renamed the internal interview skill from `interview-first` to `interview` across installer docs, harness bindings, and skill directory.
+- Split plans into a compact plan index plus linked technical unit contract files for better progressive disclosure.
 
 ## [0.1.4] - 2026-05-28
 

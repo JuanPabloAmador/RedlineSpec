@@ -135,9 +135,10 @@ The `Spec` defines the functional change and acts as the functional branch of th
 
 Produces:
 
-- `*.plan.md`
+- `*.plan.md` plan index
+- `technical-units/*.plan.md`
 
-This step is optional. It appears when the `Spec` must be translated into implementable technical contracts.
+This step is optional. It appears when the `Spec` must be translated into implementable technical contracts. The plan index keeps the technical block map; linked technical unit files carry detailed signatures, shapes, dependencies, and rule context.
 
 This is the first technical point where persistent project rules become important. The `Plan` can reference those rules to constrain the solution. If no rules are defined yet, planning can continue, but the workflow should warn the user and recommend `/write-rules` before finalizing the technical contract.
 

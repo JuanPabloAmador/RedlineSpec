@@ -20,7 +20,8 @@ Before doing anything else, read these templates:
 
 Then read:
 
-- the source `*.plan.md`
+- the source `*.plan.md` index
+- the linked technical unit files needed for the current task generation pass
 - the relevant portions of the source `*.spec.md`
 
 When task files already exist, also inspect the task index and filesystem state under:
@@ -96,7 +97,7 @@ The source Plan must be ready.
 It must contain enough information to derive:
 
 - technical blocks,
-- technical units,
+- linked technical unit contracts,
 - signatures and shapes,
 - affected existing areas,
 - new artifacts,
@@ -160,6 +161,12 @@ Expected Spec path:
 
 The Plan is the primary technical source.
 
+Read linked technical unit files from:
+
+- `.redline/project/specs/<change>/plan/technical-units/`
+
+Use progressive disclosure for technical unit files: read only the units needed to create or validate the current phases or task files.
+
 Use progressive disclosure for the Spec: read only the functional blocks, requirements, and acceptance material needed for the phases or task files currently being generated.
 
 ### Step 3: Validate Plan readiness
@@ -170,8 +177,10 @@ Block if:
 
 - the Plan status is not ready,
 - open technical questions remain,
-- technical units are vague,
-- signatures or shapes are missing where needed,
+- linked technical unit files are missing,
+- linked technical unit files are not ready,
+- technical unit contracts are vague,
+- signatures or shapes are missing where needed in unit files,
 - affected areas are not concrete enough,
 - new artifacts are unclear,
 - or rules referenced by the Plan cannot be resolved when they are needed for task contracts.
@@ -278,7 +287,7 @@ Task-level traceability belongs in each individual `*.task.md` file under `Sourc
 Before asking for index approval, validate that:
 
 - every task has a clear source in the ready Plan,
-- every phase is supported by Plan blocks or technical units,
+- every phase is supported by Plan blocks or linked technical unit contracts,
 - the ready Plan has already covered the source Spec,
 - and no Plan block or technical unit needed for execution has been dropped from the phase/task decomposition.
 
@@ -352,7 +361,7 @@ Every task file must include:
 - optional `Repository Context`
 - `Blocked Protocol`
 
-`Source Trace` contains the source Spec, Plan, functional references, technical references, and rule paths.
+`Source Trace` contains the source Spec, Plan index, relevant technical unit file paths, functional references, technical references, and rule paths.
 
 `Change Scope` must declare existing artifacts allowed to change and new artifacts allowed to create. New artifacts may be exact paths or allowed path patterns.
 

@@ -63,7 +63,7 @@ Its purpose is to draft a `Plan` contract from the context already obtained.
 
 It should be used when, after `/interview`, the next step is to define how to technically approach an already understood `Spec`.
 
-Its expected result is a `*.plan.md` describing technical blocks, technical units, signatures, shapes, dependencies, affected areas, and applicable rules.
+Its expected result is a compact `*.plan.md` index describing technical blocks plus linked technical unit files containing signatures, shapes, dependencies, affected areas, and applicable rules.
 
 ### 2.5 `/write-rules`
 

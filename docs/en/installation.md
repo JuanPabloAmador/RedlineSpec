@@ -97,6 +97,7 @@ Currently includes at minimum:
 
 - `spec.template.md`
 - `plan.template.md`
+- `plan-technical-unit.template.md`
 - `tasks.template.md`
 - `task.template.md`
 - `functional.index.template.md`
@@ -161,6 +162,7 @@ Although the installer must not create example changes, it must assume this targ
   <change>.spec.md
   plan/
     <change>.plan.md
+    technical-units/
   tasks/
 ```
 
@@ -174,6 +176,7 @@ Using this framework repository as the source, the installation script should ap
 
 - `templates/spec.template.md` -> `.redline/system/templates/spec.template.md`
 - `templates/plan.template.md` -> `.redline/system/templates/plan.template.md`
+- `templates/plan-technical-unit.template.md` -> `.redline/system/templates/plan-technical-unit.template.md`
 - `templates/tasks.template.md` -> `.redline/system/templates/tasks.template.md`
 - `templates/task.template.md` -> `.redline/system/templates/task.template.md`
 - `templates/functional.index.template.md` -> `.redline/system/templates/functional.index.template.md`
@@ -257,6 +260,7 @@ After a correct minimum installation, the repository should look at least like t
     templates/
       spec.template.md
       plan.template.md
+      plan-technical-unit.template.md
       tasks.template.md
       task.template.md
       functional.index.template.md
