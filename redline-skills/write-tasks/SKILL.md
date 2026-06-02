@@ -269,19 +269,22 @@ Do not use `parallel_group` for non-consecutive tasks.
 
 Do not place `parallel_group` in task file frontmatter.
 
-### Step 9: Write coverage matrices
+### Step 9: Validate task traceability
 
-The index must include functional coverage:
+The task index is an execution map for vertical phases, ordered tasks, status, verification, and safe parallelization metadata.
 
-- Spec references mapped to phases and task IDs.
+Task-level traceability belongs in each individual `*.task.md` file under `Source Trace`.
 
-The index must include technical coverage:
+Before asking for index approval, validate that:
 
-- Plan references mapped to phases and task IDs.
+- every task has a clear source in the ready Plan,
+- every phase is supported by Plan blocks or technical units,
+- the ready Plan has already covered the source Spec,
+- and no Plan block or technical unit needed for execution has been dropped from the phase/task decomposition.
 
-Every relevant technical block and technical unit from the Plan must be covered.
+If the ready Plan appears not to cover the Spec, block and recommend `/write-plan` revision.
 
-If coverage is incomplete, block.
+If task decomposition drops required Plan material, block and revise the task index.
 
 ### Step 10: Explain and request approval
 
@@ -383,7 +386,7 @@ A good result from this workflow is:
 - vertical phases with functional verification,
 - explicit task order,
 - explicit safe parallel groups when applicable,
-- coverage from Spec and Plan to phases/tasks,
+- compact task-level source traceability in each individual task file,
 - and individual task files that are compact, ready execution contracts.
 
 ## Final Checklist
@@ -398,8 +401,8 @@ Before finishing, confirm all of these:
 - Every phase has a functional slice and functional verification.
 - Every task is listed with ID, type, status, file, optional `parallel_group`, and summary.
 - Parallel tasks are consecutive and share the same `parallel_group`.
-- Functional coverage is present.
-- Technical coverage is present and complete.
+- The index provides phases, order, status, verification, and parallelization.
+- Each individual task file provides task-level traceability through `Source Trace`.
 - Task files use flat naming under `tasks/`.
 - Every task file has required frontmatter.
 - Every complete task file has `contract_ready: true`.

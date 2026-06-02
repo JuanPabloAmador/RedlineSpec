@@ -60,16 +60,18 @@ Always apply these rules:
 8. Use the source `Spec` as the upstream contract, but do not force the technical decomposition to mirror the functional block structure.
 9. Every technical block must trace the functional blocks it resolves via `Resolves`.
 10. Detailed signatures and shapes live in `Technical Units`, not at block level.
-11. Every technical block must include a `Rules` subsection, even if it only contains `- None.`.
-12. `Plan-Wide Context` is conditional. When present, use only these subsections: `Shared Decisions`, `Open Questions`, `Rules`, `Supporting Context`.
-13. Supporting documents must be linked explicitly and accompanied by a short description.
-14. Rules referenced by the plan must point to real project rule files under `.redline/project/rules/`.
-15. The plan references rules; it does not inline or expand them.
-16. If technical open questions remain, keep the plan at `draft`.
-17. `ready` means the technical contract is sufficiently closed for later task generation or direct technical execution.
-18. Do not include code bodies or pseudocode-heavy implementations.
-19. Prefer signatures, shapes, responsibilities, and dependencies over internal algorithm narration.
-20. Inspect the real repository before claiming affected areas or artifacts.
+11. A `ready` Plan must cover the source Spec's in-scope functional obligations through technical blocks and responsibilities.
+12. Validate Spec coverage through `Resolves`, block responsibilities, and technical units.
+13. Every technical block must include a `Rules` subsection, even if it only contains `- None.`.
+14. `Plan-Wide Context` is conditional. When present, use only these subsections: `Shared Decisions`, `Open Questions`, `Rules`, `Supporting Context`.
+15. Supporting documents must be linked explicitly and accompanied by a short description.
+16. Rules referenced by the plan must point to real project rule files under `.redline/project/rules/`.
+17. The plan references rules; it does not inline or expand them.
+18. If technical open questions remain, keep the plan at `draft`.
+19. `ready` means the technical contract is sufficiently closed for later task generation or direct technical execution.
+20. Do not include code bodies or pseudocode-heavy implementations.
+21. Prefer signatures, shapes, responsibilities, and dependencies over internal algorithm narration.
+22. Inspect the real repository before claiming affected areas or artifacts.
 
 ## When To Use This Skill
 
@@ -332,11 +334,14 @@ Before finalizing, verify:
 - the document is fully in English,
 - the frontmatter is complete,
 - the source `Spec` path is real,
+- the Plan covers every in-scope functional obligation from the source `Spec`,
 - the technical decomposition is repo-aware,
 - every block has `Resolves`, `Artifacts`, `Responsibility`, `Technical Units`, and `Rules`,
 - every unit has signatures or shapes detailed enough to constrain implementation,
 - global and local open questions are not hidden,
 - and rules reference real project rule files or explicitly remain absent.
+
+Validate Spec-to-Plan coverage by checking the source Spec's functional blocks, requirements, and acceptance material against the Plan's `Resolves`, block responsibilities, artifacts, and technical units. If any functional obligation is not technically addressed, keep the Plan at `draft` and state the missing coverage as an open question or required revision.
 
 If open technical questions remain, keep the plan at `draft`.
 
@@ -384,6 +389,7 @@ Before finishing, confirm all of these:
 - `Affected Areas` is present and grouped correctly.
 - `Plan-Wide Context` appears only when needed.
 - Every technical block uses `TB-*` IDs.
+- The Plan covers the source Spec's in-scope functional obligations through its technical blocks and units.
 - Every block has `Change Type`, `Affected Areas`, `Resolves`, `Artifacts`, `Responsibility`, `Technical Units`, and `Rules`.
 - Every technical unit defines the required signature-first fields.
 - Block `Rules` exists even when the content is `- None.`.

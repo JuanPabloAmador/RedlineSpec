@@ -82,20 +82,6 @@ Briefly explain how the implementation is divided into vertical phases.
 | P02-T01 | test | pending | phase-02-task-01-{{slug}}.task.md |  | {{Short contract summary}} |
 | P02-T02 | implementation | pending | phase-02-task-02-{{slug}}.task.md |  | {{Short contract summary}} |
 
-## Functional Coverage
-
-| Spec Reference | Covered By Phase | Covered By Tasks | Notes |
-| --- | --- | --- | --- |
-| FB-1 / FR-1.1 | P01 | P01-T01, P01-T02 | {{coverage note}} |
-| FB-1 / FR-1.2 | P02 | P02-T01, P02-T02 | {{coverage note}} |
-
-## Technical Coverage
-
-| Plan Reference | Covered By Phase | Covered By Tasks | Notes |
-| --- | --- | --- | --- |
-| TB-1 / {{technical unit}} | P01 | P01-T02 | {{coverage note}} |
-| TB-2 / {{technical unit}} | P02 | P02-T02 | {{coverage note}} |
-
 ## Rules Referenced
 
 - `.redline/project/rules/{{rule-name}}.rule.md` - {{Rule title}}

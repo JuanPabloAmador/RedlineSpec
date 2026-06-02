@@ -221,9 +221,11 @@ The detailed organization of `Tasks` uses progressive disclosure:
 - `.redline/project/specs/<change>/tasks/<change>.tasks.md`
 - `.redline/project/specs/<change>/tasks/phase-01-task-01-<slug>.task.md`
 
-The `*.tasks.md` index organizes vertical phases, execution order, explicit parallelization, and coverage.
+The `*.tasks.md` index organizes vertical phases, execution order, explicit parallelization, and status.
 
 Each `*.task.md` is a compact, actionable contract for a specific task.
+
+Task-level traceability lives in each task file's `Source Trace`.
 
 Phases are functionally verifiable vertical slices. Tasks are small steps inside those phases.
 

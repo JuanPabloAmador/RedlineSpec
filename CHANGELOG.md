@@ -7,9 +7,9 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 
 ## [Unreleased]
 
-### Added
+### Changed
 
-- Nothing yet.
+- Reduced task index traceability noise by keeping task indexes focused on execution structure and moving task-level source traceability to individual task contracts.
 
 ## [0.1.4] - 2026-05-28
 
