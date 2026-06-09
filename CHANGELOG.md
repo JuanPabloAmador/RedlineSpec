@@ -5,6 +5,23 @@ All notable changes to RedlineSpec are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+## [0.3.0] - 2026-06-09
+
+### Added
+
+- Minimal `redlinespec` orientation skill for understanding the framework and choosing the next workflow.
+- `/health-check` workflow skill for deterministic installation checks, semantic documentation review, and standardized repair reports.
+- `scripts/health-check.sh` for deterministic RedlineSpec installation and documentation structure checks, installed into `.redline/system/scripts/health-check.sh`.
+- `scripts/install-remote.sh` for GitHub-based `curl | bash` installation without a local RedlineSpec clone.
+- `/redlinespec` and `/health-check` launchers for OpenCode and Windsurf harness installs.
+- Pi harness support, installing RedlineSpec skills into `.pi/skills/` for Pi's native skill discovery and `/skill:name` commands.
+
+### Changed
+
+- Harness manifests may omit launcher paths for harnesses that invoke skills directly.
+
 ## [0.2.0] - 2026-06-03
 
 ### Added

@@ -8,6 +8,8 @@ This document defines the initial command catalog officially recognized by the f
 
 RedlineSpec's operational interface separates these responsibilities:
 
+- orienting the agent to the framework,
+- checking framework health,
 - bootstrapping persistent functional truth,
 - discovering and aligning context,
 - writing functional contracts,
@@ -17,6 +19,8 @@ RedlineSpec's operational interface separates these responsibilities:
 
 That separation is expressed in a small command catalog:
 
+- `/redlinespec`
+- `/health-check`
 - `/bootstrap-functional-truth`
 - `/interview`
 - `/write-spec`
@@ -31,7 +35,23 @@ Internal orchestration details are outside the scope of this document. This only
 
 ## 2. Initial catalog
 
-### 2.1 `/bootstrap-functional-truth`
+### 2.1 `/redlinespec`
+
+Its purpose is to provide minimal framework orientation and help choose the next RedlineSpec workflow.
+
+It should be used when the user or agent needs to understand whether a request belongs in the RedlineSpec flow, or which workflow should be activated next.
+
+Its expected result is a routing decision, not a project document.
+
+### 2.2 `/health-check`
+
+Its purpose is to verify framework installation integrity, documentation structure, functional truth organization, rules health, and spec lifecycle hygiene.
+
+It should be used after installation, after framework updates, or when functional truth and rules may have drifted over time.
+
+Its expected result is a standardized health-check report that another agent can use as a repair plan.
+
+### 2.3 `/bootstrap-functional-truth`
 
 Its purpose is to create or refine the initial living functional truth after RedlineSpec has been installed in a project.
 
@@ -41,7 +61,7 @@ Its expected result is an updated `.redline/project/functional-truth/` baseline 
 
 `/bootstrap-functional-truth` is not the installer and does not merge implemented specs.
 
-### 2.2 `/interview`
+### 2.4 `/interview`
 
 Its purpose is to gather the necessary context and align understanding between the user and the agent before drafting any contract.
 
@@ -49,7 +69,7 @@ It should be used at the beginning of the flow, when the problem, goal, scope, o
 
 Its expected result is enough shared understanding to draft the next step, which may be `/write-spec`, `/write-plan`, `/write-rules`, or `/write-tasks`.
 
-### 2.3 `/write-spec`
+### 2.5 `/write-spec`
 
 Its purpose is to draft a `Spec` contract from the context already obtained.
 
@@ -57,7 +77,7 @@ It should be used when, after `/interview`, the functional change should be form
 
 Its expected result is a complete `*.spec.md`, ready to serve as the basis for later phases.
 
-### 2.4 `/write-plan`
+### 2.6 `/write-plan`
 
 Its purpose is to draft a `Plan` contract from the context already obtained.
 
@@ -65,7 +85,7 @@ It should be used when, after `/interview`, the next step is to define how to te
 
 Its expected result is a compact `*.plan.md` index describing technical blocks plus linked technical unit files containing signatures, shapes, dependencies, affected areas, and applicable rules.
 
-### 2.5 `/write-rules`
+### 2.7 `/write-rules`
 
 Its purpose is to create or update the project's persistent implementation rules.
 
@@ -77,7 +97,7 @@ Rules are not every persistent project decision. They should constrain how futur
 
 Its expected result is an updated `rules.index.md` and the required `*.rule.md` files inside `.redline/project/rules/`.
 
-### 2.6 `/write-tasks`
+### 2.8 `/write-tasks`
 
 Its purpose is to draft `Tasks` contracts from the context already obtained.
 
@@ -99,7 +119,7 @@ The official task-writing workflow must use:
 
 `/write-tasks` only writes contracts. It does not implement code or update the final functional truth.
 
-### 2.7 `/implement`
+### 2.9 `/implement`
 
 Its purpose is to implement or execute approved `Tasks` contracts.
 
@@ -111,7 +131,7 @@ By default, it executes the next valid pending task. It can also operate on a sp
 
 `/implement` does not rewrite contracts, does not update the final `Spec`, and does not consolidate the living functional truth.
 
-### 2.8 `/close-spec`
+### 2.10 `/close-spec`
 
 Its purpose is to verify implementation evidence against a `Spec`, align the `Spec` with what was actually implemented, and mark it `implemented` when evidence is sufficient.
 
@@ -121,8 +141,7 @@ Its expected result is one updated `*.spec.md` with `Implemented Result`, `Imple
 
 `/close-spec` does not modify application code and does not update functional truth.
 
-### 2.9 `/merge-functional-truth`
-
+### 2.11 `/merge-functional-truth`
 Its purpose is to consolidate one or more implemented specs into the living functional truth.
 
 It should be used only after every spec in the merge set has been closed by `/close-spec` or otherwise satisfies the same implemented-spec contract.
@@ -136,6 +155,12 @@ Its expected result is updated `functional.index.md`, updated or created `*.entr
 The recommended operational sequence for a first project flow is:
 
 ```txt
+/redlinespec                (when orientation or routing is needed)
+   |
+   v
+/health-check               (after install/update or when drift is suspected)
+   |
+   v
 /bootstrap-functional-truth  (when the project needs an initial baseline)
    |
    v
@@ -194,6 +219,8 @@ The following concerns are intentionally outside the 0.1.0 command surface:
 
 RedlineSpec's initial minimum surface is:
 
+- `/redlinespec` to orient and route to the next workflow,
+- `/health-check` to verify installation and documentation health,
 - `/bootstrap-functional-truth` to create or refine the initial functional baseline,
 - `/write-rules` to initialize or maintain persistent project implementation rules,
 - `/interview` to discover and align,

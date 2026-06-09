@@ -6,13 +6,14 @@ print_help() {
 RedlineSpec installer
 
 Usage:
-  bash scripts/install.sh TARGET_PATH [--update] [--update-system] [--harness opencode[,windsurf]]... [--update-harness]
+  bash scripts/install.sh TARGET_PATH [--update] [--update-system] [--harness opencode[,windsurf,pi]]... [--update-harness]
 
 Behavior:
   - TARGET_PATH is required and must point to the destination project repository.
   - This RedlineSpec repository is the source of the installer assets and should stay separate from the destination repository.
   - Creates the canonical .redline/ layout inside the target repository.
   - Copies distributed templates into .redline/system/templates/.
+  - Copies deterministic framework scripts into .redline/system/scripts/.
   - Requires a harness selection for installs, either through --harness or an interactive terminal prompt.
   - In --update mode, detects already installed harness bindings automatically.
   - Copies skills only into harness-visible directories for the selected harnesses.
@@ -23,11 +24,11 @@ Behavior:
 Options:
   --update          Refresh .redline/system/templates/ and all detected installed harness bindings.
                     Does not install new harnesses.
-  --update-system   Refresh .redline/system/templates/ from this RedlineSpec repo.
-                    This may overwrite existing framework-managed template files under .redline/system/templates/.
-  --harness NAME    Install harness bindings. Supported values: opencode, windsurf.
+  --update-system   Refresh .redline/system/templates/ and .redline/system/scripts/ from this RedlineSpec repo.
+                    This may overwrite existing framework-managed files under .redline/system/.
+  --harness NAME    Install harness bindings. Supported values: opencode, windsurf, pi.
                     May be repeated or passed as a comma-separated list.
-                    Harness installation copies skills to native harness skill directories and installs launchers.
+                    Harness installation copies skills to native harness skill directories and installs launchers when applicable.
                     If omitted in an interactive terminal, the installer prompts for a harness.
                     If omitted in a non-interactive shell, installation fails.
   --update-harness  Refresh RedlineSpec-managed harness skills and launchers.
@@ -52,7 +53,7 @@ UPDATE_SYSTEM=0
 UPDATE_HARNESS=0
 TARGET_PATH=""
 SELECTED_HARNESSES=""
-SUPPORTED_HARNESSES="opencode windsurf"
+SUPPORTED_HARNESSES="opencode windsurf pi"
 
 is_supported_harness() {
   local candidate supported
@@ -94,15 +95,16 @@ prompt_for_harness() {
   local choice item selected_count selected_before
 
   if [[ ! -t 0 || ! -t 1 ]]; then
-    fail "Harness selection is required. Pass --harness opencode, --harness windsurf, or repeat --harness for multiple harnesses."
+    fail "Harness selection is required. Pass --harness opencode, --harness windsurf, --harness pi, or repeat --harness for multiple harnesses."
   fi
 
   printf '\nSelect RedlineSpec harness bindings to install. Use comma-separated numbers for multiple choices.\n'
   printf '  1) opencode\n'
   printf '  2) windsurf\n'
+  printf '  3) pi\n'
 
   while true; do
-    printf 'Harnesses [1,2]: '
+    printf 'Harnesses [1,2,3]: '
     read -r choice
     selected_count="$(harness_count)"
     selected_before="$SELECTED_HARNESSES"
@@ -115,8 +117,11 @@ prompt_for_harness() {
         2|windsurf)
           add_harness windsurf
           ;;
+        3|pi)
+          add_harness pi
+          ;;
         *)
-          printf 'Invalid selection: %s. Choose 1, 2, or both as 1,2.\n' "$item" >&2
+          printf 'Invalid selection: %s. Choose 1, 2, 3, or multiple values like 1,3.\n' "$item" >&2
           SELECTED_HARNESSES="$selected_before"
           continue 2
           ;;
@@ -146,7 +151,7 @@ while [[ $# -gt 0 ]]; do
       ;;
     --harness)
       if [[ $# -lt 2 ]]; then
-        fail "--harness requires a value: opencode or windsurf. Repeat the flag or use commas for multiple harnesses."
+        fail "--harness requires a value: opencode, windsurf, or pi. Repeat the flag or use commas for multiple harnesses."
       fi
       add_harness_selection "$2"
       shift 2
@@ -182,6 +187,7 @@ SKILLS_SOURCE_B="$REPO_ROOT/redline-skills"
 HARNESSES_SOURCE="$REPO_ROOT/harnesses"
 FUNCTIONAL_TEMPLATE_SOURCE="$REPO_ROOT/templates/functional.index.template.md"
 RULES_INDEX_TEMPLATE_SOURCE="$REPO_ROOT/templates/rules.index.template.md"
+HEALTH_CHECK_SCRIPT_SOURCE="$REPO_ROOT/scripts/health-check.sh"
 REQUIRED_TEMPLATES=(
   spec.template.md
   plan.template.md
@@ -195,6 +201,7 @@ REQUIRED_TEMPLATES=(
   rule.template.md
 )
 REQUIRED_SKILLS=(
+  redlinespec
   interview
   write-spec
   redlinespec-spec-authoring
@@ -205,6 +212,7 @@ REQUIRED_SKILLS=(
   bootstrap-functional-truth
   close-spec
   merge-functional-truth
+  health-check
 )
 
 [[ -d "$TEMPLATES_SOURCE" ]] || fail "Missing templates source directory: $TEMPLATES_SOURCE"
@@ -213,6 +221,7 @@ REQUIRED_SKILLS=(
 [[ -d "$HARNESSES_SOURCE" ]] || fail "Missing harnesses source directory: $HARNESSES_SOURCE"
 [[ -f "$FUNCTIONAL_TEMPLATE_SOURCE" ]] || fail "Missing functional index template: $FUNCTIONAL_TEMPLATE_SOURCE"
 [[ -f "$RULES_INDEX_TEMPLATE_SOURCE" ]] || fail "Missing rules index template: $RULES_INDEX_TEMPLATE_SOURCE"
+[[ -f "$HEALTH_CHECK_SCRIPT_SOURCE" ]] || fail "Missing health check script: $HEALTH_CHECK_SCRIPT_SOURCE"
 
 for required_template in "${REQUIRED_TEMPLATES[@]}"; do
   [[ -f "$TEMPLATES_SOURCE/$required_template" ]] || fail "Missing required template: $TEMPLATES_SOURCE/$required_template"
@@ -228,6 +237,7 @@ done
 REDLINE_DIR="$TARGET_DIR/.redline"
 SYSTEM_DIR="$REDLINE_DIR/system"
 SYSTEM_TEMPLATES_DIR="$SYSTEM_DIR/templates"
+SYSTEM_SCRIPTS_DIR="$SYSTEM_DIR/scripts"
 PROJECT_DIR="$REDLINE_DIR/project"
 FUNCTIONAL_DIR="$PROJECT_DIR/functional-truth"
 RULES_DIR="$PROJECT_DIR/rules"
@@ -246,6 +256,17 @@ copy_templates_missing_only() {
     fi
   done
   shopt -u nullglob
+}
+
+copy_system_scripts_missing_only() {
+  local dest
+  mkdir -p "$SYSTEM_SCRIPTS_DIR"
+  dest="$SYSTEM_SCRIPTS_DIR/health-check.sh"
+  if [[ ! -e "$dest" ]]; then
+    cp "$HEALTH_CHECK_SCRIPT_SOURCE" "$dest"
+    chmod +x "$dest"
+    log "Copied system script: health-check.sh"
+  fi
 }
 
 copy_skills_to_dir() {
@@ -297,11 +318,14 @@ copy_launchers_to_dir() {
 }
 
 refresh_system() {
-  rm -rf "$SYSTEM_TEMPLATES_DIR"
-  mkdir -p "$SYSTEM_TEMPLATES_DIR"
+  rm -rf "$SYSTEM_TEMPLATES_DIR" "$SYSTEM_SCRIPTS_DIR"
+  mkdir -p "$SYSTEM_TEMPLATES_DIR" "$SYSTEM_SCRIPTS_DIR"
 
   cp "$TEMPLATES_SOURCE"/*.md "$SYSTEM_TEMPLATES_DIR/"
+  cp "$HEALTH_CHECK_SCRIPT_SOURCE" "$SYSTEM_SCRIPTS_DIR/health-check.sh"
+  chmod +x "$SYSTEM_SCRIPTS_DIR/health-check.sh"
   log "Refreshed system templates"
+  log "Refreshed system scripts"
 }
 
 harness_is_installed() {
@@ -320,9 +344,11 @@ harness_is_installed() {
 
   [[ "$HARNESS_ID" == "$harness" ]] || fail "Harness manifest id mismatch for $harness"
   [[ -n "$HARNESS_SKILLS_PATH" ]] || fail "Harness $harness does not define HARNESS_SKILLS_PATH"
-  [[ -n "$HARNESS_LAUNCHERS_PATH" ]] || fail "Harness $harness does not define HARNESS_LAUNCHERS_PATH"
-
-  [[ -e "$TARGET_DIR/$HARNESS_SKILLS_PATH" || -e "$TARGET_DIR/$HARNESS_LAUNCHERS_PATH" ]]
+  if [[ -n "$HARNESS_LAUNCHERS_PATH" ]]; then
+    [[ -e "$TARGET_DIR/$HARNESS_SKILLS_PATH" || -e "$TARGET_DIR/$HARNESS_LAUNCHERS_PATH" ]]
+  else
+    [[ -e "$TARGET_DIR/$HARNESS_SKILLS_PATH" ]]
+  fi
 }
 
 detect_installed_harnesses() {
@@ -352,16 +378,22 @@ install_harness() {
 
   [[ "$HARNESS_ID" == "$harness" ]] || fail "Harness manifest id mismatch for $harness"
   [[ -n "$HARNESS_SKILLS_PATH" ]] || fail "Harness $harness does not define HARNESS_SKILLS_PATH"
-  [[ -n "$HARNESS_LAUNCHERS_PATH" ]] || fail "Harness $harness does not define HARNESS_LAUNCHERS_PATH"
-  [[ -n "$HARNESS_LAUNCHERS_SOURCE" ]] || fail "Harness $harness does not define HARNESS_LAUNCHERS_SOURCE"
+  if [[ -n "$HARNESS_LAUNCHERS_PATH" && -z "$HARNESS_LAUNCHERS_SOURCE" ]]; then
+    fail "Harness $harness defines HARNESS_LAUNCHERS_PATH but not HARNESS_LAUNCHERS_SOURCE"
+  fi
+  if [[ -z "$HARNESS_LAUNCHERS_PATH" && -n "$HARNESS_LAUNCHERS_SOURCE" ]]; then
+    fail "Harness $harness defines HARNESS_LAUNCHERS_SOURCE but not HARNESS_LAUNCHERS_PATH"
+  fi
 
   target_skills_dir="$TARGET_DIR/$HARNESS_SKILLS_PATH"
-  target_launchers_dir="$TARGET_DIR/$HARNESS_LAUNCHERS_PATH"
-  launchers_source_dir="$HARNESSES_SOURCE/$harness/$HARNESS_LAUNCHERS_SOURCE"
 
   log "Installing harness bindings: $harness"
   copy_skills_to_dir "$target_skills_dir" "$UPDATE_HARNESS"
-  copy_launchers_to_dir "$launchers_source_dir" "$target_launchers_dir" "$UPDATE_HARNESS"
+  if [[ -n "$HARNESS_LAUNCHERS_PATH" ]]; then
+    target_launchers_dir="$TARGET_DIR/$HARNESS_LAUNCHERS_PATH"
+    launchers_source_dir="$HARNESSES_SOURCE/$harness/$HARNESS_LAUNCHERS_SOURCE"
+    copy_launchers_to_dir "$launchers_source_dir" "$target_launchers_dir" "$UPDATE_HARNESS"
+  fi
 }
 
 bootstrap_project_files() {
@@ -386,7 +418,7 @@ if [[ -z "$SELECTED_HARNESSES" ]]; then
   if [[ "$UPDATE_HARNESS" -eq 1 ]]; then
     detect_installed_harnesses
     if [[ -z "$SELECTED_HARNESSES" ]]; then
-      fail "No installed harness bindings detected. Pass --harness opencode or --harness windsurf to install one."
+      fail "No installed harness bindings detected. Pass --harness opencode, --harness windsurf, or --harness pi to install one."
     fi
   elif [[ "$UPDATE_SYSTEM" -eq 1 ]]; then
     :
@@ -395,12 +427,13 @@ if [[ -z "$SELECTED_HARNESSES" ]]; then
   fi
 fi
 
-mkdir -p "$SYSTEM_TEMPLATES_DIR" "$FUNCTIONAL_DIR" "$RULES_DIR" "$SPECS_DIR"
+mkdir -p "$SYSTEM_TEMPLATES_DIR" "$SYSTEM_SCRIPTS_DIR" "$FUNCTIONAL_DIR" "$RULES_DIR" "$SPECS_DIR"
 
 if [[ "$UPDATE_SYSTEM" -eq 1 ]]; then
   refresh_system
 else
   copy_templates_missing_only
+  copy_system_scripts_missing_only
 fi
 
 bootstrap_project_files

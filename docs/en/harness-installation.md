@@ -120,7 +120,7 @@ bash scripts/install.sh TARGET_PATH
 Scripted and non-interactive installation must pass a harness explicitly:
 
 ```bash
-bash scripts/install.sh TARGET_PATH [--update] [--update-system] [--harness opencode[,windsurf]]... [--update-harness]
+bash scripts/install.sh TARGET_PATH [--update] [--update-system] [--harness opencode[,windsurf,pi]]... [--update-harness]
 ```
 
 This avoids successful but unusable installations. A project must always receive at least one harness binding set.
@@ -131,7 +131,7 @@ This avoids successful but unusable installations. A project must always receive
 
 Keeping a second skill copy there gives conceptual completeness, but it is not operationally useful once harness-visible skill installation exists.
 
-No current supported harness invokes skills from `.redline/system/skills/` by default. If we copy skills there and also into `.opencode/skills/` or `.windsurf/skills/`, the target repository gets duplicate framework code and the copies can drift.
+No current supported harness invokes skills from `.redline/system/skills/` by default. If we copy skills there and also into `.opencode/skills/`, `.windsurf/skills/`, or `.pi/skills/`, the target repository gets duplicate framework code and the copies can drift.
 
 The target model is:
 
@@ -170,7 +170,15 @@ launchers:
   source_path: harnesses/windsurf/workflows
 ```
 
-This model scales because adding a future harness becomes adding an adapter entry and artifact templates, not changing the core installer model.
+```yaml
+id: pi
+skills:
+  format: agent-skills
+  project_path: .pi/skills
+launchers: null
+```
+
+This model scales because adding a future harness becomes adding an adapter entry and artifact templates when the harness needs them, not changing the core installer model.
 
 ## Skill Placement Options
 
@@ -202,7 +210,16 @@ For Windsurf:
     write-spec.md
 ```
 
-If both harnesses are installed, the same skill is copied to both native locations.
+For Pi:
+
+```txt
+.pi/
+  skills/
+    write-spec/
+      SKILL.md
+```
+
+If multiple harnesses are installed, the same skill is copied to each native location.
 
 Pros:
 
@@ -237,7 +254,7 @@ For OpenCode and Windsurf together:
 Pros:
 
 - avoids skill duplication for harnesses that support `.agents/skills/`,
-- works for the first two harnesses,
+- works for harnesses that implement the shared convention,
 - keeps one harness-visible skill copy.
 
 Cons:
@@ -260,14 +277,16 @@ The folders have different roles:
 - `.opencode/commands/`: OpenCode slash-command launchers.
 - `.windsurf/skills/`: Windsurf-native skill location.
 - `.windsurf/workflows/`: Windsurf slash-command workflow launchers.
-- `.agents/skills/`: optional shared skill location supported by OpenCode and Windsurf, useful only when the installer intentionally chooses a shared strategy.
+- `.pi/skills/`: Pi-native project skill location. Pi discovers these skills and can expose them as `/skill:name` commands.
+- `.agents/skills/`: optional shared skill location supported by some harnesses, including Pi, useful only when the installer intentionally chooses a shared strategy.
 
 So the default native install is:
 
 - `--harness opencode`: install skills in `.opencode/skills/` and commands in `.opencode/commands/`.
 - `--harness windsurf`: install skills in `.windsurf/skills/` and workflows in `.windsurf/workflows/`.
+- `--harness pi`: install skills in `.pi/skills/`; no launcher files are required.
 - `--harness opencode --harness windsurf`: install both selected harnesses.
-- `--harness opencode,windsurf`: equivalent comma-separated form.
+- `--harness opencode,windsurf,pi`: equivalent comma-separated form.
 
 An optional shared install would be:
 
@@ -282,6 +301,8 @@ Install command files to:
 ```txt
 .opencode/
   skills/
+    redlinespec/
+    health-check/
     bootstrap-functional-truth/
     interview/
     write-spec/
@@ -293,6 +314,8 @@ Install command files to:
     merge-functional-truth/
     redlinespec-spec-authoring/
   commands/
+    redlinespec.md
+    health-check.md
     bootstrap-functional-truth.md
     interview.md
     write-spec.md
@@ -329,6 +352,8 @@ Install workflow files to:
 ```txt
 .windsurf/
   skills/
+    redlinespec/
+    health-check/
     bootstrap-functional-truth/
     interview/
     write-spec/
@@ -340,6 +365,8 @@ Install workflow files to:
     merge-functional-truth/
     redlinespec-spec-authoring/
   workflows/
+    redlinespec.md
+    health-check.md
     bootstrap-functional-truth.md
     interview.md
     write-spec.md
@@ -378,6 +405,8 @@ harnesses/
   opencode/
     manifest.sh
     commands/
+      redlinespec.md
+      health-check.md
       bootstrap-functional-truth.md
       interview.md
       write-spec.md
@@ -390,6 +419,8 @@ harnesses/
   windsurf/
     manifest.sh
     workflows/
+      redlinespec.md
+      health-check.md
       bootstrap-functional-truth.md
       interview.md
       write-spec.md
@@ -423,9 +454,10 @@ Extend `scripts/install.sh` with these concepts.
 ```txt
 --harness opencode       Install OpenCode bindings.
 --harness windsurf       Install Windsurf bindings.
---harness opencode,windsurf
+--harness pi             Install Pi bindings.
+--harness opencode,windsurf,pi
                          Install multiple harness bindings.
---update                 Refresh templates and all detected installed harness bindings.
+--update                 Refresh templates, system scripts, and all detected installed harness bindings.
 --update-harness         Refresh harness binding files managed by RedlineSpec.
 ```
 
@@ -436,6 +468,7 @@ Optional aliases can be added later if needed:
 ```txt
 --opencode
 --windsurf
+--pi
 ```
 
 Avoid aliases in the first implementation unless there is an explicit UX need.
@@ -456,6 +489,12 @@ When `--harness windsurf` is used, create:
 .windsurf/workflows/
 ```
 
+When `--harness pi` is used, create:
+
+```txt
+.pi/skills/
+```
+
 ### Copy policy
 
 Default harness install:
@@ -463,10 +502,11 @@ Default harness install:
 - copy missing native harness skill folders only,
 - copy missing `.opencode/commands/*.md` files only,
 - copy missing `.windsurf/workflows/*.md` files only.
+- skip launcher copying for harnesses such as Pi that invoke discovered skills directly.
 
 With `--update`:
 
-- refresh `.redline/system/templates/`,
+- refresh `.redline/system/templates/` and `.redline/system/scripts/`,
 - detect installed harnesses from their native paths,
 - refresh RedlineSpec-managed files for the detected harnesses only,
 - do not install new harnesses that are not already present.
@@ -477,7 +517,7 @@ With `--update-harness`:
 - if no harness is selected, detect installed harnesses and refresh those only,
 - do not remove unrelated user-defined skills, commands, or workflows.
 
-Avoid deleting entire `.opencode/`, `.windsurf/`, `.agents/`, or future harness directories because they may contain user-managed files.
+Avoid deleting entire `.opencode/`, `.windsurf/`, `.pi/`, `.agents/`, or future harness directories because they may contain user-managed files.
 
 ### Managed file safety
 
@@ -485,7 +525,9 @@ The safest first implementation is to overwrite only exact RedlineSpec artifact 
 
 - known RedlineSpec skill names from `REQUIRED_SKILLS`,
 - known OpenCode command file names,
-- known Windsurf workflow file names.
+- known Windsurf workflow file names,
+- known deterministic scripts under `.redline/system/scripts/` during system updates.
+- no Pi launcher file names, because Pi uses discovered skills directly.
 
 Do not attempt broad directory cleanup.
 
@@ -497,7 +539,7 @@ Update `docs/en/installation.md` with:
 - non-interactive install requires `--harness`,
 - harness install examples,
 - generated target layouts,
-- overwrite behavior for `--update`, `--update-system`, and `--update-harness`,
+- overwrite behavior for `--update`, `--update-system`, and `--update-harness`, including system scripts,
 - explicit note that harness-visible skills are the operational copies invoked by agents,
 - explicit note that `.redline/system/skills/` is not installed by default and should not be treated as the invocation path.
 
@@ -506,8 +548,9 @@ Update `README.md` with short examples:
 ```bash
 bash scripts/install.sh ~/work/my-project --harness opencode
 bash scripts/install.sh ~/work/my-project --harness windsurf
+bash scripts/install.sh ~/work/my-project --harness pi
 bash scripts/install.sh ~/work/my-project --harness opencode --harness windsurf
-bash scripts/install.sh ~/work/my-project --harness opencode,windsurf
+bash scripts/install.sh ~/work/my-project --harness opencode,windsurf,pi
 bash scripts/install.sh ~/work/my-project --update
 ```
 

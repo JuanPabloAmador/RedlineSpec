@@ -4,26 +4,44 @@ This document defines the target structure and behavior of RedlineSpec's bash in
 
 The installer creates RedlineSpec project state, installs framework templates, and can optionally install harness-native bindings for supported agents.
 
-The current implementation lives in:
+The current local installer implementation lives in:
 
 - `scripts/install.sh`
 
-Current usage:
+The remote bootstrap installer lives in:
+
+- `scripts/install-remote.sh`
+
+Local usage:
 
 ```bash
-bash scripts/install.sh TARGET_PATH [--update] [--update-system] [--harness opencode[,windsurf]]... [--update-harness]
+bash scripts/install.sh TARGET_PATH [--update] [--update-system] [--harness opencode[,windsurf,pi]]... [--update-harness]
 ```
 
-`TARGET_PATH` is required.
+Remote usage:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/JuanPabloAmador/RedlineSpec/main/scripts/install-remote.sh | bash -s -- [TARGET_PATH] [install options]
+```
+
+For the local installer, `TARGET_PATH` is required. For the remote installer, `TARGET_PATH` defaults to the current directory when omitted or when the first argument is an option.
 
 A harness selection is also required. In an interactive terminal, the installer prompts for one when `--harness` is omitted. In non-interactive shells, `--harness` must be passed explicitly.
 
-The expected model is:
+The supported models are:
 
-- clone RedlineSpec into a separate location,
-- and run the installer while explicitly pointing to the destination repository.
+- run the remote installer directly from GitHub, or
+- clone RedlineSpec into a separate location and run the local installer while explicitly pointing to the destination repository.
 
-Example:
+Remote examples:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/JuanPabloAmador/RedlineSpec/main/scripts/install-remote.sh | bash -s -- --harness pi
+curl -fsSL https://raw.githubusercontent.com/JuanPabloAmador/RedlineSpec/main/scripts/install-remote.sh | bash -s -- ~/work/my-project --harness opencode
+REDLINESPEC_REF=v0.2.0 curl -fsSL https://raw.githubusercontent.com/JuanPabloAmador/RedlineSpec/main/scripts/install-remote.sh | bash -s -- --harness opencode
+```
+
+Local clone example:
 
 ```bash
 git clone <redlinespec-repo> ~/tools/RedlineSpec
@@ -34,15 +52,17 @@ For scripts and CI, use an explicit harness:
 
 ```bash
 bash ~/tools/RedlineSpec/scripts/install.sh ~/work/my-project --harness opencode
+bash ~/tools/RedlineSpec/scripts/install.sh ~/work/my-project --harness pi
 ```
 
-RedlineSpec acts as the source repository for the installer. It must not be embedded inside the user's destination repository.
+When using a local clone, RedlineSpec acts as the source repository for the installer. It must not be embedded inside the user's destination repository. When using the remote installer, the source archive is downloaded to a temporary directory and removed after installation.
 
 ## 1. Script goal
 
 The installation script must leave the project with a canonical `.redline/` structure, separating:
 
 - framework-distributed templates,
+- deterministic framework scripts,
 - and project documents.
 
 The target root is:
@@ -51,6 +71,7 @@ The target root is:
 .redline/
   system/
     templates/
+    scripts/
   project/
     functional-truth/
     rules/
@@ -79,6 +100,7 @@ The script must create, at minimum:
 .redline/
   system/
     templates/
+    scripts/
   project/
     functional-truth/
     rules/
@@ -107,6 +129,14 @@ Currently includes at minimum:
 - `rule.template.md`
 
 The installer validates that the templates required by the minimum flow exist in the source repository before copying assets into the destination project.
+
+#### `.redline/system/scripts/`
+
+Must receive deterministic framework scripts available from the framework.
+
+Currently includes:
+
+- `health-check.sh`
 
 #### Skills
 
@@ -185,12 +215,17 @@ Using this framework repository as the source, the installation script should ap
 - `templates/rules.index.template.md` -> `.redline/system/templates/rules.index.template.md`
 - `templates/rule.template.md` -> `.redline/system/templates/rule.template.md`
 
+### System scripts
+
+- `scripts/health-check.sh` -> `.redline/system/scripts/health-check.sh`
+
 ### Skills
 
 Skills are copied only when a harness is selected.
 
 For OpenCode:
 
+- `skills/redlinespec/` -> `.opencode/skills/redlinespec/`
 - `skills/interview/` -> `.opencode/skills/interview/`
 - `redline-skills/write-spec/` -> `.opencode/skills/write-spec/`
 - `redline-skills/redlinespec-spec-authoring/` -> `.opencode/skills/redlinespec-spec-authoring/`
@@ -201,9 +236,11 @@ For OpenCode:
 - `redline-skills/bootstrap-functional-truth/` -> `.opencode/skills/bootstrap-functional-truth/`
 - `redline-skills/close-spec/` -> `.opencode/skills/close-spec/`
 - `redline-skills/merge-functional-truth/` -> `.opencode/skills/merge-functional-truth/`
+- `redline-skills/health-check/` -> `.opencode/skills/health-check/`
 
 For Windsurf:
 
+- `skills/redlinespec/` -> `.windsurf/skills/redlinespec/`
 - `skills/interview/` -> `.windsurf/skills/interview/`
 - `redline-skills/write-spec/` -> `.windsurf/skills/write-spec/`
 - `redline-skills/redlinespec-spec-authoring/` -> `.windsurf/skills/redlinespec-spec-authoring/`
@@ -214,6 +251,22 @@ For Windsurf:
 - `redline-skills/bootstrap-functional-truth/` -> `.windsurf/skills/bootstrap-functional-truth/`
 - `redline-skills/close-spec/` -> `.windsurf/skills/close-spec/`
 - `redline-skills/merge-functional-truth/` -> `.windsurf/skills/merge-functional-truth/`
+- `redline-skills/health-check/` -> `.windsurf/skills/health-check/`
+
+For Pi:
+
+- `skills/redlinespec/` -> `.pi/skills/redlinespec/`
+- `skills/interview/` -> `.pi/skills/interview/`
+- `redline-skills/write-spec/` -> `.pi/skills/write-spec/`
+- `redline-skills/redlinespec-spec-authoring/` -> `.pi/skills/redlinespec-spec-authoring/`
+- `redline-skills/write-plan/` -> `.pi/skills/write-plan/`
+- `redline-skills/write-tasks/` -> `.pi/skills/write-tasks/`
+- `redline-skills/write-rules/` -> `.pi/skills/write-rules/`
+- `redline-skills/implement/` -> `.pi/skills/implement/`
+- `redline-skills/bootstrap-functional-truth/` -> `.pi/skills/bootstrap-functional-truth/`
+- `redline-skills/close-spec/` -> `.pi/skills/close-spec/`
+- `redline-skills/merge-functional-truth/` -> `.pi/skills/merge-functional-truth/`
+- `redline-skills/health-check/` -> `.pi/skills/health-check/`
 
 If the framework adds new skills or templates, this map must be expanded through the source skill directories and harness adapter manifests.
 
@@ -227,13 +280,15 @@ Windsurf launchers are copied from:
 
 - `harnesses/windsurf/workflows/` -> `.windsurf/workflows/`
 
+Pi does not require RedlineSpec launchers. Pi discovers project skills from `.pi/skills/` and registers them as `/skill:name` commands when skill commands are enabled.
+
 ## 6. Recommended overwrite policy
 
 The installer should follow this default policy:
 
 - create missing folders,
 - copy `system` templates when they do not exist,
-- allow an explicit `--update-system` mode to refresh `.redline/system/templates/`,
+- allow an explicit `--update-system` mode to refresh `.redline/system/templates/` and `.redline/system/scripts/`,
 - allow an explicit `--update` mode to refresh templates and all detected harness-native bindings,
 - allow an explicit `--update-harness` mode to refresh selected or detected harness-native skills and launchers,
 - treat `.redline/system/templates/` and selected harness binding folders as framework-managed areas for RedlineSpec artifact names,
@@ -268,6 +323,8 @@ After a correct minimum installation, the repository should look at least like t
       functional.global.entry.template.md
       rules.index.template.md
       rule.template.md
+    scripts/
+      health-check.sh
   project/
     functional-truth/
       functional.index.md
@@ -276,7 +333,38 @@ After a correct minimum installation, the repository should look at least like t
     specs/
 ```
 
-## 9. Harness installation
+## 9. Remote installation
+
+The remote installer is a small bootstrap script intended for `curl | bash` usage. It does not contain the full framework. Instead, it:
+
+1. downloads a RedlineSpec source archive from GitHub,
+2. extracts it into a temporary directory,
+3. runs the normal `scripts/install.sh`,
+4. removes the temporary source directory.
+
+The default source is:
+
+```txt
+https://github.com/JuanPabloAmador/RedlineSpec
+```
+
+The default ref is:
+
+```txt
+main
+```
+
+Override them with environment variables:
+
+```bash
+REDLINESPEC_REPO_URL=https://github.com/JuanPabloAmador/RedlineSpec \
+REDLINESPEC_REF=v0.2.0 \
+curl -fsSL https://raw.githubusercontent.com/JuanPabloAmador/RedlineSpec/main/scripts/install-remote.sh | bash -s -- --harness pi
+```
+
+For reproducibility, prefer pinning `REDLINESPEC_REF` to a tag or commit in automation.
+
+## 10. Harness installation
 
 Harness bindings are installed only when requested.
 
@@ -285,8 +373,9 @@ Examples:
 ```bash
 bash scripts/install.sh ~/work/my-project --harness opencode
 bash scripts/install.sh ~/work/my-project --harness windsurf
+bash scripts/install.sh ~/work/my-project --harness pi
 bash scripts/install.sh ~/work/my-project --harness opencode --harness windsurf
-bash scripts/install.sh ~/work/my-project --harness opencode,windsurf
+bash scripts/install.sh ~/work/my-project --harness opencode,windsurf,pi
 ```
 
 To refresh an already installed project, including templates and all detected harness bindings:
@@ -308,6 +397,7 @@ When `--update-harness` is used without `--harness`, the installer detects insta
 ```txt
 .opencode/
   skills/
+    redlinespec/
     interview/
     write-spec/
     redlinespec-spec-authoring/
@@ -318,7 +408,10 @@ When `--update-harness` is used without `--harness`, the installer detects insta
     bootstrap-functional-truth/
     close-spec/
     merge-functional-truth/
+    health-check/
   commands/
+    redlinespec.md
+    health-check.md
     bootstrap-functional-truth.md
     interview.md
     write-spec.md
@@ -335,6 +428,7 @@ When `--update-harness` is used without `--harness`, the installer detects insta
 ```txt
 .windsurf/
   skills/
+    redlinespec/
     interview/
     write-spec/
     redlinespec-spec-authoring/
@@ -345,7 +439,10 @@ When `--update-harness` is used without `--harness`, the installer detects insta
     bootstrap-functional-truth/
     close-spec/
     merge-functional-truth/
+    health-check/
   workflows/
+    redlinespec.md
+    health-check.md
     bootstrap-functional-truth.md
     interview.md
     write-spec.md
@@ -357,7 +454,26 @@ When `--update-harness` is used without `--harness`, the installer detects insta
     merge-functional-truth.md
 ```
 
-## 10. Current scope of this document
+### Pi result
+
+```txt
+.pi/
+  skills/
+    redlinespec/
+    interview/
+    write-spec/
+    redlinespec-spec-authoring/
+    write-plan/
+    write-tasks/
+    write-rules/
+    implement/
+    bootstrap-functional-truth/
+    close-spec/
+    merge-functional-truth/
+    health-check/
+```
+
+## 11. Current scope of this document
 
 This document establishes the structure and behavior of the current bash installer.
 
