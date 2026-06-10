@@ -6,9 +6,9 @@ It organizes product change around a living functional truth, temporary change c
 
 ## Status
 
-Current version: `0.4.0`
+Current version: `0.4.1`
 
-This release adds shared `.agents/skills/` harness support, Pi harness support, framework orientation, and health-check workflows. The framework is still early and may change before `1.0.0`.
+This release adds temporary spec consolidation notes for functional discoveries during planning, task decomposition, and implementation. The framework is still early and may change before `1.0.0`.
 
 ## Core Model
 
@@ -42,6 +42,13 @@ The distributed Agent Skills cover the current RedlineSpec lifecycle:
 
 ## Installation
 
+There are two common operations:
+
+1. **First install:** choose the harness or harnesses you want RedlineSpec to expose skills to.
+2. **Update an existing install:** refresh RedlineSpec system templates, scripts, and every already installed harness binding.
+
+### First install: choose a harness
+
 Install directly from GitHub into the current project, choosing the concrete harness command:
 
 | Harness | Command |
@@ -51,6 +58,8 @@ Install directly from GitHub into the current project, choosing the concrete har
 | OpenCode | `curl -fsSL https://raw.githubusercontent.com/JuanPabloAmador/RedlineSpec/main/scripts/install-remote.sh \| bash -s -- --harness opencode` |
 | Pi | `curl -fsSL https://raw.githubusercontent.com/JuanPabloAmador/RedlineSpec/main/scripts/install-remote.sh \| bash -s -- --harness pi` |
 | Claude | `curl -fsSL https://raw.githubusercontent.com/JuanPabloAmador/RedlineSpec/main/scripts/install-remote.sh \| bash -s -- --harness claude` |
+
+The first install is non-destructive for existing framework files: it copies missing templates, scripts, project bootstrap files, and selected harness skills. It does not refresh already existing RedlineSpec files unless you use an update flag.
 
 To install into an explicit target path, put the target path before the harness flag. Example:
 
@@ -76,16 +85,32 @@ bash scripts/install.sh TARGET_PATH --harness devin,opencode
 bash scripts/install.sh TARGET_PATH --harness opencode,pi
 ```
 
-To refresh an already installed project, including templates and all detected harness bindings:
+### Update an existing install
+
+For an already installed project, the usual command is `--update`. It refreshes `.redline/system/templates/`, `.redline/system/scripts/`, and all detected installed harness bindings:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/JuanPabloAmador/RedlineSpec/main/scripts/install-remote.sh | bash -s -- --update
+```
+
+From a local clone:
 
 ```bash
 bash scripts/install.sh TARGET_PATH --update
 ```
 
-To refresh only one specific harness binding:
+If you want to refresh only one specific harness binding, use `--update-harness` with `--harness`:
 
 ```bash
+curl -fsSL https://raw.githubusercontent.com/JuanPabloAmador/RedlineSpec/main/scripts/install-remote.sh | bash -s -- --harness opencode --update-harness
 bash scripts/install.sh TARGET_PATH --harness opencode --update-harness
+```
+
+If you want to refresh only system templates and scripts, without touching harness skills:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/JuanPabloAmador/RedlineSpec/main/scripts/install-remote.sh | bash -s -- --update-system
+bash scripts/install.sh TARGET_PATH --update-system
 ```
 
 The installer creates the canonical `.redline/` project layout, copies templates into `.redline/system/templates/`, copies deterministic scripts into `.redline/system/scripts/`, initializes `functional.index.md` and `rules.index.md` when missing, and does not create fake change artifacts. Skills are installed into effective harness-visible folders for the selected harnesses: shared `.agents/skills/` once for `devin`, `codex`, `opencode`, and `pi`, plus Claude’s private path `.claude/skills/` when selected.
@@ -106,4 +131,4 @@ Start with:
 
 RedlineSpec uses SemVer.
 
-Version `0.4.0` normalizes RedlineSpec around portable Agent Skills, removes slash-command launcher assets from current harness installs, and adds deterministic skill frontmatter validation. Breaking changes may still happen while the framework remains below `1.0.0`.
+Version `0.4.1` adds temporary spec consolidation notes for functional discoveries that appear after a spec is ready. Breaking changes may still happen while the framework remains below `1.0.0`.
