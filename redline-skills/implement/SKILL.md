@@ -44,7 +44,7 @@ It does not redesign the Plan.
 
 It does not update functional truth.
 
-It does not update the final implemented Spec.
+It does not update the final implemented Spec, except for adding temporary `Consolidation Notes` when implementation reveals a new functional decision, functional difference, or discovered behavior that affects the source Spec.
 
 ## Core Model
 
@@ -91,6 +91,8 @@ Always apply these rules:
 18. Never modify a task with `status: done` except when reading it to derive state. If a completed task is affected by later redesign, that redesign must add a new adjustment task through the appropriate workflow.
 19. Do not introduce dependencies unless the selected task explicitly permits that dependency work or the task itself is a dependency/setup task.
 20. Do not change public signatures, shapes, architecture, functional behavior, dependencies, or files outside `Change Scope` unless explicitly allowed by the task contract.
+21. If implementation reveals a functional difference, missing functional decision, or behavior that differs from the task/spec contract: do not silently normalize it. If it is only a technical implementation detail with no functional impact, do not add it to the Spec. If it is a functional refinement that has been accepted by the user or is clearly required by repository reality, add a `CN-*` entry to the source Spec's `## Consolidation Notes`. If it is a material functional change requiring product judgment, block and ask the human.
+22. When adding a Consolidation Note, use this format: `- **CN-N:** Concise functional decision or discovery.`, followed by `Origin:` and `Impact:` sub-bullets. If the section does not exist, insert it between `## Global Constraints and Conditions` and `## Functional Blocks`. If it already exists, append the next `CN-*` entry.
 
 ## When To Use This Skill
 
@@ -354,7 +356,7 @@ Do not:
 - mark a task `done` without verifying its contract,
 - mark a phase `done` without phase functional verification,
 - add evidence/log/result sections to task files,
-- update the final Spec,
+- update the final Spec (except adding temporary Consolidation Notes as allowed by rules 21-22 above),
 - update functional truth,
 - edit the Plan,
 - create or rewrite task contracts,

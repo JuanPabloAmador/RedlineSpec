@@ -7,6 +7,17 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 
 ## [Unreleased]
 
+## [0.4.1] - 2026-06-10
+
+### Added
+
+- Added temporary `Consolidation Notes` guidance for specs to capture functional discoveries during planning, task decomposition, and implementation.
+
+### Changed
+
+- Updated `close-spec` to process and remove active `Consolidation Notes` while closing implemented specs.
+- Updated `write-plan`, `write-tasks`, and `implement` to add temporary consolidation notes only for functional discoveries.
+
 ## [0.4.0] - 2026-06-10
 
 ### Added

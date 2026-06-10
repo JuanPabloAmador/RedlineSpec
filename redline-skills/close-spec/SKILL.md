@@ -177,13 +177,27 @@ For each functional block:
 - identify any proposed behavior that is missing,
 - identify any implemented behavior that should be reflected in the spec.
 
-Classify differences as:
+For each difference, decide whether it has functional impact:
 
-- `non-functional`: implementation detail only; do not put it in the spec,
-- `accepted-functional`: behavior differs but is acceptable as final product truth,
-- `blocking-functional`: behavior differs and cannot be accepted without user decision or more implementation.
+- ignore implementation details with no functional impact,
+- reflect verified functional differences in the spec only when they are acceptable as final product truth,
+- block and ask the human when a material functional difference requires product judgment.
 
 Ask the human before treating a material functional difference as accepted.
+
+### Step 5.5: Process Consolidation Notes
+
+If the spec contains an active, uncommented `## Consolidation Notes` section:
+
+1. Read each real `CN-*` entry. Ignore the commented template guidance block if no real notes were added.
+2. Verify each note against implemented evidence.
+3. For each note:
+   - If it represents a functional difference or refinement that is present in the implementation, transfer it to `Relevant Differences from Proposed Change` and update affected FB/FR content if needed.
+   - If it is only technical or implementation detail with no functional impact, discard it.
+   - If it represents a material functional decision that cannot be accepted without human confirmation, block and ask the human before proceeding.
+4. Remove the entire `## Consolidation Notes` section from the closed spec.
+
+If no active, uncommented `## Consolidation Notes` section exists, skip this step.
 
 ### Step 6: Update the spec
 
@@ -194,6 +208,7 @@ Required changes:
 - set frontmatter `status: implemented`,
 - update `affects` to final impacted functional truth files,
 - remove `Pending to Reach Ready`,
+- remove `Consolidation Notes` after processing them,
 - keep or refine `Functional Blocks` so they describe the implemented functional truth of the change,
 - add `Implemented Result`,
 - add `Implementation Summary`,
@@ -220,6 +235,7 @@ Before finishing, verify:
 - `Relevant Differences from Proposed Change` exists,
 - `Impact on Functional Truth` exists,
 - `Pending to Reach Ready` is absent,
+- `Consolidation Notes` were processed or absent,
 - no unresolved functional ambiguity remains,
 - final `affects` and `Impact on Functional Truth` align,
 - the spec remains functional, not technical.
@@ -257,5 +273,6 @@ Before finishing, confirm all of these:
 - No application code was modified.
 - No functional truth was modified.
 - Material functional differences were accepted by the human or blocked.
+- Consolidation Notes were checked and processed or were absent.
 - The spec has `status: implemented` only if evidence was sufficient.
 - `Impact on Functional Truth` is ready for `merge-functional-truth`.

@@ -80,6 +80,9 @@ Always apply these rules:
 18. The index references rules; task files expand only the relevant rule content needed for that task.
 19. Do not taskify final functional truth consolidation.
 20. Never overwrite a task file with `status: done`.
+21. If task decomposition reveals a new functional decision, functional gap, or discovered behavior that affects the source Spec, add or update a temporary `## Consolidation Notes` section in the source Spec with a concise `CN-*` entry.
+22. Use Consolidation Notes only for functional discoveries. Do not use them for task sequencing, implementation details, technical shortcuts, or execution notes.
+23. When adding a Consolidation Note, use this format: `- **CN-N:** Concise functional decision or discovery.`, followed by `Origin:` and `Impact:` sub-bullets. If the section does not exist, insert it between `## Global Constraints and Conditions` and `## Functional Blocks`. If it already exists, append the next `CN-*` entry.
 
 ## When To Use This Skill
 

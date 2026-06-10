@@ -74,6 +74,9 @@ Always apply these rules:
 20. Do not include code bodies or pseudocode-heavy implementations.
 21. Prefer signatures, shapes, responsibilities, and dependencies over internal algorithm narration.
 22. Inspect the real repository before claiming affected areas or artifacts.
+23. If planning reveals a new functional decision, functional constraint, or discovered behavior that changes or refines the source Spec, do not hide it in the Plan as a technical decision. Add or update a temporary `## Consolidation Notes` section in the source Spec with a concise `CN-*` entry.
+24. Use Consolidation Notes only for functional discoveries. Technical decisions remain in the Plan.
+25. When adding a Consolidation Note, use this format: `- **CN-N:** Concise functional decision or discovery.`, followed by `Origin:` and `Impact:` sub-bullets. If the section does not exist, insert it between `## Global Constraints and Conditions` and `## Functional Blocks`. If it already exists, append the next `CN-*` entry.
 
 ## When To Use This Skill
 

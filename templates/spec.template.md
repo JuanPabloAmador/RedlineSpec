@@ -40,6 +40,18 @@ affects:
 
 <!-- Omit if not applicable -->
 
+<!--
+## Consolidation Notes
+
+Temporary section. Add only after the spec is ready or during planning, task decomposition, or implementation when a new functional decision or discovery appears that differs from or refines the proposed spec.
+
+Remove on close-spec after transferring relevant functional outcomes to Implemented Result.
+
+- **CN-1:** {{Concise functional decision or discovery}}
+  - Origin: {{Interview, code discovery, agent discussion, planning, task decomposition, etc.}}
+  - Impact: {{Which FB/FR does this affect, or is it cross-cutting?}}
+-->
+
 ## Functional Blocks
 
 ### FB-1. {{Block title}}
