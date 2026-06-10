@@ -15,7 +15,7 @@ The remote bootstrap installer lives in:
 Local usage:
 
 ```bash
-bash scripts/install.sh TARGET_PATH [--update] [--update-system] [--harness opencode[,windsurf,pi]]... [--update-harness]
+bash scripts/install.sh TARGET_PATH [--update] [--update-system] [--harness devin[,codex,opencode,pi,claude]]... [--update-harness]
 ```
 
 Remote usage:
@@ -51,6 +51,7 @@ bash ~/tools/RedlineSpec/scripts/install.sh ~/work/my-project
 For scripts and CI, use an explicit harness:
 
 ```bash
+bash ~/tools/RedlineSpec/scripts/install.sh ~/work/my-project --harness devin
 bash ~/tools/RedlineSpec/scripts/install.sh ~/work/my-project --harness opencode
 bash ~/tools/RedlineSpec/scripts/install.sh ~/work/my-project --harness pi
 ```
@@ -147,7 +148,7 @@ The canonical skill source remains the RedlineSpec distribution repository or pa
 - `skills/`
 - `redline-skills/`
 
-When a harness is selected, the installer copies those skills into the harness-native skill folder where that agent can discover and invoke them.
+When a harness is selected, the installer copies those skills into the effective skill folder where that agent can discover and invoke them. Shared Agent Skills harnesses install one deduplicated copy into `.agents/skills/`; private-path harnesses install into their own directories.
 
 ### 3.2 `.redline/project/`
 
@@ -221,66 +222,41 @@ Using this framework repository as the source, the installation script should ap
 
 ### Skills
 
-Skills are copied only when a harness is selected.
+Skills are copied only when a harness is selected. The installer resolves selected harnesses to effective skill destinations and copies each destination once.
 
-For OpenCode:
+Shared Agent Skills group (`devin`, `codex`, `opencode`, `pi`):
 
-- `skills/redlinespec/` -> `.opencode/skills/redlinespec/`
-- `skills/interview/` -> `.opencode/skills/interview/`
-- `redline-skills/write-spec/` -> `.opencode/skills/write-spec/`
-- `redline-skills/redlinespec-spec-authoring/` -> `.opencode/skills/redlinespec-spec-authoring/`
-- `redline-skills/write-plan/` -> `.opencode/skills/write-plan/`
-- `redline-skills/write-tasks/` -> `.opencode/skills/write-tasks/`
-- `redline-skills/write-rules/` -> `.opencode/skills/write-rules/`
-- `redline-skills/implement/` -> `.opencode/skills/implement/`
-- `redline-skills/bootstrap-functional-truth/` -> `.opencode/skills/bootstrap-functional-truth/`
-- `redline-skills/close-spec/` -> `.opencode/skills/close-spec/`
-- `redline-skills/merge-functional-truth/` -> `.opencode/skills/merge-functional-truth/`
-- `redline-skills/health-check/` -> `.opencode/skills/health-check/`
+- `skills/redlinespec/` -> `.agents/skills/redlinespec/`
+- `skills/interview/` -> `.agents/skills/interview/`
+- `redline-skills/write-spec/` -> `.agents/skills/write-spec/`
+- `redline-skills/write-plan/` -> `.agents/skills/write-plan/`
+- `redline-skills/write-tasks/` -> `.agents/skills/write-tasks/`
+- `redline-skills/write-rules/` -> `.agents/skills/write-rules/`
+- `redline-skills/implement/` -> `.agents/skills/implement/`
+- `redline-skills/bootstrap-functional-truth/` -> `.agents/skills/bootstrap-functional-truth/`
+- `redline-skills/close-spec/` -> `.agents/skills/close-spec/`
+- `redline-skills/merge-functional-truth/` -> `.agents/skills/merge-functional-truth/`
+- `redline-skills/health-check/` -> `.agents/skills/health-check/`
 
-For Windsurf:
+Private-path harnesses use the same skill set with their own destination prefix:
 
-- `skills/redlinespec/` -> `.windsurf/skills/redlinespec/`
-- `skills/interview/` -> `.windsurf/skills/interview/`
-- `redline-skills/write-spec/` -> `.windsurf/skills/write-spec/`
-- `redline-skills/redlinespec-spec-authoring/` -> `.windsurf/skills/redlinespec-spec-authoring/`
-- `redline-skills/write-plan/` -> `.windsurf/skills/write-plan/`
-- `redline-skills/write-tasks/` -> `.windsurf/skills/write-tasks/`
-- `redline-skills/write-rules/` -> `.windsurf/skills/write-rules/`
-- `redline-skills/implement/` -> `.windsurf/skills/implement/`
-- `redline-skills/bootstrap-functional-truth/` -> `.windsurf/skills/bootstrap-functional-truth/`
-- `redline-skills/close-spec/` -> `.windsurf/skills/close-spec/`
-- `redline-skills/merge-functional-truth/` -> `.windsurf/skills/merge-functional-truth/`
-- `redline-skills/health-check/` -> `.windsurf/skills/health-check/`
+- Claude -> `.claude/skills/`
 
-For Pi:
+Examples:
 
-- `skills/redlinespec/` -> `.pi/skills/redlinespec/`
-- `skills/interview/` -> `.pi/skills/interview/`
-- `redline-skills/write-spec/` -> `.pi/skills/write-spec/`
-- `redline-skills/redlinespec-spec-authoring/` -> `.pi/skills/redlinespec-spec-authoring/`
-- `redline-skills/write-plan/` -> `.pi/skills/write-plan/`
-- `redline-skills/write-tasks/` -> `.pi/skills/write-tasks/`
-- `redline-skills/write-rules/` -> `.pi/skills/write-rules/`
-- `redline-skills/implement/` -> `.pi/skills/implement/`
-- `redline-skills/bootstrap-functional-truth/` -> `.pi/skills/bootstrap-functional-truth/`
-- `redline-skills/close-spec/` -> `.pi/skills/close-spec/`
-- `redline-skills/merge-functional-truth/` -> `.pi/skills/merge-functional-truth/`
-- `redline-skills/health-check/` -> `.pi/skills/health-check/`
+- `--harness devin` installs only `.agents/skills/`.
+- `--harness devin,codex` installs only one `.agents/skills/` copy.
+- `--harness devin,opencode` installs only one `.agents/skills/` copy.
+- `--harness opencode,pi` installs only one `.agents/skills/` copy.
+- `--harness claude` installs only `.claude/skills/`.
 
 If the framework adds new skills or templates, this map must be expanded through the source skill directories and harness adapter manifests.
 
 ### Harness launchers
 
-OpenCode launchers are copied from:
+RedlineSpec does not install harness-specific command or workflow launchers.
 
-- `harnesses/opencode/commands/` -> `.opencode/commands/`
-
-Windsurf launchers are copied from:
-
-- `harnesses/windsurf/workflows/` -> `.windsurf/workflows/`
-
-Pi does not require RedlineSpec launchers. Pi discovers project skills from `.pi/skills/` and registers them as `/skill:name` commands when skill commands are enabled.
+The canonical runtime surface is the installed Agent Skills under each harness skill directory. OpenCode command wrappers, Devin Desktop launcher files, slash commands, and similar launcher formats are intentionally outside the installer scope. During the temporary cleanup window recorded in `docs/en/deprecations.md`, harness refresh removes old RedlineSpec-managed OpenCode launcher files when it finds them.
 
 ## 6. Recommended overwrite policy
 
@@ -289,9 +265,10 @@ The installer should follow this default policy:
 - create missing folders,
 - copy `system` templates when they do not exist,
 - allow an explicit `--update-system` mode to refresh `.redline/system/templates/` and `.redline/system/scripts/`,
-- allow an explicit `--update` mode to refresh templates and all detected harness-native bindings,
-- allow an explicit `--update-harness` mode to refresh selected or detected harness-native skills and launchers,
-- treat `.redline/system/templates/` and selected harness binding folders as framework-managed areas for RedlineSpec artifact names,
+- allow an explicit `--update` mode to refresh templates and all detected effective harness skill destinations,
+- allow an explicit `--update-harness` mode to refresh selected or detected effective harness skill destinations and remove old RedlineSpec OpenCode launcher files during the temporary cleanup window,
+- remove known deprecated RedlineSpec skill folders from selected or detected harness skill directories,
+- treat `.redline/system/templates/` and selected effective harness skill folders as framework-managed areas for RedlineSpec artifact names,
 - do not overwrite existing documents under `.redline/project/` by default,
 - do not regenerate `functional.index.md` if the project has already edited it, unless the user asks for it,
 - and do not regenerate `rules.index.md` if the project has already edited it, unless the user asks for it.
@@ -371,11 +348,13 @@ Harness bindings are installed only when requested.
 Examples:
 
 ```bash
+bash scripts/install.sh ~/work/my-project --harness devin
+bash scripts/install.sh ~/work/my-project --harness devin,codex
 bash scripts/install.sh ~/work/my-project --harness opencode
-bash scripts/install.sh ~/work/my-project --harness windsurf
 bash scripts/install.sh ~/work/my-project --harness pi
-bash scripts/install.sh ~/work/my-project --harness opencode --harness windsurf
-bash scripts/install.sh ~/work/my-project --harness opencode,windsurf,pi
+bash scripts/install.sh ~/work/my-project --harness claude
+bash scripts/install.sh ~/work/my-project --harness devin,opencode
+bash scripts/install.sh ~/work/my-project --harness opencode,pi
 ```
 
 To refresh an already installed project, including templates and all detected harness bindings:
@@ -390,17 +369,16 @@ To refresh one specific harness:
 bash scripts/install.sh ~/work/my-project --harness opencode --update-harness
 ```
 
-When `--update-harness` is used without `--harness`, the installer detects installed harnesses from their native paths and refreshes those only.
+When `--update-harness` is used without `--harness`, the installer detects installed effective skill paths and refreshes those only.
 
-### OpenCode result
+### Shared `.agents` result
 
 ```txt
-.opencode/
+.agents/
   skills/
     redlinespec/
     interview/
     write-spec/
-    redlinespec-spec-authoring/
     write-plan/
     write-tasks/
     write-rules/
@@ -409,60 +387,16 @@ When `--update-harness` is used without `--harness`, the installer detects insta
     close-spec/
     merge-functional-truth/
     health-check/
-  commands/
-    redlinespec.md
-    health-check.md
-    bootstrap-functional-truth.md
-    interview.md
-    write-spec.md
-    write-plan.md
-    write-rules.md
-    write-tasks.md
-    implement.md
-    close-spec.md
-    merge-functional-truth.md
 ```
 
-### Windsurf result
+### Claude result
 
 ```txt
-.windsurf/
+.claude/
   skills/
     redlinespec/
     interview/
     write-spec/
-    redlinespec-spec-authoring/
-    write-plan/
-    write-tasks/
-    write-rules/
-    implement/
-    bootstrap-functional-truth/
-    close-spec/
-    merge-functional-truth/
-    health-check/
-  workflows/
-    redlinespec.md
-    health-check.md
-    bootstrap-functional-truth.md
-    interview.md
-    write-spec.md
-    write-plan.md
-    write-rules.md
-    write-tasks.md
-    implement.md
-    close-spec.md
-    merge-functional-truth.md
-```
-
-### Pi result
-
-```txt
-.pi/
-  skills/
-    redlinespec/
-    interview/
-    write-spec/
-    redlinespec-spec-authoring/
     write-plan/
     write-tasks/
     write-rules/
@@ -482,4 +416,4 @@ The following concerns are outside the current installer scope:
 - possible additional flags such as `--force`,
 - global harness installation into user home directories,
 - automatic modification of existing user harness configuration files,
-- and shared `.agents/skills/` optimization for harnesses that support the common agent-skills convention.
+- adding harness-specific launchers or slash-command surfaces.

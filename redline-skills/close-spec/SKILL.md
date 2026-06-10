@@ -1,9 +1,10 @@
 ---
 name: close-spec
-description: Execute the RedlineSpec /close-spec workflow. Use after implementation to verify the real code behavior against a Spec, align the Spec with what was actually implemented, and mark it implemented when evidence is sufficient.
+description: >-
+  RedlineSpec workflow skill for close-spec. Also use for close spec, finalize spec, post-implementation spec verification, aligning a spec with implemented reality, and marking a spec implemented. Use this workflow skill after implementation to verify actual repository behavior and update one Spec with implemented results, differences, evidence, and final affected functional truth targets. Do not use to implement code, update living functional truth, delete temporary change documents, create specs/plans/tasks, or accept unverifiable/incomplete behavior.
 ---
 
-# RedlineSpec /close-spec Workflow
+# RedlineSpec close-spec Workflow
 
 Use this skill to close a RedlineSpec `Spec` after implementation.
 
@@ -26,9 +27,9 @@ When available, also read:
 
 Template resolution is installation-relative: locate the target project root that contains `.redline/system/templates/`, then read templates from that directory. If `.redline/system/templates/spec.template.md` is missing, stop and report that the RedlineSpec system installation is incomplete or must be refreshed.
 
-## Purpose of /close-spec
+## Purpose of close-spec
 
-`/close-spec` exists to align the functional branch with implemented reality before it is merged into the living functional truth.
+`close-spec` exists to align the functional branch with implemented reality before it is merged into the living functional truth.
 
 Its expected result is:
 
@@ -36,7 +37,7 @@ Its expected result is:
 - an `Implemented Result` section that accurately summarizes what was actually implemented,
 - relevant differences from the proposed change made explicit,
 - final impacted functional truth files listed,
-- and enough verification evidence to trust the spec as the source for `/merge-functional-truth`.
+- and enough verification evidence to trust the spec as the source for `merge-functional-truth`.
 
 ## Core Model
 
@@ -44,7 +45,7 @@ A `Spec` starts as the functional branch of a change.
 
 After implementation, that branch must be checked against real code and updated so it no longer describes intent alone. Only then can it be merged into functional truth.
 
-`/close-spec` prepares the branch for merge. `/merge-functional-truth` performs the merge.
+`close-spec` prepares the branch for merge. `merge-functional-truth` performs the merge.
 
 ## Embedded Contract Rules
 
@@ -69,11 +70,11 @@ Always apply these rules:
 
 Use this skill when:
 
-- the user says `/close-spec`,
+- the user says `close-spec`,
 - implementation has finished and the final `Spec` must be updated,
-- `/implement` completed tasks and the spec needs post-implementation closure,
+- `implement` completed tasks and the spec needs post-implementation closure,
 - a simple flow was implemented without tasks and now the spec must be aligned,
-- or `/merge-functional-truth` blocks because the spec is not closed.
+- or `merge-functional-truth` blocks because the spec is not closed.
 
 ## Preconditions
 
@@ -201,7 +202,7 @@ Required changes:
 
 Use `- None.` under `Relevant Differences from Proposed Change` only when there are no meaningful functional differences.
 
-`Impact on Functional Truth` must list the files that `/merge-functional-truth` should create or update. Use real paths such as:
+`Impact on Functional Truth` must list the files that `merge-functional-truth` should create or update. Use real paths such as:
 
 - `.redline/project/functional-truth/functional.index.md`
 - `.redline/project/functional-truth/<area>.entry.md`
@@ -231,8 +232,8 @@ When blocking, report:
 - evidence observed,
 - affected spec section or functional block,
 - relevant files or commands,
-- whether the next step is `/implement`, `/write-spec`, or a user decision,
-- and what must become true before `/close-spec` can succeed.
+- whether the next step is `implement`, `write-spec`, or a user decision,
+- and what must become true before `close-spec` can succeed.
 
 ## Output Expectations
 
@@ -257,4 +258,4 @@ Before finishing, confirm all of these:
 - No functional truth was modified.
 - Material functional differences were accepted by the human or blocked.
 - The spec has `status: implemented` only if evidence was sufficient.
-- `Impact on Functional Truth` is ready for `/merge-functional-truth`.
+- `Impact on Functional Truth` is ready for `merge-functional-truth`.

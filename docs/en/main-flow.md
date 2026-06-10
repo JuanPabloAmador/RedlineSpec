@@ -6,7 +6,7 @@ This document describes when the flow is activated, what each step produces, and
 
 For the detailed definition of the document catalog, see `docs/en/documents.md`.
 
-For the framework's user-facing operational interface, see `docs/en/commands.md`.
+For the framework's user-facing Agent Skills interface, see `docs/en/skills.md`.
 
 ## 1. Starting point
 
@@ -53,9 +53,9 @@ After installation, startup refinement can take three shapes:
 
 The result of startup is an initial functional truth, even if it is still partial.
 
-At the user-facing command level, `/bootstrap-functional-truth` refines this startup baseline after installation. It can leave an empty project at a minimal indexed state, map large repositories at a high level with discovery gaps, or create detailed `*.entry.md` and `*.global.entry.md` files when the functional surface is bounded and clear.
+At the user-facing skill level, `bootstrap-functional-truth` refines this startup baseline after installation. It can leave an empty project at a minimal indexed state, map large repositories at a high level with discovery gaps, or create detailed `*.entry.md` and `*.global.entry.md` files when the functional surface is bounded and clear.
 
-After that baseline exists, `/write-rules` is the recommended next startup workflow for capturing persistent implementation constraints. This recommendation is non-blocking: the user may skip rules explicitly, and the project can add or refine rules later as reusable constraints become clear.
+After that baseline exists, `write-rules` is the recommended next startup workflow for capturing persistent implementation constraints. This recommendation is non-blocking: the user may skip rules explicitly, and the project can add or refine rules later as reusable constraints become clear.
 
 ## 4. Change flow structure
 
@@ -107,7 +107,7 @@ Updated Functional Truth
 
 The difference between the two variants is that `Plan` and `Tasks` only appear when the change needs to be translated into a more detailed technical solution.
 
-At the user-facing command level, `/close-spec` updates the final `Spec` after implementation, and `/merge-functional-truth` consolidates implemented specs into the living functional truth.
+At the user-facing skill level, `close-spec` updates the final `Spec` after implementation, and `merge-functional-truth` consolidates implemented specs into the living functional truth.
 
 ## 5. What each step produces
 
@@ -140,7 +140,7 @@ Produces:
 
 This step is optional. It appears when the `Spec` must be translated into implementable technical contracts. The plan index keeps the technical block map; linked technical unit files carry detailed signatures, shapes, dependencies, and rule context.
 
-This is the first technical point where persistent project rules become important. The `Plan` can reference those rules to constrain the solution. If no rules are defined yet, planning can continue, but the workflow should warn the user and recommend `/write-rules` before finalizing the technical contract.
+This is the first technical point where persistent project rules become important. The `Plan` can reference those rules to constrain the solution. If no rules are defined yet, planning can continue, but the workflow should warn the user and recommend `write-rules` before finalizing the technical contract.
 
 ### 4. Tasks
 

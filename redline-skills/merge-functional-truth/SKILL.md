@@ -1,15 +1,16 @@
 ---
 name: merge-functional-truth
-description: Execute the RedlineSpec /merge-functional-truth workflow. Use after one or more Specs are closed as implemented to consolidate their functional result into the living functional truth and remove temporary change documents.
+description: >-
+  RedlineSpec workflow skill for merge-functional-truth. Also use for merge truth, consolidate implemented spec, update living functional truth, and remove temporary spec documents. Use this workflow skill to consolidate one or more closed implemented Specs into .redline/project/functional-truth/ and remove successfully merged temporary spec folders. Do not use to verify code, implement changes, close incomplete specs, merge planned behavior, resolve conflicting specs, or edit application code.
 ---
 
-# RedlineSpec /merge-functional-truth Workflow
+# RedlineSpec merge-functional-truth Workflow
 
 Use this skill to merge implemented specs into the living functional truth.
 
 This is a workflow skill. It updates persistent functional truth from already closed specs.
 
-It does not verify implementation code. That belongs to `/close-spec`.
+It does not verify implementation code. That belongs to `close-spec`.
 
 ## Read First
 
@@ -26,9 +27,9 @@ If a listed affected functional truth file does not exist yet, read the appropri
 
 Template resolution is installation-relative: locate the target project root that contains `.redline/system/templates/`, then read templates from that directory. If required templates or `.redline/project/functional-truth/functional.index.md` are missing, stop and report that RedlineSpec installation is incomplete or must be refreshed.
 
-## Purpose of /merge-functional-truth
+## Purpose of merge-functional-truth
 
-`/merge-functional-truth` exists to consolidate a completed functional branch back into the living functional truth.
+`merge-functional-truth` exists to consolidate a completed functional branch back into the living functional truth.
 
 Its expected result is:
 
@@ -54,13 +55,13 @@ Always apply these rules:
 
 1. Merge only from specs with `status: implemented`.
 2. Require `Implemented Result`, `Implementation Summary`, `Relevant Differences from Proposed Change`, and `Impact on Functional Truth` in every spec.
-3. Do not inspect code to reinterpret the implementation; use `/close-spec` first if the spec is not trustworthy.
+3. Do not inspect code to reinterpret the implementation; use `close-spec` first if the spec is not trustworthy.
 4. Do not modify application code.
 5. Do not modify specs except for removing their temporary folders after a successful merge.
 6. Do not merge planned or future behavior into functional truth.
 7. Update functional truth to describe the current product state after the implemented change.
 8. Preserve valid existing functional truth that is not affected by the spec.
-9. If the spec and current functional truth conflict semantically, block and tell the user to run `/close-spec` or resolve the spec first.
+9. If the spec and current functional truth conflict semantically, block and tell the user to run `close-spec` or resolve the spec first.
 10. If multiple specs conflict with each other, block and require a corrected closed spec set.
 11. Keep `functional.index.md` small; route details to entries.
 12. Use `*.entry.md` for bounded functional areas.
@@ -72,7 +73,7 @@ Always apply these rules:
 
 Use this skill when:
 
-- the user says `/merge-functional-truth`,
+- the user says `merge-functional-truth`,
 - one implemented spec must be consolidated into functional truth,
 - several implemented specs must be closed together as one stable functional merge,
 - a new functional area must be added to the living functional truth from an implemented spec,
@@ -90,7 +91,7 @@ Every target spec must:
 - include `Impact on Functional Truth`,
 - identify final affected functional truth files in frontmatter `affects` or `Impact on Functional Truth`.
 
-If any spec does not satisfy these conditions, stop. Tell the user to run `/close-spec` for that spec first.
+If any spec does not satisfy these conditions, stop. Tell the user to run `close-spec` for that spec first.
 
 ## Non-Goals
 
@@ -155,7 +156,7 @@ Block when:
 - the merge would remove or rewrite unrelated truth,
 - or the spec requires interpreting code to know what should be true.
 
-When blocked, do not write functional truth. Tell the user to run `/close-spec` or resolve the spec set first.
+When blocked, do not write functional truth. Tell the user to run `close-spec` or resolve the spec set first.
 
 ### Step 5: Plan the functional truth updates
 
@@ -233,7 +234,7 @@ When blocking, report:
 - affected spec or specs,
 - affected functional truth files,
 - evidence observed in the spec and current truth,
-- recommended recovery workflow, usually `/close-spec`,
+- recommended recovery workflow, usually `close-spec`,
 - and what must become true before merge can proceed.
 
 ## Output Expectations

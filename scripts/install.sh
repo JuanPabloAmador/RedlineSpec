@@ -6,7 +6,7 @@ print_help() {
 RedlineSpec installer
 
 Usage:
-  bash scripts/install.sh TARGET_PATH [--update] [--update-system] [--harness opencode[,windsurf,pi]]... [--update-harness]
+  bash scripts/install.sh TARGET_PATH [--update] [--update-system] [--harness devin[,codex,opencode,pi,claude]]... [--update-harness]
 
 Behavior:
   - TARGET_PATH is required and must point to the destination project repository.
@@ -16,7 +16,9 @@ Behavior:
   - Copies deterministic framework scripts into .redline/system/scripts/.
   - Requires a harness selection for installs, either through --harness or an interactive terminal prompt.
   - In --update mode, detects already installed harness bindings automatically.
-  - Copies skills only into harness-visible directories for the selected harnesses.
+  - Copies Agent Skills only into effective harness-visible skill directories for the selected harnesses.
+  - Deduplicates the shared .agents/skills/ destination across compatible harnesses.
+  - Removes known deprecated RedlineSpec skills and old RedlineSpec launcher files from selected or detected harness bindings.
   - Bootstraps .redline/project/functional-truth/functional.index.md from the canonical template if missing.
   - Bootstraps .redline/project/rules/rules.index.md from the canonical template if missing.
   - Does not create any spec/plan/tasks change artifacts.
@@ -26,12 +28,13 @@ Options:
                     Does not install new harnesses.
   --update-system   Refresh .redline/system/templates/ and .redline/system/scripts/ from this RedlineSpec repo.
                     This may overwrite existing framework-managed files under .redline/system/.
-  --harness NAME    Install harness bindings. Supported values: opencode, windsurf, pi.
+  --harness NAME    Install harness bindings. Supported values: devin, codex, claude, opencode, pi.
                     May be repeated or passed as a comma-separated list.
-                    Harness installation copies skills to native harness skill directories and installs launchers when applicable.
+                    Harnesses in the shared .agents group install one copy to .agents/skills/.
+                    Harnesses with private paths install to their own skills directory.
                     If omitted in an interactive terminal, the installer prompts for a harness.
                     If omitted in a non-interactive shell, installation fails.
-  --update-harness  Refresh RedlineSpec-managed harness skills and launchers.
+  --update-harness  Refresh RedlineSpec-managed harness skills and remove known deprecated RedlineSpec skills and launcher files.
                     If --harness is omitted, refreshes all detected installed harnesses.
   -h, --help        Show this help.
 EOF
@@ -53,7 +56,7 @@ UPDATE_SYSTEM=0
 UPDATE_HARNESS=0
 TARGET_PATH=""
 SELECTED_HARNESSES=""
-SUPPORTED_HARNESSES="opencode windsurf pi"
+SUPPORTED_HARNESSES="devin codex claude opencode pi"
 
 is_supported_harness() {
   local candidate supported
@@ -95,33 +98,41 @@ prompt_for_harness() {
   local choice item selected_count selected_before
 
   if [[ ! -t 0 || ! -t 1 ]]; then
-    fail "Harness selection is required. Pass --harness opencode, --harness windsurf, --harness pi, or repeat --harness for multiple harnesses."
+    fail "Harness selection is required. Pass --harness devin, --harness opencode, --harness pi, or repeat --harness for multiple harnesses."
   fi
 
   printf '\nSelect RedlineSpec harness bindings to install. Use comma-separated numbers for multiple choices.\n'
-  printf '  1) opencode\n'
-  printf '  2) windsurf\n'
-  printf '  3) pi\n'
+  printf '  1) devin (.agents/skills)\n'
+  printf '  2) codex (.agents/skills)\n'
+  printf '  3) opencode (.agents/skills)\n'
+  printf '  4) pi (.agents/skills)\n'
+  printf '  5) claude (.claude/skills)\n'
 
   while true; do
-    printf 'Harnesses [1,2,3]: '
+    printf 'Harnesses [1,4,5]: '
     read -r choice
     selected_count="$(harness_count)"
     selected_before="$SELECTED_HARNESSES"
     choice="${choice//,/ }"
     for item in $choice; do
       case "$item" in
-        1|opencode)
+        1|devin)
+          add_harness devin
+          ;;
+        2|codex)
+          add_harness codex
+          ;;
+        3|opencode)
           add_harness opencode
           ;;
-        2|windsurf)
-          add_harness windsurf
-          ;;
-        3|pi)
+        4|pi)
           add_harness pi
           ;;
+        5|claude)
+          add_harness claude
+          ;;
         *)
-          printf 'Invalid selection: %s. Choose 1, 2, 3, or multiple values like 1,3.\n' "$item" >&2
+          printf 'Invalid selection: %s. Choose 1, 2, 3, 4, 5, or multiple values like 1,4.\n' "$item" >&2
           SELECTED_HARNESSES="$selected_before"
           continue 2
           ;;
@@ -151,7 +162,7 @@ while [[ $# -gt 0 ]]; do
       ;;
     --harness)
       if [[ $# -lt 2 ]]; then
-        fail "--harness requires a value: opencode, windsurf, or pi. Repeat the flag or use commas for multiple harnesses."
+        fail "--harness requires a value: devin, codex, claude, opencode, or pi. Repeat the flag or use commas for multiple harnesses."
       fi
       add_harness_selection "$2"
       shift 2
@@ -204,7 +215,6 @@ REQUIRED_SKILLS=(
   redlinespec
   interview
   write-spec
-  redlinespec-spec-authoring
   write-plan
   write-tasks
   write-rules
@@ -213,6 +223,9 @@ REQUIRED_SKILLS=(
   close-spec
   merge-functional-truth
   health-check
+)
+DEPRECATED_SKILLS=(
+  redlinespec-spec-authoring
 )
 
 [[ -d "$TEMPLATES_SOURCE" ]] || fail "Missing templates source directory: $TEMPLATES_SOURCE"
@@ -294,27 +307,42 @@ copy_skills_to_dir() {
   done
 }
 
-copy_launchers_to_dir() {
-  local source_dir target_dir update_mode launcher dest
-  source_dir="$1"
-  target_dir="$2"
-  update_mode="$3"
+remove_deprecated_skills_from_dir() {
+  local target_skills_dir deprecated_skill deprecated_path
+  target_skills_dir="$1"
 
-  [[ -d "$source_dir" ]] || fail "Missing harness launcher source directory: $source_dir"
-  mkdir -p "$target_dir"
-
-  shopt -s nullglob
-  for launcher in "$source_dir"/*.md; do
-    dest="$target_dir/$(basename "$launcher")"
-    if [[ "$update_mode" -eq 1 ]]; then
-      cp "$launcher" "$dest"
-      log "Refreshed harness launcher: $(basename "$launcher")"
-    elif [[ ! -e "$dest" ]]; then
-      cp "$launcher" "$dest"
-      log "Copied harness launcher: $(basename "$launcher")"
+  for deprecated_skill in "${DEPRECATED_SKILLS[@]}"; do
+    deprecated_path="$target_skills_dir/$deprecated_skill"
+    if [[ -e "$deprecated_path" ]]; then
+      rm -rf "$deprecated_path"
+      log "Removed deprecated harness skill: $deprecated_skill"
     fi
   done
-  shopt -u nullglob
+}
+
+# Temporary migration cleanup. See docs/en/deprecations.md before removing or extending.
+remove_deprecated_launchers_for_harness() {
+  local harness launcher launcher_path launcher_dir
+  harness="$1"
+
+  case "$harness" in
+    opencode)
+      launcher_dir="$TARGET_DIR/.opencode/commands"
+      ;;
+    *)
+      return 0
+      ;;
+  esac
+
+  [[ -d "$launcher_dir" ]] || return 0
+
+  for launcher in "${REQUIRED_SKILLS[@]}"; do
+    launcher_path="$launcher_dir/$launcher.md"
+    if [[ -e "$launcher_path" ]]; then
+      rm -f "$launcher_path"
+      log "Removed deprecated harness launcher: $launcher_path"
+    fi
+  done
 }
 
 refresh_system() {
@@ -328,72 +356,71 @@ refresh_system() {
   log "Refreshed system scripts"
 }
 
-harness_is_installed() {
-  local harness manifest HARNESS_ID HARNESS_SKILLS_PATH HARNESS_LAUNCHERS_PATH HARNESS_LAUNCHERS_SOURCE
+load_harness_manifest() {
+  local harness manifest
   harness="$1"
   manifest="$HARNESSES_SOURCE/$harness/manifest.sh"
 
   [[ -f "$manifest" ]] || fail "Missing harness manifest: $manifest"
 
   HARNESS_ID=""
+  HARNESS_SKILLS_GROUP=""
   HARNESS_SKILLS_PATH=""
-  HARNESS_LAUNCHERS_PATH=""
-  HARNESS_LAUNCHERS_SOURCE=""
   # shellcheck source=/dev/null
   source "$manifest"
 
   [[ "$HARNESS_ID" == "$harness" ]] || fail "Harness manifest id mismatch for $harness"
   [[ -n "$HARNESS_SKILLS_PATH" ]] || fail "Harness $harness does not define HARNESS_SKILLS_PATH"
-  if [[ -n "$HARNESS_LAUNCHERS_PATH" ]]; then
-    [[ -e "$TARGET_DIR/$HARNESS_SKILLS_PATH" || -e "$TARGET_DIR/$HARNESS_LAUNCHERS_PATH" ]]
-  else
-    [[ -e "$TARGET_DIR/$HARNESS_SKILLS_PATH" ]]
-  fi
+}
+
+harness_is_installed() {
+  local harness
+  harness="$1"
+
+  load_harness_manifest "$harness"
+  [[ -e "$TARGET_DIR/$HARNESS_SKILLS_PATH" ]]
 }
 
 detect_installed_harnesses() {
-  local harness
+  local harness seen_paths detected_path
+  seen_paths=""
   for harness in $SUPPORTED_HARNESSES; do
     if harness_is_installed "$harness"; then
+      detected_path="$HARNESS_SKILLS_PATH"
       add_harness "$harness"
-      log "Detected installed harness: $harness"
+      if [[ " $seen_paths " != *" $detected_path "* ]]; then
+        seen_paths="$seen_paths $detected_path"
+        log "Detected installed harness skills path: $detected_path"
+      fi
     fi
   done
 }
 
+INSTALLED_HARNESS_SKILLS_PATHS=""
+
 install_harness() {
-  local harness manifest HARNESS_ID HARNESS_SKILLS_PATH HARNESS_LAUNCHERS_PATH HARNESS_LAUNCHERS_SOURCE
-  local target_skills_dir target_launchers_dir launchers_source_dir
+  local harness target_skills_dir display
   harness="$1"
-  manifest="$HARNESSES_SOURCE/$harness/manifest.sh"
 
-  [[ -f "$manifest" ]] || fail "Missing harness manifest: $manifest"
+  load_harness_manifest "$harness"
 
-  HARNESS_ID=""
-  HARNESS_SKILLS_PATH=""
-  HARNESS_LAUNCHERS_PATH=""
-  HARNESS_LAUNCHERS_SOURCE=""
-  # shellcheck source=/dev/null
-  source "$manifest"
-
-  [[ "$HARNESS_ID" == "$harness" ]] || fail "Harness manifest id mismatch for $harness"
-  [[ -n "$HARNESS_SKILLS_PATH" ]] || fail "Harness $harness does not define HARNESS_SKILLS_PATH"
-  if [[ -n "$HARNESS_LAUNCHERS_PATH" && -z "$HARNESS_LAUNCHERS_SOURCE" ]]; then
-    fail "Harness $harness defines HARNESS_LAUNCHERS_PATH but not HARNESS_LAUNCHERS_SOURCE"
+  if [[ " $INSTALLED_HARNESS_SKILLS_PATHS " == *" $HARNESS_SKILLS_PATH "* ]]; then
+    log "Skipping duplicate harness skills destination for $harness: $HARNESS_SKILLS_PATH"
+    remove_deprecated_launchers_for_harness "$harness"
+    return 0
   fi
-  if [[ -z "$HARNESS_LAUNCHERS_PATH" && -n "$HARNESS_LAUNCHERS_SOURCE" ]]; then
-    fail "Harness $harness defines HARNESS_LAUNCHERS_SOURCE but not HARNESS_LAUNCHERS_PATH"
-  fi
+  INSTALLED_HARNESS_SKILLS_PATHS="$INSTALLED_HARNESS_SKILLS_PATHS $HARNESS_SKILLS_PATH"
 
   target_skills_dir="$TARGET_DIR/$HARNESS_SKILLS_PATH"
-
-  log "Installing harness bindings: $harness"
-  copy_skills_to_dir "$target_skills_dir" "$UPDATE_HARNESS"
-  if [[ -n "$HARNESS_LAUNCHERS_PATH" ]]; then
-    target_launchers_dir="$TARGET_DIR/$HARNESS_LAUNCHERS_PATH"
-    launchers_source_dir="$HARNESSES_SOURCE/$harness/$HARNESS_LAUNCHERS_SOURCE"
-    copy_launchers_to_dir "$launchers_source_dir" "$target_launchers_dir" "$UPDATE_HARNESS"
+  display="$harness"
+  if [[ -n "$HARNESS_SKILLS_GROUP" ]]; then
+    display="$display (group: $HARNESS_SKILLS_GROUP)"
   fi
+
+  log "Installing harness bindings: $display -> $HARNESS_SKILLS_PATH"
+  remove_deprecated_skills_from_dir "$target_skills_dir"
+  copy_skills_to_dir "$target_skills_dir" "$UPDATE_HARNESS"
+  remove_deprecated_launchers_for_harness "$harness"
 }
 
 bootstrap_project_files() {
@@ -418,7 +445,7 @@ if [[ -z "$SELECTED_HARNESSES" ]]; then
   if [[ "$UPDATE_HARNESS" -eq 1 ]]; then
     detect_installed_harnesses
     if [[ -z "$SELECTED_HARNESSES" ]]; then
-      fail "No installed harness bindings detected. Pass --harness opencode, --harness windsurf, or --harness pi to install one."
+      fail "No installed harness bindings detected. Pass --harness devin, --harness opencode, or --harness pi to install one."
     fi
   elif [[ "$UPDATE_SYSTEM" -eq 1 ]]; then
     :

@@ -1,9 +1,10 @@
 ---
 name: write-spec
-description: Execute the RedlineSpec /write-spec workflow. Use when context has already been gathered, or when you need to finish gathering the minimum missing context and then write a complete *.spec.md using the official RedlineSpec spec template.
+description: >-
+  RedlineSpec workflow skill for write-spec. Also use for create spec, functional change contract, formalize requirements, and finish draft spec. Use this workflow skill to convert gathered context and functional truth into a complete temporary *.spec.md that defines the functional change from current truth using the official spec template. Do not use for broad interviewing unless minimum context is missing, technical plans, task generation, code implementation, rules, functional truth bootstrap, closing implemented specs, or merging truth.
 ---
 
-# RedlineSpec /write-spec Workflow
+# RedlineSpec write-spec Workflow
 
 Use this skill to execute the operational workflow for writing a RedlineSpec `*.spec.md`.
 
@@ -23,9 +24,9 @@ This workflow must be portable. Do not depend on framework docs outside the dist
 
 Template resolution is installation-relative: locate the target project root that contains `.redline/system/templates/`, then read templates from that directory. If `.redline/system/templates/spec.template.md` is missing, stop and report that the RedlineSpec system installation is incomplete or must be refreshed.
 
-## Purpose of /write-spec
+## Purpose of write-spec
 
-`/write-spec` exists to turn already-gathered context into a formal RedlineSpec functional contract.
+`write-spec` exists to turn already-gathered context into a formal RedlineSpec functional contract.
 
 Its expected result is:
 
@@ -63,7 +64,7 @@ Always apply these rules:
 Use this skill when:
 
 - the user wants to create a new RedlineSpec spec,
-- the user says `/write-spec`,
+- the user says `write-spec`,
 - the task is to formalize a functional change after interview/context gathering,
 - the user has already discussed the change and now wants the spec written,
 - or an existing draft spec must be completed or refined into a valid RedlineSpec contract.
@@ -101,7 +102,7 @@ Do not use this workflow to:
 - write tasks,
 - or implement code.
 
-If the user actually needs a technical artifact, that belongs to `/write-plan` or `/write-tasks`, not `/write-spec`.
+If the user actually needs a technical artifact, that belongs to `write-plan` or `write-tasks`, not `write-spec`.
 
 ## Decision Gate: Should There Be a Spec?
 

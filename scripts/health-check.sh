@@ -9,7 +9,7 @@ Usage:
   bash scripts/health-check.sh TARGET_PATH [--json]
 
 Checks deterministic RedlineSpec installation and documentation structure facts.
-Semantic quality is reviewed by the /health-check skill using this script output.
+Semantic quality is reviewed by the health-check skill using this script output.
 EOF
 }
 
@@ -72,21 +72,6 @@ REQUIRED_TEMPLATES=(
 )
 
 REQUIRED_SKILLS=(
-  redlinespec
-  interview
-  write-spec
-  redlinespec-spec-authoring
-  write-plan
-  write-tasks
-  write-rules
-  implement
-  bootstrap-functional-truth
-  close-spec
-  merge-functional-truth
-  health-check
-)
-
-REQUIRED_LAUNCHERS=(
   redlinespec
   interview
   write-spec
@@ -287,36 +272,169 @@ check_specs() {
   done < <(find "$specs" -mindepth 1 -maxdepth 1 -type d | sort)
 }
 
+check_skill_frontmatter() {
+  local file rel expected_name line line_no in_frontmatter description_mode name description seen_name seen_description top_key problem content
+  file="$1"
+  rel="$2"
+  expected_name="$(basename "$(dirname "$file")")"
+  line_no=0
+  in_frontmatter=0
+  description_mode=0
+  name=""
+  description=""
+  seen_name=0
+  seen_description=0
+  problem=""
+
+  while IFS= read -r line || [[ -n "$line" ]]; do
+    line_no=$((line_no + 1))
+
+    if [[ "$line_no" -eq 1 ]]; then
+      if [[ "$line" != "---" ]]; then
+        problem="Missing YAML frontmatter opening delimiter."
+        break
+      fi
+      in_frontmatter=1
+      continue
+    fi
+
+    if [[ "$in_frontmatter" -eq 1 && "$line" == "---" ]]; then
+      in_frontmatter=0
+      break
+    fi
+
+    if [[ "$in_frontmatter" -ne 1 ]]; then
+      continue
+    fi
+
+    if [[ "$description_mode" -eq 1 ]]; then
+      if [[ "$line" == "  "* || -z "$line" ]]; then
+        content="${line#  }"
+        description="$description $content"
+        continue
+      fi
+      description_mode=0
+    fi
+
+    case "$line" in
+      name:*)
+        if [[ "$seen_name" -eq 1 ]]; then
+          problem="Duplicate name field in skill frontmatter."
+          break
+        fi
+        seen_name=1
+        name="${line#name:}"
+        name="${name# }"
+        if [[ -z "$name" ]]; then
+          problem="Skill name must be a non-empty scalar."
+          break
+        fi
+        if [[ "$name" == /* ]]; then
+          problem="Skill name must not start with /."
+          break
+        fi
+        ;;
+      "description: >-")
+        if [[ "$seen_description" -eq 1 ]]; then
+          problem="Duplicate description field in skill frontmatter."
+          break
+        fi
+        seen_description=1
+        description_mode=1
+        ;;
+      description:*)
+        problem="Skill description must use YAML block scalar form: description: >-."
+        break
+        ;;
+      *:*)
+        top_key="${line%%:*}"
+        problem="Unexpected frontmatter field: $top_key. Only name and description are allowed."
+        break
+        ;;
+      "")
+        ;;
+      *)
+        problem="Unsupported frontmatter line: $line"
+        break
+        ;;
+    esac
+  done < "$file"
+
+  if [[ -z "$problem" && "$in_frontmatter" -eq 1 ]]; then
+    problem="YAML frontmatter is not closed with --- delimiter."
+  fi
+  if [[ -z "$problem" && "$seen_name" -ne 1 ]]; then
+    problem="Missing name field in skill frontmatter."
+  fi
+  if [[ -z "$problem" && "$seen_description" -ne 1 ]]; then
+    problem="Missing description field in skill frontmatter."
+  fi
+  if [[ -z "$problem" && "$name" != "$expected_name" ]]; then
+    problem="Skill name mismatch: expected \"$expected_name\" from folder name, got \"$name\"."
+  fi
+  if [[ -z "$problem" && -z "${description// /}" ]]; then
+    problem="Skill description must be non-empty."
+  fi
+  if [[ -z "$problem" && "$description" == *"aliases:"* ]]; then
+    problem="Skill description must not contain the YAML-hostile text aliases:."
+  fi
+
+  if [[ -n "$problem" ]]; then
+    add_issue error harness "$rel" "$problem" "Update SKILL.md frontmatter to valid RedlineSpec Agent Skill YAML: name matching the skill folder plus description: >- only."
+  fi
+}
+
+check_harness_skills_dir() {
+  local rel_dir refresh_hint skill skill_file deprecated_skill
+  rel_dir="$1"
+  refresh_hint="$2"
+
+  for skill in "${REQUIRED_SKILLS[@]}"; do
+    skill_file="$TARGET_DIR/$rel_dir/$skill/SKILL.md"
+    if [[ -f "$skill_file" ]]; then
+      check_skill_frontmatter "$skill_file" "$rel_dir/$skill/SKILL.md"
+    else
+      add_issue error harness "$rel_dir/$skill/SKILL.md" "Missing RedlineSpec skill in installed harness skills directory." "$refresh_hint"
+    fi
+  done
+
+  for deprecated_skill in redlinespec-spec-authoring; do
+    if [[ -e "$TARGET_DIR/$rel_dir/$deprecated_skill" ]]; then
+      add_issue warning harness "$rel_dir/$deprecated_skill" "Deprecated RedlineSpec skill is still installed." "$refresh_hint"
+    fi
+  done
+}
+
 check_harnesses() {
-  local harness skill launcher skill_dir launcher_dir
+  local launcher_dir launcher
+
+  if [[ -d "$TARGET_DIR/.agents/skills" ]]; then
+    check_harness_skills_dir ".agents/skills" "Refresh shared Agent Skills with scripts/install.sh TARGET --update-harness --harness devin."
+  fi
 
   if [[ -d "$TARGET_DIR/.opencode/skills" ]]; then
-    skill_dir="$TARGET_DIR/.opencode/skills"
-    launcher_dir="$TARGET_DIR/.opencode/commands"
-    for skill in "${REQUIRED_SKILLS[@]}"; do
-      [[ -f "$skill_dir/$skill/SKILL.md" ]] || add_issue error harness ".opencode/skills/$skill/SKILL.md" "Missing OpenCode RedlineSpec skill." "Refresh harness bindings with scripts/install.sh TARGET --update-harness --harness opencode."
-    done
-    for launcher in "${REQUIRED_LAUNCHERS[@]}"; do
-      [[ -f "$launcher_dir/$launcher.md" ]] || add_issue error harness ".opencode/commands/$launcher.md" "Missing OpenCode RedlineSpec command launcher." "Refresh harness bindings with scripts/install.sh TARGET --update-harness --harness opencode."
+    add_issue warning harness ".opencode/skills" "Deprecated OpenCode-specific skill path is installed; OpenCode now uses shared .agents/skills/." "Migrate by running scripts/install.sh TARGET --update-harness --harness opencode, then remove .opencode/skills if no longer needed."
+  fi
+
+  # Temporary migration check. See docs/en/deprecations.md before removing or extending.
+  launcher_dir="$TARGET_DIR/.opencode/commands"
+  if [[ -d "$launcher_dir" ]]; then
+    for launcher in "${REQUIRED_SKILLS[@]}"; do
+      [[ ! -f "$launcher_dir/$launcher.md" ]] || add_issue warning harness ".opencode/commands/$launcher.md" "Deprecated RedlineSpec OpenCode command launcher is still installed." "Refresh harness bindings with scripts/install.sh TARGET --update-harness --harness opencode to remove old launchers."
     done
   fi
 
-  if [[ -d "$TARGET_DIR/.windsurf/skills" ]]; then
-    skill_dir="$TARGET_DIR/.windsurf/skills"
-    launcher_dir="$TARGET_DIR/.windsurf/workflows"
-    for skill in "${REQUIRED_SKILLS[@]}"; do
-      [[ -f "$skill_dir/$skill/SKILL.md" ]] || add_issue error harness ".windsurf/skills/$skill/SKILL.md" "Missing Windsurf RedlineSpec skill." "Refresh harness bindings with scripts/install.sh TARGET --update-harness --harness windsurf."
-    done
-    for launcher in "${REQUIRED_LAUNCHERS[@]}"; do
-      [[ -f "$launcher_dir/$launcher.md" ]] || add_issue error harness ".windsurf/workflows/$launcher.md" "Missing Windsurf RedlineSpec workflow launcher." "Refresh harness bindings with scripts/install.sh TARGET --update-harness --harness windsurf."
-    done
+  if [[ -d "$TARGET_DIR/.devin/skills" ]]; then
+    add_issue warning harness ".devin/skills" "Deprecated Devin-specific skill path is installed; Devin now uses shared .agents/skills/." "Migrate by running scripts/install.sh TARGET --update-harness --harness devin, then remove .devin/skills if no longer needed."
+    check_harness_skills_dir ".devin/skills" "Migrate Devin skills to .agents/skills with scripts/install.sh TARGET --update-harness --harness devin."
   fi
 
   if [[ -d "$TARGET_DIR/.pi/skills" ]]; then
-    skill_dir="$TARGET_DIR/.pi/skills"
-    for skill in "${REQUIRED_SKILLS[@]}"; do
-      [[ -f "$skill_dir/$skill/SKILL.md" ]] || add_issue error harness ".pi/skills/$skill/SKILL.md" "Missing Pi RedlineSpec skill." "Refresh harness bindings with scripts/install.sh TARGET --update-harness --harness pi."
-    done
+    add_issue warning harness ".pi/skills" "Deprecated Pi-specific skill path is installed; Pi now uses shared .agents/skills/." "Migrate by running scripts/install.sh TARGET --update-harness --harness pi, then remove .pi/skills if no longer needed."
+  fi
+
+  if [[ -d "$TARGET_DIR/.claude/skills" ]]; then
+    check_harness_skills_dir ".claude/skills" "Refresh harness bindings with scripts/install.sh TARGET --update-harness --harness claude."
   fi
 }
 

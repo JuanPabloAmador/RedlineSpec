@@ -1,9 +1,10 @@
 ---
 name: implement
-description: Execute the RedlineSpec /implement workflow. Use when approved Tasks must be implemented sequentially from compact task contracts under .redline/project/specs/<change>/tasks/.
+description: >-
+  RedlineSpec workflow skill for implement. Also use for execute tasks, implement approved tasks, task execution, and code implementation from task contracts. Use this workflow skill to sequentially apply approved compact task contracts under .redline/project/specs/<change>/tasks/, change repository code, verify acceptance contracts, and synchronize existing task statuses. Do not use to create or redesign tasks/plans/specs, update functional truth, close specs, merge specs, or execute unapproved/mismatched task contracts.
 ---
 
-# RedlineSpec /implement Workflow
+# RedlineSpec implement Workflow
 
 Use this skill to execute approved RedlineSpec `Tasks`.
 
@@ -25,9 +26,9 @@ Only read upstream documents when the task contract is insufficient, contradicto
 
 Template resolution is installation-relative: locate the target project root that contains `.redline/system/templates/`, then treat the distributed task templates and this skill as canonical execution rules. If required RedlineSpec task documents are missing, stop and report the incomplete setup or task generation state.
 
-## Purpose of /implement
+## Purpose of implement
 
-`/implement` executes `Tasks`.
+`implement` executes `Tasks`.
 
 It exists to:
 
@@ -37,7 +38,7 @@ It exists to:
 - verify the phase-level `Functional Verification` when a phase is completed,
 - and keep execution statuses synchronized between the task index and task files.
 
-`/implement` does not write new task contracts.
+`implement` does not write new task contracts.
 
 It does not redesign the Plan.
 
@@ -51,7 +52,7 @@ Tasks are executed from the task index order.
 
 The order is the priority. There is no `depends_on` field.
 
-Execution is sequential by default. Consecutive tasks with the same `parallel_group` in the index are safe parallelization metadata for compatible harnesses. The standard `/implement` workflow should detect and mention those groups, but execute serially unless the surrounding harness explicitly provides safe parallel execution.
+Execution is sequential by default. Consecutive tasks with the same `parallel_group` in the index are safe parallelization metadata for compatible harnesses. The standard `implement` workflow should detect and mention those groups, but execute serially unless the surrounding harness explicitly provides safe parallel execution.
 
 A task file is the primary execution contract. It is expected to be compact and autocontained through:
 
@@ -86,7 +87,7 @@ Always apply these rules:
 14. If a task blocks, mark the task, phase, and index `blocked`, stop the workflow, and report using the task's `Blocked Protocol`.
 15. Do not modify the Plan from this workflow.
 16. Do not modify task contracts or create new tasks from this workflow.
-17. If redirection or redesign is needed, report the issue and recommend `/write-plan` or `/write-tasks` as appropriate.
+17. If redirection or redesign is needed, report the issue and recommend `write-plan` or `write-tasks` as appropriate.
 18. Never modify a task with `status: done` except when reading it to derive state. If a completed task is affected by later redesign, that redesign must add a new adjustment task through the appropriate workflow.
 19. Do not introduce dependencies unless the selected task explicitly permits that dependency work or the task itself is a dependency/setup task.
 20. Do not change public signatures, shapes, architecture, functional behavior, dependencies, or files outside `Change Scope` unless explicitly allowed by the task contract.
@@ -95,7 +96,7 @@ Always apply these rules:
 
 Use this skill when:
 
-- the user says `/implement`,
+- the user says `implement`,
 - the user asks to implement the next pending RedlineSpec task,
 - the user asks to implement a specific task from `.redline/project/specs/<change>/tasks/`,
 - the user asks to implement a phase,
@@ -125,7 +126,7 @@ The user does not need to use rigid subcommands. Infer the mode from the user's 
 
 Supported modes:
 
-- `next`: default when the user says `/implement` without a narrower or broader scope.
+- `next`: default when the user says `implement` without a narrower or broader scope.
 - `task <id>`: execute one specific task, such as `P01-T03`.
 - `phase <id>`: execute remaining eligible tasks in one phase, such as `P02`.
 - `all`: execute all remaining eligible tasks for the change.
@@ -186,7 +187,7 @@ Block if:
 - task file frontmatter disagrees with the index,
 - or any task status differs between index and task file.
 
-Report inconsistencies with options for the user, such as using `/write-tasks` to regenerate incomplete pending contracts, removing accidental extra files, or manually resolving interrupted state.
+Report inconsistencies with options for the user, such as using `write-tasks` to regenerate incomplete pending contracts, removing accidental extra files, or manually resolving interrupted state.
 
 ### Step 4: Select the executable task or task range
 
@@ -194,7 +195,7 @@ Apply the selected mode and order rules.
 
 If a task is `blocked`, do not retry it unless the cause of the block can be objectively verified as gone without changing the contract. If the cause is objectively gone, change the task and index status back to `pending`, derive phase/global status, then continue if the mode and order allow it.
 
-If the selected task has `contract_ready: false`, block and recommend `/write-tasks`.
+If the selected task has `contract_ready: false`, block and recommend `write-tasks`.
 
 ### Step 5: Load the selected task contract
 
@@ -285,7 +286,7 @@ If phase verification is manual or requires human judgment, provide concrete ver
 
 If phase verification passes or is confirmed, mark the phase `done` and derive the global index status.
 
-If phase verification fails, keep completed tasks `done`, mark the phase and global index `blocked`, stop, and report the failure. Recommend `/write-plan` or `/write-tasks` when the failure indicates missing or wrong contracts.
+If phase verification fails, keep completed tasks `done`, mark the phase and global index `blocked`, stop, and report the failure. Recommend `write-plan` or `write-tasks` when the failure indicates missing or wrong contracts.
 
 ### Step 11: Continue or stop according to mode
 
@@ -336,7 +337,7 @@ Include:
 - relevant files or artifacts,
 - options available to the user,
 - recommended option,
-- and suggested workflow, such as `/write-plan` or `/write-tasks`, when redesign is needed.
+- and suggested workflow, such as `write-plan` or `write-tasks`, when redesign is needed.
 
 When the block is caused by index/filesystem inconsistency, provide options in an interview-like style so the user can choose the recovery path.
 

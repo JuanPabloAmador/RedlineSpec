@@ -1,9 +1,10 @@
 ---
 name: write-plan
-description: Execute the RedlineSpec /write-plan workflow. Use when the functional change is already understood and now must be translated into a technical contract that defines how the change will be implemented.
+description: >-
+  RedlineSpec workflow skill for write-plan. Also use for create plan, technical implementation plan, technical contract, and plan technical units. Use this workflow skill to translate an already-understood functional change or Spec into a repo-aware technical Plan with implementation structure, affected areas, signatures, dependencies, technical units, and rules references. Do not use for functional discovery, writing the Spec itself, task decomposition, code implementation, functional truth updates, or generic project planning.
 ---
 
-# RedlineSpec /write-plan Workflow
+# RedlineSpec write-plan Workflow
 
 Use this skill to execute the operational workflow for writing a RedlineSpec `Plan`.
 
@@ -30,9 +31,9 @@ This workflow must stay portable. At runtime it should depend only on the distri
 
 Template resolution is installation-relative: locate the target project root that contains `.redline/system/templates/`, then read templates from that directory. If `.redline/system/templates/plan.template.md` or `.redline/system/templates/plan-technical-unit.template.md` is missing, stop and report that the RedlineSpec system installation is incomplete or must be refreshed.
 
-## Purpose of /write-plan
+## Purpose of write-plan
 
-`/write-plan` exists to turn an already-understood change into a technical implementation contract.
+`write-plan` exists to turn an already-understood change into a technical implementation contract.
 
 The `Plan` defines the how.
 
@@ -79,7 +80,7 @@ Always apply these rules:
 Use this skill when:
 
 - the user wants to create a new RedlineSpec `Plan`,
-- the user says `/write-plan`,
+- the user says `write-plan`,
 - a `Spec` already exists and now needs a technical contract,
 - or an existing draft plan must be completed or refined.
 
@@ -149,12 +150,12 @@ Then read the specific `*.rule.md` files likely to apply to the plan.
 If the project has no active rules yet:
 
 - warn clearly that no project rules are currently defined or active,
-- explain that planning can continue, but `/write-rules` is recommended first because rules improve the technical contract and later task contracts,
-- ask whether the user wants to continue with the plan anyway or pause to run `/write-rules`, unless the user already explicitly chose to skip rules for this plan,
+- explain that planning can continue, but `write-rules` is recommended first because rules improve the technical contract and later task contracts,
+- ask whether the user wants to continue with the plan anyway or pause to run `write-rules`, unless the user already explicitly chose to skip rules for this plan,
 - use `Rules` subsections carefully,
 - and do not invent fake rule file paths.
 
-If a missing rule is required before the plan can be confidently marked `ready`, keep the plan at `draft` or recommend `/write-rules`.
+If a missing rule is required before the plan can be confidently marked `ready`, keep the plan at `draft` or recommend `write-rules`.
 
 ### Step 4: Check whether technical context is sufficient
 

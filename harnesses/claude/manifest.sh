@@ -1,0 +1,3 @@
+HARNESS_ID="claude"
+HARNESS_SKILLS_GROUP=""
+HARNESS_SKILLS_PATH=".claude/skills"

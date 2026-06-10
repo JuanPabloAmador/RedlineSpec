@@ -1,9 +1,10 @@
 ---
 name: bootstrap-functional-truth
-description: Execute the RedlineSpec /bootstrap-functional-truth workflow. Use after RedlineSpec is installed in a project to create or refine the initial living functional truth from repository evidence and user context.
+description: >-
+  RedlineSpec workflow skill for bootstrap-functional-truth. Also use for bootstrap functional truth, initial functional truth, first functional baseline, documenting current product behavior, and refining incomplete functional truth. Use this workflow skill to create or improve the living functional truth from repository evidence and confirmed context after RedlineSpec is installed and .redline/ exists. Do not use for installing RedlineSpec, generic documentation, planned features, specs, plans, tasks, code edits, rules, spec closure, or merging implemented specs.
 ---
 
-# RedlineSpec /bootstrap-functional-truth Workflow
+# RedlineSpec bootstrap-functional-truth Workflow
 
 Use this skill to create or refine the initial living functional truth for a project.
 
@@ -27,9 +28,9 @@ Then read the current functional truth files that exist under:
 
 Template resolution is installation-relative: locate the target project root that contains `.redline/system/templates/`, then read templates from that directory. If the required templates or `.redline/project/functional-truth/functional.index.md` are missing, stop and report that RedlineSpec installation is incomplete or must be refreshed.
 
-## Purpose of /bootstrap-functional-truth
+## Purpose of bootstrap-functional-truth
 
-`/bootstrap-functional-truth` exists to turn an installed but incomplete functional truth into a useful baseline.
+`bootstrap-functional-truth` exists to turn an installed but incomplete functional truth into a useful baseline.
 
 Its expected result is one of these:
 
@@ -84,7 +85,7 @@ Do not use `complete` for large or uncertain areas.
 
 Use this skill when:
 
-- the user says `/bootstrap-functional-truth`,
+- the user says `bootstrap-functional-truth`,
 - RedlineSpec has been installed and the project needs its first useful functional truth,
 - a repo has no specs yet but future specs need a baseline,
 - an existing `functional.index.md` still contains template placeholders,
@@ -256,7 +257,7 @@ Before finishing, verify:
 
 Before the final response, check whether the project has any real `*.rule.md` files under `.redline/project/rules/`.
 
-If no project rules exist yet, recommend `/write-rules` as the next workflow for capturing reusable implementation constraints before the first planned implementation flow.
+If no project rules exist yet, recommend `write-rules` as the next workflow for capturing reusable implementation constraints before the first planned implementation flow.
 
 This recommendation is non-blocking. Do not create or modify rules from this workflow.
 
@@ -279,7 +280,7 @@ A good result from this workflow is:
 - no invented functionality,
 - small navigable files,
 - a clear final report of what was documented and what remains to discover,
-- and, when no project rules exist yet, a recommendation to run `/write-rules` next.
+- and, when no project rules exist yet, a recommendation to run `write-rules` next.
 
 ## Final Checklist
 
@@ -295,4 +296,4 @@ Before finishing, confirm all of these:
 - Created entries use the official templates.
 - All generated functional truth is in English.
 - No code, spec, plan, task, or rules files were modified by this workflow.
-- If no project rules exist yet, `/write-rules` was recommended as the next startup workflow.
+- If no project rules exist yet, `write-rules` was recommended as the next startup workflow.

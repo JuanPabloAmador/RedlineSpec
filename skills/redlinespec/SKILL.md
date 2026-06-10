@@ -1,6 +1,7 @@
 ---
 name: redlinespec
-description: Minimal orientation to RedlineSpec. Use to understand what RedlineSpec is, when to activate its workflows, and where to go next.
+description: >-
+  Agent skill for RedlineSpec orientation and routing. Also use for redline, RedlineSpec help, framework overview, workflow selection, and what should I do next in the RedlineSpec flow. Use this skill to explain the functional-truth/spec/rules model, decide whether a requested change should enter a RedlineSpec workflow, and point to the next workflow skill. Do not use to write specs, plans, tasks, rules, functional truth, code changes, health reports, or completed-spec merges directly.
 ---
 
 # RedlineSpec
@@ -35,19 +36,19 @@ Ask:
 ### First-time setup
 
 ```txt
-/bootstrap-functional-truth → /write-rules (optional)
+bootstrap-functional-truth → write-rules (optional)
 ```
 
 ### Change flow
 
 ```txt
-/interview → /write-spec → /implement → /close-spec → /merge-functional-truth
+interview → write-spec → implement → close-spec → merge-functional-truth
 ```
 
 Use the extended flow when the change needs technical decomposition:
 
 ```txt
-/interview → /write-spec → /write-plan → /write-tasks → /implement → /close-spec → /merge-functional-truth
+interview → write-spec → write-plan → write-tasks → implement → close-spec → merge-functional-truth
 ```
 
 ## Documents

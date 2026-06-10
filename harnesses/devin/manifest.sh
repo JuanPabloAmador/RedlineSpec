@@ -1,3 +1,3 @@
-HARNESS_ID="opencode"
+HARNESS_ID="devin"
 HARNESS_SKILLS_GROUP="agents"
 HARNESS_SKILLS_PATH=".agents/skills"

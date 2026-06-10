@@ -1,9 +1,10 @@
 ---
 name: health-check
-description: Execute the RedlineSpec /health-check workflow. Use to verify framework installation integrity, documentation structure, functional truth organization, rules health, and spec lifecycle hygiene, then produce a standardized repair report.
+description: >-
+  RedlineSpec workflow skill for health-check. Also use for RedlineSpec audit, installation check, framework integrity check, documentation health review, and spec lifecycle hygiene. Use this workflow skill to run deterministic checks and semantic review for .redline structure, templates, scripts, functional truth, rules, specs, and installed harness skills, then report findings and repair guidance. Do not use to make automatic repairs, implement product changes, write contracts, or replace specific workflow execution.
 ---
 
-# RedlineSpec /health-check Workflow
+# RedlineSpec health-check Workflow
 
 Use this skill to assess whether a RedlineSpec installation is structurally sound and whether its project documentation remains useful as the product evolves.
 
@@ -54,9 +55,7 @@ The script verifies:
 - unexpected files in rules,
 - spec directories missing their canonical `*.spec.md`,
 - tasks directories that exist without a plan directory,
-- detected harness skill installations,
-- OpenCode and Windsurf launchers,
-- Pi skills without requiring launchers.
+- detected harness skill installations for shared `.agents/skills/` and Claude.
 
 Treat script `error` findings as blocking installation or structure issues.
 
@@ -184,7 +183,7 @@ List entries that may not represent current product behavior, including process-
 3. Review suspicious functional truth entries with the user.
 4. Reorganize the functional index around real product domains/modules if needed.
 5. Remove or merge stale temporary/process artifacts from functional truth.
-6. Re-run `/health-check`.
+6. Re-run `health-check`.
 
 ## Machine-Readable Issue List
 

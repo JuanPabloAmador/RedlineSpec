@@ -1,9 +1,10 @@
 ---
 name: write-tasks
-description: Execute the RedlineSpec /write-tasks workflow. Use when a ready Plan must be decomposed into vertical phases and compact task contracts under .redline/project/specs/<change>/tasks/.
+description: >-
+  RedlineSpec workflow skill for write-tasks. Also use for create tasks, task contracts, task decomposition, vertical phases, and plan-to-tasks. Use this workflow skill to decompose a ready technical Plan into an ordered task index and compact individual task contracts under .redline/project/specs/<change>/tasks/. Do not use to implement tasks, repair incomplete Plans, update functional truth, write Specs or Plans, create rules, or taskify final functional truth consolidation.
 ---
 
-# RedlineSpec /write-tasks Workflow
+# RedlineSpec write-tasks Workflow
 
 Use this skill to execute the operational workflow for writing RedlineSpec `Tasks`.
 
@@ -30,9 +31,9 @@ When task files already exist, also inspect the task index and filesystem state 
 
 Template resolution is installation-relative: locate the target project root that contains `.redline/system/templates/`, then read templates from that directory. If either required template is missing, stop and report that the RedlineSpec system installation is incomplete or must be refreshed.
 
-## Purpose of /write-tasks
+## Purpose of write-tasks
 
-`/write-tasks` turns a ready Plan into executable contracts.
+`write-tasks` turns a ready Plan into executable contracts.
 
 It does not implement code.
 
@@ -84,7 +85,7 @@ Always apply these rules:
 
 Use this skill when:
 
-- the user says `/write-tasks`,
+- the user says `write-tasks`,
 - a ready `Plan` must be decomposed into implementation tasks,
 - a task index must be created or revised,
 - individual task files must be generated from an approved index,
@@ -105,7 +106,7 @@ It must contain enough information to derive:
 
 If the Plan is not ready or lacks essential implementation constraints, do not patch the Plan from this workflow. Block and list what is missing.
 
-If the Plan intentionally has no project rules, task generation may continue, but report that the resulting task contracts will use `None.` for `Relevant Rules` where appropriate and will not benefit from reusable project-level technical constraints. Recommend `/write-rules` followed by `/write-plan` revision if the user wants project rules reflected in task contracts before implementation.
+If the Plan intentionally has no project rules, task generation may continue, but report that the resulting task contracts will use `None.` for `Relevant Rules` where appropriate and will not benefit from reusable project-level technical constraints. Recommend `write-rules` followed by `write-plan` revision if the user wants project rules reflected in task contracts before implementation.
 
 ## Non-Goals
 
@@ -117,7 +118,7 @@ Do not use this workflow to:
 - execute task files,
 - close the Spec after implementation,
 - update functional truth,
-- or define the `/implement` workflow.
+- or define the `implement` workflow.
 
 ## Canonical Paths
 
@@ -291,7 +292,7 @@ Before asking for index approval, validate that:
 - the ready Plan has already covered the source Spec,
 - and no Plan block or technical unit needed for execution has been dropped from the phase/task decomposition.
 
-If the ready Plan appears not to cover the Spec, block and recommend `/write-plan` revision.
+If the ready Plan appears not to cover the Spec, block and recommend `write-plan` revision.
 
 If task decomposition drops required Plan material, block and revise the task index.
 

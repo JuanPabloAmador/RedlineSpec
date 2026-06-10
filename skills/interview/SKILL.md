@@ -1,6 +1,7 @@
 ---
 name: interview
-description: Help the user and agent reach shared understanding of a problem, plan, or design by asking focused questions one at a time before producing the requested output.
+description: >-
+  Agent skill for collaborative discovery and clarification. Also use for interview, context gathering, requirements interview, scoping questions, design interview, and decision interview. Use this skill to help the user and agent reach shared understanding before producing specs, plans, tasks, rules, implementation, documentation, or other outputs by asking focused questions one at a time with options and recommendations. Do not use when the request is already clear enough, when the user explicitly asks to skip questions, for post-implementation verification, or as a substitute for RedlineSpec contract-writing workflows.
 ---
 
 Your job is to understand the problem together with the user before producing any final output.

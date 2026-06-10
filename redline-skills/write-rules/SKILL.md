@@ -1,9 +1,10 @@
 ---
 name: write-rules
-description: Execute the RedlineSpec /write-rules workflow. Use when the project needs to initialize, add, refine, or reorganize persistent project rules under .redline/project/rules/.
+description: >-
+  RedlineSpec workflow skill for write-rules. Also use for create rules, project rules, rules catalog, refine rules, and rebuild rules index. Use this workflow skill to initialize, add, refine, or reorganize persistent implementation and verification constraints under .redline/project/rules/ using the rule templates and rules index. Do not use for functional truth, temporary change documents, specs, plans, tasks, code edits, generic documentation, harness configuration, or agent preference notes.
 ---
 
-# RedlineSpec /write-rules Workflow
+# RedlineSpec write-rules Workflow
 
 Use this skill to execute the operational workflow for writing RedlineSpec project rules.
 
@@ -33,9 +34,9 @@ This workflow must stay portable. At runtime it should depend only on the distri
 
 Template resolution is installation-relative: locate the target project root that contains `.redline/system/templates/`, then read templates from that directory. If a required template is missing, stop and report that the RedlineSpec system installation is incomplete or must be refreshed.
 
-## Purpose of /write-rules
+## Purpose of write-rules
 
-`/write-rules` exists to create and maintain persistent project rules.
+`write-rules` exists to create and maintain persistent project rules.
 
 Rules are not every persistent project decision. A project rule is an atomic, reusable, project-specific implementation or verification constraint that future agents must apply while changing, verifying, or approving code.
 
@@ -72,7 +73,7 @@ Always apply these rules:
 
 Use this skill when:
 
-- the user wants `/write-rules`,
+- the user wants `write-rules`,
 - the project still lacks its initial rules catalog,
 - a new plan needs a rule that does not exist yet,
 - existing project rules must be refined,
