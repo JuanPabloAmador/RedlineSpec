@@ -392,3 +392,7 @@ Before finishing, confirm all of these:
 - `Acceptance Contract`, `Change Scope`, `Contract Shapes`, and `Relevant Rules` were verified before `done`.
 - Phase `Functional Verification` was handled when a phase completed.
 - No final Spec or functional truth update was attempted.
+
+## Next Workflow
+
+When all tasks for the change are done, tell the user the next step is to run `close-spec`.

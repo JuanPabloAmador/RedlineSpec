@@ -276,3 +276,7 @@ Before finishing, confirm all of these:
 - Consolidation Notes were checked and processed or were absent.
 - The spec has `status: implemented` only if evidence was sufficient.
 - `Impact on Functional Truth` is ready for `merge-functional-truth`.
+
+## Next Workflow
+
+When this workflow finishes, tell the user the next step is to run `merge-functional-truth`.

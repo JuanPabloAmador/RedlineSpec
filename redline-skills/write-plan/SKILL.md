@@ -443,3 +443,7 @@ Do not:
 - inline rule content instead of referencing rule files,
 - mark the plan `ready` while open technical questions remain,
 - or use the plan as a post-implementation report.
+
+## Next Workflow
+
+When this workflow finishes, tell the user the next step is to run `write-tasks`.

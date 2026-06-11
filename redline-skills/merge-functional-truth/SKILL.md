@@ -262,3 +262,7 @@ Before finishing, confirm all of these:
 - New entry files use official templates.
 - Successfully merged spec folders were removed.
 - Blocked or unrelated spec folders were preserved.
+
+## Next Workflow
+
+When this workflow finishes, tell the user they can run `health-check` to confirm the living functional truth stays well aligned (valid indexes, links, and no drift).
