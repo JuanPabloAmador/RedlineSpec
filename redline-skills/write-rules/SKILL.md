@@ -278,3 +278,7 @@ Do not:
 - hide required metadata in the body instead of frontmatter,
 - create nested rule directories,
 - or leave the index out of sync with the rule files.
+
+## Next Workflow
+
+When this workflow finishes, tell the user the next step is to run `write-spec` to start a change.

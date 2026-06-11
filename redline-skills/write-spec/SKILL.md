@@ -428,3 +428,7 @@ If unsure whether something belongs in the spec:
 - prefer explicit scope over implied scope,
 - prefer omitting technical design,
 - prefer asking one more focused question rather than guessing.
+
+## Next Workflow
+
+When this workflow finishes, tell the user the next step is to run `write-plan`.

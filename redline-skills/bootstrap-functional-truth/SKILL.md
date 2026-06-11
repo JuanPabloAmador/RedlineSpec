@@ -297,3 +297,7 @@ Before finishing, confirm all of these:
 - All generated functional truth is in English.
 - No code, spec, plan, task, or rules files were modified by this workflow.
 - If no project rules exist yet, `write-rules` was recommended as the next startup workflow.
+
+## Next Workflow
+
+When this workflow finishes and no project rules exist yet, tell the user the next step is to run `write-rules`.

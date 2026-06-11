@@ -6,9 +6,9 @@ It organizes product change around a living functional truth, temporary change c
 
 ## Status
 
-Current version: `0.4.1`
+Current version: `0.4.2`
 
-This release adds temporary spec consolidation notes for functional discoveries during planning, task decomposition, and implementation. The framework is still early and may change before `1.0.0`.
+This release adds a uniform next-workflow handoff to each main-flow skill so every workflow tells the user which command to run next, and recommends `health-check` after a functional truth merge. The framework is still early and may change before `1.0.0`.
 
 ## Core Model
 
@@ -131,4 +131,4 @@ Start with:
 
 RedlineSpec uses SemVer.
 
-Version `0.4.1` adds temporary spec consolidation notes for functional discoveries that appear after a spec is ready. Breaking changes may still happen while the framework remains below `1.0.0`.
+Version `0.4.2` adds a uniform next-workflow handoff across main-flow skills and a post-merge `health-check` recommendation. Breaking changes may still happen while the framework remains below `1.0.0`.

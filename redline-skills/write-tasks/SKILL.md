@@ -435,3 +435,7 @@ Do not:
 - repair the Plan from this workflow,
 - implement code,
 - or create functional truth consolidation tasks.
+
+## Next Workflow
+
+When this workflow finishes, tell the user the next step is to run `implement`.

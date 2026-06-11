@@ -7,6 +7,13 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 
 ## [Unreleased]
 
+## [0.4.2] - 2026-06-11
+
+### Changed
+
+- Added a uniform `Next Workflow` closing section to each main-flow skill so every workflow tells the user which command to run next: `bootstrap-functional-truth` → `write-rules`, `write-rules` → `write-spec`, `write-spec` → `write-plan`, `write-plan` → `write-tasks`, `write-tasks` → `implement`, `implement` → `close-spec`, and `close-spec` → `merge-functional-truth`.
+- Updated `merge-functional-truth` to recommend running `health-check` after consolidation to confirm the living functional truth stays well aligned.
+
 ## [0.4.1] - 2026-06-10
 
 ### Added
