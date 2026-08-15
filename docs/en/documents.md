@@ -224,13 +224,17 @@ The detailed organization of `Tasks` uses progressive disclosure:
 - `.redline/project/specs/<change>/tasks/<change>.tasks.md`
 - `.redline/project/specs/<change>/tasks/phase-01-task-01-<slug>.task.md`
 
-The `*.tasks.md` index organizes vertical phases, execution order, explicit parallelization, and status.
+The `*.tasks.md` index organizes vertical phases, a per-phase `Execution Tree` with explicit parallelization, and status.
 
 Each `*.task.md` is a compact, actionable contract for a specific task.
 
 Task-level traceability lives in each task file's `Source Trace`.
 
 Phases are functionally verifiable vertical slices. Tasks are small steps inside those phases.
+
+Each phase carries an `Execution Tree`: a per-phase structure that defines order and unlocking. A task runs after its parent completes, and sibling groups marked `[∥]` are parallelizable. Task files are autonomous: they never reference other tasks and never declare dependencies.
+
+Task generation uses two passes: the agent first writes the initial task index, then reviews every task against the Granularity Decomposition criteria and splits any task that bundles more than one unit of work.
 
 Task files are where rule references from the `Plan` can be expanded to make each task self-sufficient.
 

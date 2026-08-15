@@ -62,21 +62,22 @@ Always apply these rules:
 8. Use the source `Spec` as the upstream contract, but do not force the technical decomposition to mirror the functional block structure.
 9. Every technical block must trace the functional blocks it resolves via `Resolves`.
 10. Detailed signatures and shapes live in technical unit files, not in the plan index or at block level.
-11. A `ready` Plan must cover the source Spec's in-scope functional obligations through technical blocks and responsibilities.
-12. Validate Spec coverage through `Resolves`, block responsibilities, and technical unit contracts.
-13. Every technical block must include a `Rules` subsection, even if it only contains `- None.`.
-14. `Plan-Wide Context` is conditional. When present, use only these subsections: `Shared Decisions`, `Open Questions`, `Rules`, `Supporting Context`.
-15. Supporting documents must be linked explicitly and accompanied by a short description.
-16. Rules referenced by the plan must point to real project rule files under `.redline/project/rules/`.
-17. The plan references rules; it does not inline or expand them.
-18. If technical open questions remain, keep the plan at `draft`.
-19. `ready` means the technical contract is sufficiently closed for later task generation or direct technical execution.
-20. Do not include code bodies or pseudocode-heavy implementations.
-21. Prefer signatures, shapes, responsibilities, and dependencies over internal algorithm narration.
-22. Inspect the real repository before claiming affected areas or artifacts.
-23. If planning reveals a new functional decision, functional constraint, or discovered behavior that changes or refines the source Spec, do not hide it in the Plan as a technical decision. Add or update a temporary `## Consolidation Notes` section in the source Spec with a concise `CN-*` entry.
-24. Use Consolidation Notes only for functional discoveries. Technical decisions remain in the Plan.
-25. When adding a Consolidation Note, use this format: `- **CN-N:** Concise functional decision or discovery.`, followed by `Origin:` and `Impact:` sub-bullets. If the section does not exist, insert it between `## Global Constraints and Conditions` and `## Functional Blocks`. If it already exists, append the next `CN-*` entry.
+11. Write technical units atomically: one technical unit per artifact. Do not group multiple artifacts into a single TU; constrain exactly one artifact per TU.
+12. A `ready` Plan must cover the source Spec's in-scope functional obligations through technical blocks and responsibilities.
+13. Validate Spec coverage through `Resolves`, block responsibilities, and technical unit contracts.
+14. Every technical block must include a `Rules` subsection, even if it only contains `- None.`.
+15. `Plan-Wide Context` is conditional. When present, use only these subsections: `Shared Decisions`, `Open Questions`, `Rules`, `Supporting Context`.
+16. Supporting documents must be linked explicitly and accompanied by a short description.
+17. Rules referenced by the plan must point to real project rule files under `.redline/project/rules/`.
+18. The plan references rules; it does not inline or expand them.
+19. If technical open questions remain, keep the plan at `draft`.
+20. `ready` means the technical contract is sufficiently closed for later task generation or direct technical execution.
+21. Do not include code bodies or pseudocode-heavy implementations.
+22. Prefer signatures, shapes, responsibilities, and dependencies over internal algorithm narration.
+23. Inspect the real repository before claiming affected areas or artifacts.
+24. If planning reveals a new functional decision, functional constraint, or discovered behavior that changes or refines the source Spec, do not hide it in the Plan as a technical decision. Add or update a temporary `## Consolidation Notes` section in the source Spec with a concise `CN-*` entry.
+25. Use Consolidation Notes only for functional discoveries. Technical decisions remain in the Plan.
+26. When adding a Consolidation Note, use this format: `- **CN-N:** Concise functional decision or discovery.`, followed by `Origin:` and `Impact:` sub-bullets. If the section does not exist, insert it between `## Global Constraints and Conditions` and `## Functional Blocks`. If it already exists, append the next `CN-*` entry.
 
 ## When To Use This Skill
 
@@ -322,6 +323,13 @@ Rules:
 - show public and important internal signatures,
 - use dependencies to clarify injection or collaboration boundaries,
 - and do not hide crucial structure in vague prose.
+
+Atomicity rules:
+
+- write one technical unit per artifact: each TU constrains exactly one artifact such as a component, service, controller, endpoint, model, migration, module, or repository — or whatever the artifact model of the technology being modified is,
+- do not group multiple artifacts into a single TU,
+- a technical block may group several TUs, but keep the units themselves per-artifact,
+- when an artifact comes with tests or specs, decide explicitly whether the tests are part of the same TU or their own TU; keep the unit contract focused on one responsibility either way.
 
 ### Step 11: Write `Rules` correctly
 

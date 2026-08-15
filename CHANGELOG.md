@@ -7,6 +7,27 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 
 ## [Unreleased]
 
+## [0.5.0] - 2026-08-15
+
+### Added
+
+- Added per-phase `Execution Tree` to task indexes: a filesystem-style structure that defines order and unlocking inside each phase, with `[∥]` markers on parallelizable sibling groups.
+- Added Granularity Decomposition to `write-tasks`: task generation now runs in two passes, writing the initial index first and then force-reviewing every task against decomposition criteria so each task covers exactly one unit of work.
+- Added Parallel Dispatch Rules to `implement`: eligible `[∥]` sibling groups are dispatched to one subagent per task when the harness can launch subagents, after the implementing agent reviews that the suggested division is correct.
+
+### Changed
+
+- Replaced the sequential order plus `parallel_group` execution model with the `Execution Tree` model. `parallel_group` is removed from task indexes; the tree is the only dependency structure.
+- Task files are now explicitly autonomous: they must not reference other tasks, must not declare `depends_on`, and must not know the tree.
+- `write-plan` now requires atomic technical units: one technical unit per artifact, so per-artifact contracts, signatures, and shapes are never skipped.
+- `implement` treats parallelization as the primary directive: if the harness cannot launch subagents, tasks run serially in tree order and execution simply continues.
+- Updated task index template, task model documentation, and main flow documentation to describe the `Execution Tree` model.
+
+### Removed
+
+- Removed `parallel_group` from task indexes and workflow skills.
+- Removed the `depends_on` prohibition exception: dependency structure now lives exclusively in the index `Execution Tree`.
+
 ## [0.4.2] - 2026-06-11
 
 ### Changed

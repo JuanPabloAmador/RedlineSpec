@@ -48,11 +48,19 @@ It does not update the final implemented Spec, except for adding temporary `Cons
 
 ## Core Model
 
-Tasks are executed from the task index order.
+Execute tasks from the phase `Execution Tree` in the index.
 
-The order is the priority. There is no `depends_on` field.
+A task is eligible only when its parent task is `done`.
 
-Execution is sequential by default. Consecutive tasks with the same `parallel_group` in the index are safe parallelization metadata for compatible harnesses. The standard `implement` workflow should detect and mention those groups, but execute serially unless the surrounding harness explicitly provides safe parallel execution.
+Parallelize by default. Treat sibling tasks marked `[∥]` in the tree as parallel candidates: they only wait for their parent and must not share files. Review both facts before dispatching.
+
+Before dispatching parallel work, do all of these:
+
+1. determine whether your harness can launch subagents,
+2. review that the `[∥]` division is correct: no hidden dependency between the siblings and no shared files in their `Change Scope`,
+3. if subagents are available, dispatch one subagent per eligible `[∥]` sibling, using each task file as that subagent's contract.
+
+If the harness cannot launch subagents, execute tasks serially and simply continue. In serial execution, Choose the logical implementation order among the eligible tasks.
 
 A task file is the primary execution contract. It is expected to be compact and autocontained through:
 
@@ -77,22 +85,25 @@ Always apply these rules:
 4. Block on missing declared task files.
 5. Block on mismatched task IDs, filenames, numbering, phases, or statuses between the index and task files.
 6. Require `contract_ready: true` before executing a task.
-7. Execute tasks in index order unless the selected mode narrows the target while still preserving all prior required order.
-8. Use `in_progress` before changing code for a task.
-9. Keep task status synchronized in the index table and the task file frontmatter.
-10. Derive phase and global index statuses from task execution state.
-11. Mark a task `done` only after its `Acceptance Contract` passes and the implementation respects `Change Scope`, `Contract Shapes`, and `Relevant Rules`.
-12. When the final task of a phase becomes `done`, run or confirm the phase `Functional Verification` before marking the phase `done`.
-13. If phase verification fails after tasks are done, keep completed tasks `done`, mark the phase and index `blocked`, stop, and report the issue.
-14. If a task blocks, mark the task, phase, and index `blocked`, stop the workflow, and report using the task's `Blocked Protocol`.
-15. Do not modify the Plan from this workflow.
-16. Do not modify task contracts or create new tasks from this workflow.
-17. If redirection or redesign is needed, report the issue and recommend `write-plan` or `write-tasks` as appropriate.
-18. Never modify a task with `status: done` except when reading it to derive state. If a completed task is affected by later redesign, that redesign must add a new adjustment task through the appropriate workflow.
-19. Do not introduce dependencies unless the selected task explicitly permits that dependency work or the task itself is a dependency/setup task.
-20. Do not change public signatures, shapes, architecture, functional behavior, dependencies, or files outside `Change Scope` unless explicitly allowed by the task contract.
-21. If implementation reveals a functional difference, missing functional decision, or behavior that differs from the task/spec contract: do not silently normalize it. If it is only a technical implementation detail with no functional impact, do not add it to the Spec. If it is a functional refinement that has been accepted by the user or is clearly required by repository reality, add a `CN-*` entry to the source Spec's `## Consolidation Notes`. If it is a material functional change requiring product judgment, block and ask the human.
-22. When adding a Consolidation Note, use this format: `- **CN-N:** Concise functional decision or discovery.`, followed by `Origin:` and `Impact:` sub-bullets. If the section does not exist, insert it between `## Global Constraints and Conditions` and `## Functional Blocks`. If it already exists, append the next `CN-*` entry.
+7. Execute tasks according to the phase `Execution Tree`: a task runs only after its parent is `done`.
+8. Parallelize by default when possible. Sibling tasks marked `[∥]` in the tree are the parallel candidates.
+9. Before dispatching parallel work, determine whether the harness can launch subagents and review that the `[∥]` division is correct. If both hold, dispatch one subagent per eligible `[∥]` sibling.
+10. If the harness cannot launch subagents, execute the eligible tasks serially in logical implementation order and continue.
+11. Use `in_progress` before changing code for a task.
+12. Keep task status synchronized in the index table and the task file frontmatter.
+13. Derive phase and global index statuses from task execution state.
+14. Mark a task `done` only after its `Acceptance Contract` passes and the implementation respects `Change Scope`, `Contract Shapes`, and `Relevant Rules`.
+15. When the final task of a phase becomes `done`, run or confirm the phase `Functional Verification` before marking the phase `done`.
+16. If phase verification fails after tasks are done, keep completed tasks `done`, mark the phase and index `blocked`, stop, and report the issue.
+17. If a task blocks, mark the task, phase, and index `blocked`, stop the workflow, and report using the task's `Blocked Protocol`.
+18. Do not modify the Plan from this workflow.
+19. Do not modify task contracts or create new tasks from this workflow.
+20. If redirection or redesign is needed, report the issue and recommend `write-plan` or `write-tasks` as appropriate.
+21. Never modify a task with `status: done` except when reading it to derive state. If a completed task is affected by later redesign, that redesign must add a new adjustment task through the appropriate workflow.
+22. Do not introduce dependencies unless the selected task explicitly permits that dependency work or the task itself is a dependency/setup task.
+23. Do not change public signatures, shapes, architecture, functional behavior, dependencies, or files outside `Change Scope` unless explicitly allowed by the task contract.
+24. If implementation reveals a functional difference, missing functional decision, or behavior that differs from the task/spec contract: do not silently normalize it. If it is only a technical implementation detail with no functional impact, do not add it to the Spec. If it is a functional refinement that has been accepted by the user or is clearly required by repository reality, add a `CN-*` entry to the source Spec's `## Consolidation Notes`. If it is a material functional change requiring product judgment, block and ask the human.
+25. When adding a Consolidation Note, use this format: `- **CN-N:** Concise functional decision or discovery.`, followed by `Origin:` and `Impact:` sub-bullets. If the section does not exist, insert it between `## Global Constraints and Conditions` and `## Functional Blocks`. If it already exists, append the next `CN-*` entry.
 
 ## When To Use This Skill
 
@@ -133,19 +144,33 @@ Supported modes:
 - `phase <id>`: execute remaining eligible tasks in one phase, such as `P02`.
 - `all`: execute all remaining eligible tasks for the change.
 
-Do not expose `parallel_group` as a user-facing mode. Treat `parallel_group` as execution metadata for harnesses that can safely parallelize consecutive tasks.
+Do not expose the execution tree as a user-facing mode. The selected mode only narrows which eligible tasks you process; the tree always decides eligibility and parallel candidates.
 
 ### Mode Order Rules
 
-For `next`, select the first executable task by index order.
+Logical implementation order is the order that makes sense to implement the eligible tasks — the order you would choose as an engineer, considering the tree as a reference and not as the sequence. For example, build foundations before refinements and artifacts that others depend on first. State the logical order you will follow when you have eligible tasks.
 
-For `task <id>`, execute the requested task only if all earlier required tasks are `done`. If earlier tasks are not done, block and report the earliest task that must run first.
+For `next`, select the first eligible task in logical implementation order: a task whose parent is `done`.
 
-For `phase <id>`, execute that phase only if all prior phases are `done`. Within the phase, execute remaining eligible tasks in order.
+For `task <id>`, execute the requested task only if its parent is `done`. If it is not, block and report the earliest task that must run first.
 
-For `all`, start at the first eligible task and continue in index order until all work is done or a block occurs.
+For `phase <id>`, execute that phase only if all prior phases are `done`. Within the phase, execute eligible tasks in logical implementation order.
+
+For `all`, start at the first eligible task and continue in logical implementation order until all work is done or a block occurs.
 
 If any task is already `in_progress`, resume that task before selecting pending work, provided the requested mode can legally include it. If it cannot, block and report the active task.
+
+### Parallel Dispatch Rules
+
+When eligible `[∥]` siblings exist:
+
+1. determine whether the current harness can launch subagents,
+2. review that the division is correct: no hidden dependency between the siblings and no shared files in their `Change Scope`,
+3. if both hold, dispatch one subagent per sibling, giving each subagent its own task file as the execution contract and its own bounded repository context,
+4. wait for all siblings of the wave, verify each against its `Acceptance Contract`, then continue with the children they unlock,
+5. if the harness cannot launch subagents, execute the siblings serially in logical implementation order and continue.
+
+Do not dispatch parallel work when the review finds hidden dependencies or file overlap. Restructure is not allowed from this workflow; instead, block and recommend `write-tasks` when the tree division is unsafe.
 
 ## Workflow
 
@@ -169,13 +194,14 @@ Validate:
 - `index_approved: true`,
 - phase order,
 - phase statuses,
+- per-phase `Execution Tree` structure,
 - task table order,
 - task IDs,
 - task statuses,
 - task filenames,
-- and consecutive `parallel_group` usage.
+- and that the tree matches the task table.
 
-If a `parallel_group` is present, mention that the group is parallelizable metadata. Continue serially unless the harness explicitly supports safe parallel task execution.
+Use the tree to know which tasks are eligible and which `[∥]` sibling groups may run in parallel.
 
 ### Step 3: Validate filesystem consistency
 
@@ -370,7 +396,8 @@ Do not:
 A good result from this workflow is:
 
 - repository code changed only as allowed by the selected task contract,
-- task and index statuses synchronized,
+- eligible `[∥]` sibling groups dispatched in parallel when the harness supports subagents,
+- tasks and index statuses synchronized,
 - phase and global index statuses derived correctly,
 - task-level verification completed before `done`,
 - phase-level functional verification completed or explicitly waiting for human confirmation,
@@ -382,10 +409,11 @@ A good result from this workflow is:
 Before finishing, confirm all of these:
 
 - The task index was approved.
-- Index and filesystem consistency were checked.
-- The selected mode preserved task order.
+- Index, filesystem, and tree consistency were checked.
+- The selected mode preserved eligibility and logical implementation order.
 - Every executed task had `contract_ready: true`.
 - Every executed task was marked `in_progress` before implementation.
+- Parallel dispatch happened only for `[∥]` sibling groups after capability detection and division review.
 - No task contract was modified except status frontmatter.
 - The index task row status matches each executed task file status.
 - Phase and global statuses were updated from task state.
