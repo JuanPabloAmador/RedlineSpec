@@ -153,7 +153,7 @@ This step appears when `Plan` exists. `Tasks` decompose the work into concrete e
 
 `Tasks` organizes work into functionally verifiable vertical phases. Each phase contains small contractual tasks.
 
-The `*.tasks.md` index defines phases, order, explicit parallelization, and status. Each `*.task.md` contains the actionable contract, source traceability, and relevant rule expansion for a specific task.
+The `*.tasks.md` index defines phases, a per-phase `Execution Tree`, and status. The tree defines order and unlocking: a task runs after its parent completes, and sibling groups marked `[∥]` are parallelizable. Each `*.task.md` contains the actionable contract, source traceability, and relevant rule expansion for a specific task, and never references other tasks.
 
 This is where rules have their strongest operational effect: task files expand the relevant rule content so implementation can proceed from compact self-contained contracts. If the `Plan` intentionally has no rules, tasks may use `None.`, but that absence should be treated as an explicit limitation of the task contracts.
 

@@ -6,9 +6,9 @@ It organizes product change around a living functional truth, temporary change c
 
 ## Status
 
-Current version: `0.4.2`
+Current version: `0.5.0`
 
-This release adds a uniform next-workflow handoff to each main-flow skill so every workflow tells the user which command to run next, and recommends `health-check` after a functional truth merge. The framework is still early and may change before `1.0.0`.
+This release introduces per-phase `Execution Tree`s to task indexes, granularity-aware task decomposition in `write-tasks`, and subagent wave dispatch in `implement`. The framework is still early and may change before `1.0.0`.
 
 ## Core Model
 
@@ -131,4 +131,4 @@ Start with:
 
 RedlineSpec uses SemVer.
 
-Version `0.4.2` adds a uniform next-workflow handoff across main-flow skills and a post-merge `health-check` recommendation. Breaking changes may still happen while the framework remains below `1.0.0`.
+Version `0.5.0` replaces the sequential order plus `parallel_group` execution model with per-phase `Execution Tree`s: task indexes define order and unlocking, sibling groups marked `[∥]` are parallelizable, and `implement` dispatches them to one subagent per task when the harness supports it. `write-tasks` now forces a granularity review so every task covers exactly one unit of work. Breaking changes may still happen while the framework remains below `1.0.0`.

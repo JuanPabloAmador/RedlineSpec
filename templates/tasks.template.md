@@ -13,7 +13,7 @@ plan: .redline/project/specs/{{change-base-name}}/plan/{{change-base-name}}.plan
 
 - **Total Phases:** {{number}}
 - **Total Tasks:** {{number}}
-- **Execution Model:** Sequential by default. Tasks may run in parallel only when consecutive tasks declare the same `parallel_group` in this index.
+- **Execution Model:** Phases run sequentially. Inside each phase, the `Execution Tree` defines order and parallelization.
 - **Index Approval:** `index_approved` must be `true` before generating task files.
 
 ## Vertical Slice Map
@@ -50,14 +50,29 @@ Briefly explain how the implementation is divided into vertical phases.
 
 {{Describe how this vertical slice can be functionally verified. This can be manual, technical, or both depending on the change.}}
 
+#### Execution Tree
+
+```
+P01-T01  {{task summary}} (root)
+├── [∥] P01-T02  {{task summary}}
+├── [∥] P01-T03  {{task summary}}
+└── P01-T04  {{task summary}}
+    └── P01-T05  {{task summary}}
+```
+
+<!-- Write the tree in filesystem style: put the root task first, indent every child under its parent using ├── / └── / │, and mark every parallelizable sibling group with [∥]. -->
+
 #### Tasks
 
-| Task | Type | Status | File | Parallel Group | Contract Summary |
-| --- | --- | --- | --- | --- | --- |
-| P01-T01 | test | pending | phase-01-task-01-{{slug}}.task.md |  | {{Short contract summary}} |
-| P01-T02 | implementation | pending | phase-01-task-02-{{slug}}.task.md | P01-G1 | {{Short contract summary}} |
-| P01-T03 | implementation | pending | phase-01-task-03-{{slug}}.task.md | P01-G1 | {{Short contract summary}} |
-| P01-T04 | verification | pending | phase-01-task-04-{{slug}}.task.md |  | {{Short contract summary}} |
+| Task | Type | Status | File | Contract Summary |
+| --- | --- | --- | --- | --- |
+| P01-T01 | implementation | pending | phase-01-task-01-{{slug}}.task.md | {{Short contract summary}} |
+| P01-T02 | implementation | pending | phase-01-task-02-{{slug}}.task.md | {{Short contract summary}} |
+| P01-T03 | test | pending | phase-01-task-03-{{slug}}.task.md | {{Short contract summary}} |
+| P01-T04 | implementation | pending | phase-01-task-04-{{slug}}.task.md | {{Short contract summary}} |
+| P01-T05 | verification | pending | phase-01-task-05-{{slug}}.task.md | {{Short contract summary}} |
+
+<!-- Keep this table as the status panel; task IDs and filenames must match the tree above. -->
 
 ### P02. {{Phase title}}
 
@@ -75,12 +90,21 @@ Briefly explain how the implementation is divided into vertical phases.
 
 {{Describe how this vertical slice can be functionally verified.}}
 
+#### Execution Tree
+
+```
+P02-T01  {{task summary}} (root)
+├── [∥] P02-T02  {{task summary}}
+└── [∥] P02-T03  {{task summary}}
+```
+
 #### Tasks
 
-| Task | Type | Status | File | Parallel Group | Contract Summary |
-| --- | --- | --- | --- | --- | --- |
-| P02-T01 | test | pending | phase-02-task-01-{{slug}}.task.md |  | {{Short contract summary}} |
-| P02-T02 | implementation | pending | phase-02-task-02-{{slug}}.task.md |  | {{Short contract summary}} |
+| Task | Type | Status | File | Contract Summary |
+| --- | --- | --- | --- | --- |
+| P02-T01 | implementation | pending | phase-02-task-01-{{slug}}.task.md | {{Short contract summary}} |
+| P02-T02 | implementation | pending | phase-02-task-02-{{slug}}.task.md | {{Short contract summary}} |
+| P02-T03 | test | pending | phase-02-task-03-{{slug}}.task.md | {{Short contract summary}} |
 
 ## Rules Referenced
 
