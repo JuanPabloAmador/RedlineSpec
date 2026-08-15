@@ -438,12 +438,28 @@ check_harnesses() {
   fi
 }
 
+check_task_indexes() {
+  local specs index
+  specs="$TARGET_DIR/.redline/project/specs"
+  [[ -d "$specs" ]] || return 0
+
+  while IFS= read -r index; do
+    if ! grep -Eq '^#{1,6}[[:space:]]+Execution Tree[[:space:]]*$' "$index"; then
+      add_issue error tasks "$index" "Task index is missing the Execution Tree section." "Regenerate the index with write-tasks using the current tasks.template.md model."
+    fi
+    if grep -Fq "parallel_group" "$index"; then
+      add_issue error tasks "$index" "Task index still uses parallel_group from the pre-0.5.0 model." "Regenerate the index with write-tasks using the Execution Tree model."
+    fi
+  done < <(find "$specs" -type f -name '*.tasks.md' | sort)
+}
+
 check_required_dirs
 check_templates
 check_system_scripts
 check_functional_truth
 check_rules
 check_specs
+check_task_indexes
 check_harnesses
 
 STATUS="pass"
