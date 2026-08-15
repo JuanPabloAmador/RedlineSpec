@@ -6,9 +6,9 @@ It organizes product change around a living functional truth, temporary change c
 
 ## Status
 
-Current version: `0.5.0`
+Current version: `0.5.1`
 
-This release introduces per-phase `Execution Tree`s to task indexes, granularity-aware task decomposition in `write-tasks`, and subagent wave dispatch in `implement`. The framework is still early and may change before `1.0.0`.
+This release adds health-check validation for the `Execution Tree` task model and extends the report with task index health. The framework is still early and may change before `1.0.0`.
 
 ## Core Model
 
@@ -131,4 +131,4 @@ Start with:
 
 RedlineSpec uses SemVer.
 
-Version `0.5.0` replaces the sequential order plus `parallel_group` execution model with per-phase `Execution Tree`s: task indexes define order and unlocking, sibling groups marked `[∥]` are parallelizable, and `implement` dispatches them to one subagent per task when the harness supports it. `write-tasks` now forces a granularity review so every task covers exactly one unit of work. Breaking changes may still happen while the framework remains below `1.0.0`.
+Version `0.5.1` adds deterministic health-check validation for the `Execution Tree` task model: task indexes must contain an `Execution Tree` section, and `parallel_group` leftovers are reported as errors, with semantic review guidance for tree/table consistency and granularity drift. Version `0.5.0` replaced the sequential order plus `parallel_group` execution model with per-phase `Execution Tree`s: task indexes define order and unlocking, sibling groups marked `[∥]` are parallelizable, and `implement` dispatches them to one subagent per task when the harness supports it. `write-tasks` now forces a granularity review so every task covers exactly one unit of work. Breaking changes may still happen while the framework remains below `1.0.0`.

@@ -7,6 +7,17 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 
 ## [Unreleased]
 
+## [0.5.1] - 2026-08-16
+
+### Added
+
+- Added deterministic health-check validation for task indexes: every `*.tasks.md` must contain an `Execution Tree` section, and indexes still using `parallel_group` from the pre-0.5.0 model are reported as errors.
+- Added semantic review guidance in `health-check` for task indexes: tree/table consistency, granularity drift, unsafe `[∥]` sibling groups, and task files that reference other tasks or the tree.
+
+### Changed
+
+- The `health-check` report now includes a `tasks` area and a "Task index health" summary line.
+
 ## [0.5.0] - 2026-08-15
 
 ### Added

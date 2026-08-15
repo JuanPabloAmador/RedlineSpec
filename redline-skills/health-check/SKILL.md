@@ -55,6 +55,8 @@ The script verifies:
 - unexpected files in rules,
 - spec directories missing their canonical `*.spec.md`,
 - tasks directories that exist without a plan directory,
+- task indexes missing the `Execution Tree` section,
+- task indexes still using `parallel_group` from the pre-0.5.0 model,
 - detected harness skill installations for shared `.agents/skills/` and Claude.
 
 Treat script `error` findings as blocking installation or structure issues.
@@ -98,6 +100,15 @@ Review specs for:
 - specs whose behavior already appears in functional truth,
 - temporary change documents competing with consolidated truth.
 
+Review task indexes for:
+
+- `Execution Tree` sections missing from phases,
+- `parallel_group` leftovers from the pre-0.5.0 model,
+- trees that do not match the task table: task IDs missing or extra in either place,
+- tasks that bundle more than one artifact or functional unit, against the Granularity Decomposition criteria,
+- `[∥]` sibling groups whose tasks share files,
+- task files that reference other tasks or the tree.
+
 ## Classification
 
 Use these severities:
@@ -115,6 +126,7 @@ Use these areas:
 - `functional-index`
 - `rules`
 - `specs`
+- `tasks`
 - `templates`
 - `documentation-structure`
 
@@ -148,6 +160,7 @@ Status: pass | warning | fail
 - Functional index organization: pass | warning | fail
 - Rules health: pass | warning | fail
 - Spec lifecycle: pass | warning | fail
+- Task index health: pass | warning | fail
 
 ## Blocking Issues
 
