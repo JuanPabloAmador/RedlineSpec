@@ -1,0 +1,92 @@
+---
+import type { Translation } from '../i18n/en';
+import { GITHUB_RAW, GITHUB_URL } from '../i18n/site';
+
+interface Props {
+  t: Translation;
+}
+
+const { t } = Astro.props;
+
+const harnesses = ['devin', 'codex', 'opencode', 'pi', 'claude'];
+const labels: Record<string, string> = {
+  devin: 'Devin',
+  codex: 'Codex',
+  opencode: 'OpenCode',
+  pi: 'Pi',
+  claude: 'Claude',
+};
+
+const commands: Record<string, string> = Object.fromEntries(
+  harnesses.map((h) => [
+    h,
+    `curl -fsSL ${GITHUB_RAW}/scripts/install-remote.sh | bash -s -- --harness ${h}`,
+  ])
+);
+---
+
+<section class="section" id="install">
+  <div class="container">
+    <p class="section-tag reveal">{t.install.tag}</p>
+    <h2 class="section-title reveal">{t.install.title}</h2>
+    <p class="section-lead reveal">{t.install.sub}</p>
+    <div class="install-panel reveal">
+      <div class="install-tabs">
+        {harnesses.map((h) => (
+          <button type="button" class="install-tab" data-harness={h}>
+            {labels[h]}
+          </button>
+        ))}
+      </div>
+      {harnesses.map((h, i) => (
+        <div class="install-cmd" data-cmd={h} hidden={i !== 0}>
+          <code>{commands[h]}</code>
+          <button type="button" class="install-copy" data-copy>
+            {t.install.copy}
+          </button>
+        </div>
+      ))}
+      <p class="install-note">{t.install.after}</p>
+      <a
+        class="install-docs"
+        href={`${GITHUB_URL}/blob/main/docs/en/installation.md`}
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        {t.install.docsLink} →
+      </a>
+    </div>
+  </div>
+</section>
+
+<script is:inline define:vars={{ copyLabel: t.install.copy, copiedLabel: t.install.copied }}>
+  const tabs = document.querySelectorAll('.install-tab');
+  const cmds = document.querySelectorAll('.install-cmd');
+  const copyBtns = document.querySelectorAll('.install-copy');
+
+  tabs.forEach((tab) => {
+    tab.addEventListener('click', () => {
+      tabs.forEach((t) => t.classList.toggle('active', t === tab));
+      cmds.forEach((cmd) => {
+        cmd.hidden = cmd.dataset.cmd !== tab.dataset.harness;
+      });
+    });
+  });
+
+  copyBtns.forEach((btn) => {
+    btn.addEventListener('click', async () => {
+      const code = btn.parentElement?.querySelector('code')?.textContent ?? '';
+      try {
+        await navigator.clipboard.writeText(code);
+        btn.textContent = copiedLabel;
+        setTimeout(() => {
+          btn.textContent = copyLabel;
+        }, 1600);
+      } catch {
+        /* clipboard unavailable */
+      }
+    });
+  });
+
+  tabs[0]?.classList.add('active');
+</script>

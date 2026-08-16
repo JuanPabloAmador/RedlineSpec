@@ -1,0 +1,42 @@
+---
+import type { Translation } from '../i18n/en';
+import { GITHUB_URL } from '../i18n/site';
+import LogoPipe from './LogoPipe.astro';
+
+interface Props {
+  t: Translation;
+  lang: 'en' | 'es';
+}
+
+const { t, lang } = Astro.props;
+const year = new Date().getFullYear();
+---
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a class="brand" href={lang === 'en' ? '/' : '/es/'}>
+          <LogoPipe class="logo" />
+        </a>
+        <p>{t.footer.tagline}</p>
+      </div>
+      <nav class="footer-links">
+        <a href={GITHUB_URL} target="_blank" rel="noopener noreferrer">{t.footer.repo}</a>
+        <a href={`${GITHUB_URL}/blob/main/README.md`} target="_blank" rel="noopener noreferrer">
+          {t.footer.docs}
+        </a>
+        <a href={`${GITHUB_URL}/blob/main/CHANGELOG.md`} target="_blank" rel="noopener noreferrer">
+          {t.footer.changelog}
+        </a>
+        <a href={`${GITHUB_URL}/blob/main/LICENSE`} target="_blank" rel="noopener noreferrer">
+          {t.footer.license}
+        </a>
+      </nav>
+    </div>
+    <div class="footer-bottom">
+      <span>© {year} RedlineSpec</span>
+      <span>{t.footer.version} · MIT</span>
+    </div>
+  </div>
+</footer>

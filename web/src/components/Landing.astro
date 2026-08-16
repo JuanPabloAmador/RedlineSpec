@@ -1,0 +1,30 @@
+---
+import type { Translation } from '../i18n/en';
+import Base from '../layouts/Base.astro';
+import Header from './Header.astro';
+import Hero from './Hero.astro';
+import Concept from './Concept.astro';
+import Flow from './Flow.astro';
+import Why from './Why.astro';
+import Install from './Install.astro';
+import Footer from './Footer.astro';
+
+interface Props {
+  t: Translation;
+  lang: 'en' | 'es';
+}
+
+const { t, lang } = Astro.props;
+---
+
+<Base title={t.meta.title} description={t.meta.description} lang={lang}>
+  <Header t={t} lang={lang} />
+  <main>
+    <Hero t={t} />
+    <Concept t={t} />
+    <Flow t={t} />
+    <Why t={t} />
+    <Install t={t} />
+  </main>
+  <Footer t={t} lang={lang} />
+</Base>

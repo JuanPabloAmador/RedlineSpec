@@ -1,0 +1,29 @@
+---
+import type { Translation } from '../i18n/en';
+
+interface Props {
+  t: Translation;
+}
+
+const { t } = Astro.props;
+---
+
+<section class="section" id="why">
+  <div class="container">
+    <p class="section-tag reveal">{t.why.tag}</p>
+    <h2 class="section-title reveal">{t.why.title}</h2>
+    <div class="why-grid">
+      {
+        t.why.cards.map((card) => (
+          <article class="why-card reveal">
+            <svg class="tick" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M 3 12 L 9 18 L 21 5" />
+            </svg>
+            <h3>{card.title}</h3>
+            <p>{card.body}</p>
+          </article>
+        ))
+      }
+    </div>
+  </div>
+</section>
