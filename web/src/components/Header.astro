@@ -1,0 +1,36 @@
+---
+import type { Translation } from '../i18n/en';
+import { GITHUB_URL } from '../i18n/site';
+import LogoPipe from './LogoPipe.astro';
+
+interface Props {
+  t: Translation;
+  lang: 'en' | 'es';
+}
+
+const { t, lang } = Astro.props;
+---
+
+<header class="site-header">
+  <div class="container">
+    <a class="brand" href={lang === 'en' ? '/' : '/es/'}>
+      <LogoPipe class="logo" />
+    </a>
+    <nav class="site-nav">
+      {
+        t.header.nav.map((item) => (
+          <a href={item.href}>{item.label}</a>
+        ))
+      }
+    </nav>
+    <div class="header-right">
+      <div class="lang-switch">
+        <a href="/" class={lang === 'en' ? 'active' : ''}>EN</a>
+        <a href="/es/" class={lang === 'es' ? 'active' : ''}>ES</a>
+      </div>
+      <a class="btn btn-secondary" href={GITHUB_URL} target="_blank" rel="noopener noreferrer">
+        {t.header.github}
+      </a>
+    </div>
+  </div>
+</header>

@@ -1,0 +1,91 @@
+---
+import '../styles/global.css';
+
+interface Props {
+  title: string;
+  description: string;
+  lang: 'en' | 'es';
+}
+
+const { title, description, lang } = Astro.props;
+const canonical = Astro.site ? new URL(Astro.url.pathname, Astro.site).href : '';
+const ogLocale = lang === 'es' ? 'es_ES' : 'en_US';
+---
+
+<!doctype html>
+<html lang={lang}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="canonical" href={canonical} />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:locale" content={ogLocale} />
+    <meta property="og:site_name" content="RedlineSpec" />
+    <meta name="twitter:card" content="summary" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&family=Space+Grotesk:wght@500;600;700&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <slot />
+    <script>
+      document.addEventListener('DOMContentLoaded', () => {
+        const els = document.querySelectorAll('.reveal');
+        if ('IntersectionObserver' in window) {
+          const io = new IntersectionObserver(
+            (entries) => {
+              for (const entry of entries) {
+                if (entry.isIntersecting) {
+                  entry.target.classList.add('in-view');
+                  io.unobserve(entry.target);
+                }
+              }
+            },
+            { threshold: 0.12 }
+          );
+          els.forEach((el) => io.observe(el));
+        } else {
+          els.forEach((el) => el.classList.add('in-view'));
+        }
+        const logos = document.querySelectorAll<HTMLElement>('.pipe-logo');
+        const measureUnwrapped = (logo: HTMLElement) => {
+          logo.classList.remove('wrapped');
+          logo.classList.add('measure');
+          const w = logo.scrollWidth;
+          const part = logo.querySelector('.pipe-ink');
+          if (part) {
+            const width = part.getBoundingClientRect().width;
+            if (width > 0) {
+              logo.style.setProperty('--redline-width', `${Math.ceil(width)}px`);
+            }
+          }
+          logo.classList.remove('measure');
+          return w;
+        };
+        const checkPipeWraps = () => {
+          logos.forEach((logo) => {
+            const unwrapped = measureUnwrapped(logo);
+            const available = logo.parentElement ? logo.parentElement.clientWidth : 0;
+            logo.classList.toggle('wrapped', unwrapped > available);
+          });
+        };
+        if (logos.length) {
+          checkPipeWraps();
+          if (document.fonts && document.fonts.ready) {
+            document.fonts.ready.then(checkPipeWraps);
+          }
+          window.addEventListener('resize', checkPipeWraps);
+          window.addEventListener('load', checkPipeWraps);
+        }
+      });
+    </script>
+  </body>
+</html>

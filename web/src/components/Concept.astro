@@ -1,0 +1,37 @@
+---
+import type { Translation } from '../i18n/en';
+
+interface Props {
+  t: Translation;
+}
+
+const { t } = Astro.props;
+---
+
+<section class="section" id="concept">
+  <div class="container">
+    <p class="section-tag reveal">{t.concept.tag}</p>
+    <div class="concept-grid">
+      <div class="concept-col problem-col reveal">
+        <h3>{t.concept.problemTitle}</h3>
+        <p>{t.concept.problemBody}</p>
+        <ul>
+          {t.concept.problemPoints.map((point) => (
+            <li>{point}</li>
+          ))}
+        </ul>
+      </div>
+      <div class="concept-col solution-col reveal">
+        <span class="stamp">RedlineSpec</span>
+        <h3>{t.concept.solutionTitle}</h3>
+        <p>{t.concept.solutionBody}</p>
+        <p>{t.concept.solutionBody2}</p>
+        <ul>
+          {t.concept.solutionPoints.map((point) => (
+            <li>{point}</li>
+          ))}
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>

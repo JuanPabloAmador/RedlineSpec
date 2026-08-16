@@ -4,6 +4,16 @@ RedlineSpec is a contract-first specification-driven development framework for A
 
 It organizes product change around a living functional truth, temporary change contracts, persistent project rules, and workflow skills that guide agents through each phase.
 
+## Official website
+
+The official website is [redlinespec.com](https://redlinespec.com).
+
+## Distribution
+
+RedlineSpec is distributed **only** through this GitHub repository. There is no npm package, PyPI package, or distribution through any other registry, channel, or third-party site.
+
+If you find RedlineSpec packaged somewhere else — a registry package, a CLI binary, a Docker image, or a download site — it is not official. Always install from this repository: <https://github.com/JuanPabloAmador/RedlineSpec>.
+
 ## Status
 
 Current version: `0.5.1`

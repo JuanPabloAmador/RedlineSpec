@@ -1,0 +1,42 @@
+---
+import type { Translation } from '../i18n/en';
+import { GITHUB_URL } from '../i18n/site';
+
+interface Props {
+  t: Translation;
+}
+
+const { t } = Astro.props;
+const harnesses = ['Devin', 'Codex', 'OpenCode', 'Pi', 'Claude'];
+---
+
+<section class="hero">
+  <div class="container">
+    <p class="hero-badge reveal">
+      <span class="dot"></span>
+      {t.hero.badge}
+    </p>
+    <h1 class="reveal">
+      {t.hero.titleLead}{' '}
+      <span class="mark">
+        {t.hero.titleMark}
+        <svg class="underline" viewBox="0 0 250 14" preserveAspectRatio="none" aria-hidden="true">
+          <path d="M 3 9 C 40 3 80 13 120 8 S 200 4 247 9" />
+        </svg>
+      </span>
+    </h1>
+    <p class="hero-sub reveal">{t.hero.sub}</p>
+    <div class="hero-ctas reveal">
+      <a class="btn btn-primary" href="#install">{t.hero.ctaPrimary}</a>
+      <a class="btn btn-secondary" href={GITHUB_URL} target="_blank" rel="noopener noreferrer">
+        {t.hero.ctaSecondary}
+      </a>
+    </div>
+    <div class="hero-harnesses reveal">
+      <span>{t.hero.harnesses}:</span>
+      {harnesses.map((h) => (
+        <span class="chip">{h}</span>
+      ))}
+    </div>
+  </div>
+</section>

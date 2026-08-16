@@ -1,0 +1,37 @@
+---
+import type { Translation } from '../i18n/en';
+
+interface Props {
+  t: Translation;
+}
+
+const { t } = Astro.props;
+---
+
+<section class="section flow-section reveal" id="flow">
+  <div class="container">
+    <p class="section-tag">{t.flow.tag}</p>
+    <h2 class="section-title">{t.flow.title}</h2>
+    <p class="section-lead">{t.flow.intro}</p>
+    <div class="flow-track">
+      <svg class="flow-svg" viewBox="0 0 1100 12" preserveAspectRatio="none" aria-hidden="true">
+        <path
+          class="draw-line"
+          d="M 0 6 C 180 6 260 3 420 6 S 720 9 900 6 S 1030 4 1070 6"
+        />
+        <path class="arrow" d="M 1062 0 L 1098 6 L 1062 12 Z" />
+      </svg>
+      <div class="flow-steps">
+        {
+          t.flow.steps.map((step, i) => (
+            <article class="flow-step reveal">
+              <span class="num">{String(i + 1).padStart(2, '0')}</span>
+              <h4>{step.title}</h4>
+              <p>{step.body}</p>
+            </article>
+          ))
+        }
+      </div>
+    </div>
+  </div>
+</section>
