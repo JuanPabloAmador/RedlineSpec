@@ -16,9 +16,9 @@ If you find RedlineSpec packaged somewhere else — a registry package, a CLI bi
 
 ## Status
 
-Current version: `0.5.1`
+Current version: `0.5.2`
 
-This release adds health-check validation for the `Execution Tree` task model and extends the report with task index health. The framework is still early and may change before `1.0.0`.
+This release moves Plan TU granularity from per-file to per-module/capability: each TU is a cohesive module graph node that may own several tightly-coupled artifacts. File-level atomicity remains the responsibility of `write-tasks` task decomposition. The framework is still early and may change before `1.0.0`.
 
 ## Core Model
 
@@ -141,4 +141,4 @@ Start with:
 
 RedlineSpec uses SemVer.
 
-Version `0.5.1` adds deterministic health-check validation for the `Execution Tree` task model: task indexes must contain an `Execution Tree` section, and `parallel_group` leftovers are reported as errors, with semantic review guidance for tree/table consistency and granularity drift. Version `0.5.0` replaced the sequential order plus `parallel_group` execution model with per-phase `Execution Tree`s: task indexes define order and unlocking, sibling groups marked `[∥]` are parallelizable, and `implement` dispatches them to one subagent per task when the harness supports it. `write-tasks` now forces a granularity review so every task covers exactly one unit of work. Breaking changes may still happen while the framework remains below `1.0.0`.
+Version `0.5.2` moves Plan TU granularity from per-file to per-module/capability: each TU is a cohesive module graph node and the module dependency graph is explicit in `Dependencies`. Version `0.5.1` added deterministic health-check validation for the `Execution Tree` task model, and version `0.5.0` replaced the sequential order plus `parallel_group` execution model with per-phase `Execution Tree`s: task indexes define order and unlocking, sibling groups marked `[∥]` are parallelizable, and `implement` dispatches them to one subagent per task when the harness supports it. `write-tasks` now forces a granularity review so every task covers exactly one unit of work. Breaking changes may still happen while the framework remains below `1.0.0`.
