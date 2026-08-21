@@ -6,7 +6,7 @@ spec: .redline/project/specs/{{change-base-name}}/{{change-base-name}}.spec.md
 plan: .redline/project/specs/{{change-base-name}}/plan/{{change-base-name}}.plan.md
 block: {{TB-1}}
 type: module | service | component-group | endpoint-group | controller | repository | model | hook | utility | other
-# type is the module-level role in the dependency graph. Prefer `module` / `service` / `component-group` / `endpoint-group` for cohesive capabilities; avoid `component` for a single file — that granularity belongs to Tasks.
+# type is the module-level role in the dependency graph. Prefer `module` / `service` / `component-group` / `endpoint-group` for cohesive capabilities.
 ---
 
 # {{Technical unit title}}
@@ -30,13 +30,13 @@ type: module | service | component-group | endpoint-group | controller | reposit
 
 ## Responsibility
 
-{{Describe what this cohesive module/capability is responsible for as a graph node. One TU = one module with one responsibility and one lifecycle, even when it owns several files.}}
+{{Describe what this cohesive module/capability is responsible for as a graph node. One TU = one module with one responsibility and one lifecycle.}}
 
-<!-- Example: `Login Service` owns `src/auth/login.service.ts` + `src/auth/login.types.ts` + `src/auth/session.store.ts` because they share invariants; do not split them into 3 TUs. -->
+<!-- Example: `Login Service` owns `src/auth/login.service.ts` + `src/auth/login.types.ts` + `src/auth/session.store.ts` because they share invariants. -->
 
 ## Affected Artifacts
 
-<!-- A TU is module-level and may own several cohesive artifacts. List all files/areas that move together as one module. File-level splitting happens later in Tasks. -->
+<!-- A TU is module-level and may own several cohesive artifacts. List all files/areas that move together as one module. -->
 
 ### Existing Artifacts
 
@@ -69,7 +69,7 @@ type: module | service | component-group | endpoint-group | controller | reposit
 
 ## Public Surface
 
-<!-- Module public surface: the API other TUs depend on (re-exported types, service interface, events). Keep file-level signatures for Tasks. -->
+<!-- Module public surface: the API other TUs depend on (re-exported types, service interface, events). -->
 
 - `{{public signature — e.g., class LoginService { login(...): Promise<Session> } }}`
 - `{{exported type / event / endpoint group}}`

@@ -326,11 +326,11 @@ Rules:
 
 Atomicity and modularity rules:
 
-- write one technical unit per cohesive module/capability, not per file: a TU is a graph node with a single responsibility and a coherent lifecycle (e.g., `Login Service`, `Admin API`, `Session Module`), even when it owns several files/artifacts (component + hook + service + types that move together),
-- group tightly cohesive artifacts into the same TU when they share invariants, state, or a single public surface; splitting them across TUs would hide coupling,
-- a technical block may group several related TUs (e.g., `TB-01 Auth` groups `TU-01 Login Service` + `TU-02 Session Store`), but the units themselves remain module-level, not file-level,
+- write one technical unit per cohesive module/capability: a TU is a graph node with a single responsibility and a coherent lifecycle (e.g., `Login Service`, `Admin API`, `Session Module`),
+- group tightly cohesive artifacts into the same TU when they share invariants, state, or a single public surface,
+- a technical block may group several related TUs (e.g., `TB-01 Auth` groups `TU-01 Login Service` + `TU-02 Session Store`), but the units themselves remain module-level,
 - when a module comes with tests or specs, decide explicitly whether the tests live in the same TU or as a `TU` of type `test`, keeping one clear responsibility per TU,
-- file-level atomicity is the job of `write-tasks`: a single TU will later be decomposed into one or more tasks, each covering one artifact or one small vertical slice of that module.
+- a single TU may be decomposed into one or more tasks, each covering one artifact or one small vertical slice of that module.
 
 ### Step 11: Write `Rules` correctly
 
@@ -449,9 +449,8 @@ Do not:
 - rewrite the `Spec` in technical prose,
 - organize the plan around implementation timeline,
 - omit technical signatures when they are needed to constrain the build,
-- atomize the plan per file — that granularity belongs to task decomposition, not to the plan,
 - collapse multiple technical units into vague narrative,
-- collapse a cohesive module into several file-level TUs that hide its coupling,
+- collapse a cohesive module into several TUs that hide its coupling,
 - inline rule content instead of referencing rule files,
 - mark the plan `ready` while open technical questions remain,
 - or use the plan as a post-implementation report.

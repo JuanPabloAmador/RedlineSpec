@@ -87,7 +87,7 @@ spec: .redline/project/specs/{{change-base-name}}/{{change-base-name}}.spec.md
 
 #### Technical Units
 
-<!-- Each TU is a module-level graph node, not a single file. File-level splitting happens in Tasks. -->
+<!-- Each TU is a module-level graph node. -->
 
 | Unit | Type | File | Contract Summary |
 | --- | --- | --- | --- |
