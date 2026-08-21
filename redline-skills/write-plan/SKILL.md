@@ -62,7 +62,7 @@ Always apply these rules:
 8. Use the source `Spec` as the upstream contract, but do not force the technical decomposition to mirror the functional block structure.
 9. Every technical block must trace the functional blocks it resolves via `Resolves`.
 10. Detailed signatures and shapes live in technical unit files, not in the plan index or at block level.
-11. Write technical units as cohesive modules: one technical unit per module/capability — a graph node such as a login service, admin console, checkout flow, or other bounded behavior — not per file. A TU may constrain one or more tightly cohesive artifacts that share responsibility, invariants, and lifecycle; do not fragment a cohesive module across TUs merely because it spans multiple files. File-level atomicity belongs to Tasks, not to the Plan.
+11. Write technical units as cohesive modules: one technical unit per module/capability — a graph node such as a login service, admin console, checkout flow, or other bounded behavior.
 12. A `ready` Plan must cover the source Spec's in-scope functional obligations through technical blocks and responsibilities.
 13. Validate Spec coverage through `Resolves`, block responsibilities, and technical unit contracts.
 14. Every technical block must include a `Rules` subsection, even if it only contains `- None.`.
