@@ -62,7 +62,7 @@ Always apply these rules:
 8. Use the source `Spec` as the upstream contract, but do not force the technical decomposition to mirror the functional block structure.
 9. Every technical block must trace the functional blocks it resolves via `Resolves`.
 10. Detailed signatures and shapes live in technical unit files, not in the plan index or at block level.
-11. Write technical units atomically: one technical unit per artifact. Do not group multiple artifacts into a single TU; constrain exactly one artifact per TU.
+11. Write technical units as cohesive modules: one technical unit per module/capability — a graph node such as a login service, admin console, checkout flow, or other bounded behavior — not per file. A TU may constrain one or more tightly cohesive artifacts that share responsibility, invariants, and lifecycle; do not fragment a cohesive module across TUs merely because it spans multiple files. File-level atomicity belongs to Tasks, not to the Plan.
 12. A `ready` Plan must cover the source Spec's in-scope functional obligations through technical blocks and responsibilities.
 13. Validate Spec coverage through `Resolves`, block responsibilities, and technical unit contracts.
 14. Every technical block must include a `Rules` subsection, even if it only contains `- None.`.
@@ -264,7 +264,7 @@ This is the core of the plan.
 
 Technical blocks are technical, not functional.
 
-They may group one technical unit or several closely related units, but they must remain coherent implementation units.
+They may group one technical unit or several closely related units, but they must remain coherent implementation units. Think of blocks and units as graph nodes: a block is a coarse capability area (e.g., `Auth`), a TU is a cohesive module inside it (e.g., `Login Service`, `Admin Console`, `Session Store`) with explicit `Dependencies` edges to other TUs. If you can draw the system's module graph, each TU should be one node.
 
 Each block must include:
 
@@ -321,15 +321,16 @@ Rules:
 - use file names such as `technical-units/tu-01-<slug>.plan.md`,
 - define real shapes where they matter,
 - show public and important internal signatures,
-- use dependencies to clarify injection or collaboration boundaries,
+- use `Dependencies` to make the module graph explicit: each TU declares the other TUs/modules it collaborates with or depends on (injection, import, event, data flow), so the whole Plan can be drawn as a directed graph,
 - and do not hide crucial structure in vague prose.
 
-Atomicity rules:
+Atomicity and modularity rules:
 
-- write one technical unit per artifact: each TU constrains exactly one artifact such as a component, service, controller, endpoint, model, migration, module, or repository — or whatever the artifact model of the technology being modified is,
-- do not group multiple artifacts into a single TU,
-- a technical block may group several TUs, but keep the units themselves per-artifact,
-- when an artifact comes with tests or specs, decide explicitly whether the tests are part of the same TU or their own TU; keep the unit contract focused on one responsibility either way.
+- write one technical unit per cohesive module/capability, not per file: a TU is a graph node with a single responsibility and a coherent lifecycle (e.g., `Login Service`, `Admin API`, `Session Module`), even when it owns several files/artifacts (component + hook + service + types that move together),
+- group tightly cohesive artifacts into the same TU when they share invariants, state, or a single public surface; splitting them across TUs would hide coupling,
+- a technical block may group several related TUs (e.g., `TB-01 Auth` groups `TU-01 Login Service` + `TU-02 Session Store`), but the units themselves remain module-level, not file-level,
+- when a module comes with tests or specs, decide explicitly whether the tests live in the same TU or as a `TU` of type `test`, keeping one clear responsibility per TU,
+- file-level atomicity is the job of `write-tasks`: a single TU will later be decomposed into one or more tasks, each covering one artifact or one small vertical slice of that module.
 
 ### Step 11: Write `Rules` correctly
 
@@ -410,11 +411,12 @@ A `Plan` may change during implementation if the technical contract must be real
 A good result from this workflow is:
 
 - one valid `*.plan.md`,
-- valid technical unit files under `plan/technical-units/`,
+- valid technical unit files under `plan/technical-units/` where each TU is a module-level node that can be drawn in a dependency graph,
 - technical and repo-aware,
-- centered on blocks and technical units,
-- rich in signatures and shapes,
+- centered on blocks (capability areas) and technical units (cohesive modules),
+- rich in signatures and shapes at TU level,
 - light on narrative duplication,
+- modular (Plan) with a clear path to file-level decomposition (Tasks),
 - and ready to feed later task generation.
 
 ## Final Checklist
@@ -447,7 +449,9 @@ Do not:
 - rewrite the `Spec` in technical prose,
 - organize the plan around implementation timeline,
 - omit technical signatures when they are needed to constrain the build,
+- atomize the plan per file — that granularity belongs to task decomposition, not to the plan,
 - collapse multiple technical units into vague narrative,
+- collapse a cohesive module into several file-level TUs that hide its coupling,
 - inline rule content instead of referencing rule files,
 - mark the plan `ready` while open technical questions remain,
 - or use the plan as a post-implementation report.

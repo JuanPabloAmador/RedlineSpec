@@ -79,19 +79,20 @@ spec: .redline/project/specs/{{change-base-name}}/{{change-base-name}}.spec.md
 
 #### Artifacts
 
-- {{Conceptual code artifact affected or created by this block}}
-- {{Conceptual code artifact affected or created by this block}}
+- {{Conceptual code artifact or module area affected or created by this block}}
 
 #### Responsibility
 
-{{Describe the technical responsibility of this block as a coherent implementation unit.}}
+{{Describe the technical responsibility of this block as a coherent capability area (e.g., Auth, Admin) that groups related module-level TUs.}}
 
 #### Technical Units
 
+<!-- Each TU is a module-level graph node, not a single file. File-level splitting happens in Tasks. -->
+
 | Unit | Type | File | Contract Summary |
 | --- | --- | --- | --- |
-| TU-01 | component | technical-units/tu-01-{{slug}}.plan.md | {{Short technical unit contract summary}} |
-| TU-02 | service | technical-units/tu-02-{{slug}}.plan.md | {{Short technical unit contract summary}} |
+| TU-01 | module | technical-units/tu-01-{{slug}}.plan.md | {{Short module contract summary — e.g., Login Service module (service + types + session handling)}} |
+| TU-02 | service | technical-units/tu-02-{{slug}}.plan.md | {{Short module contract summary}} |
 
 #### Open Questions
 
@@ -128,17 +129,17 @@ spec: .redline/project/specs/{{change-base-name}}/{{change-base-name}}.spec.md
 
 #### Artifacts
 
-- {{Conceptual code artifact affected or created by this block}}
+- {{Conceptual code artifact or module area affected or created by this block}}
 
 #### Responsibility
 
-{{Describe the technical responsibility of this block as a coherent implementation unit.}}
+{{Describe the technical responsibility of this block as a coherent capability area.}}
 
 #### Technical Units
 
 | Unit | Type | File | Contract Summary |
 | --- | --- | --- | --- |
-| TU-03 | endpoint | technical-units/tu-03-{{slug}}.plan.md | {{Short technical unit contract summary}} |
+| TU-03 | module | technical-units/tu-03-{{slug}}.plan.md | {{Short module contract summary}} |
 
 #### Rules
 
