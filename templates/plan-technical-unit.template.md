@@ -5,7 +5,8 @@ status: draft
 spec: .redline/project/specs/{{change-base-name}}/{{change-base-name}}.spec.md
 plan: .redline/project/specs/{{change-base-name}}/plan/{{change-base-name}}.plan.md
 block: {{TB-1}}
-type: component | service | endpoint | controller | repository | model | module | hook | utility | other
+type: module | service | component-group | endpoint-group | controller | repository | model | hook | utility | other
+# type is the module-level role in the dependency graph. Prefer `module` / `service` / `component-group` / `endpoint-group` for cohesive capabilities.
 ---
 
 # {{Technical unit title}}
@@ -29,14 +30,18 @@ type: component | service | endpoint | controller | repository | model | module 
 
 ## Responsibility
 
-{{Describe what this technical unit is responsible for.}}
+{{Describe what this cohesive module/capability is responsible for as a graph node. One TU = one module with one responsibility and one lifecycle.}}
+
+<!-- Example: `Login Service` owns `src/auth/login.service.ts` + `src/auth/login.types.ts` + `src/auth/session.store.ts` because they share invariants. -->
 
 ## Affected Artifacts
+
+<!-- A TU is module-level and may own several cohesive artifacts. List all files/areas that move together as one module. -->
 
 ### Existing Artifacts
 
 - `{{path/to/existing-file-or-area}}`
-- `{{path/to/existing-file-or-area}}`
+- `{{path/to/existing-dir-or-glob/**}}`
 
 ### New Artifacts
 
@@ -57,17 +62,21 @@ type: component | service | endpoint | controller | repository | model | module 
 
 ## Dependencies
 
-- {{Injected dependency or collaborator}}
-- {{Imported module or package dependency}}
+<!-- Module-graph edges: declare other TUs/modules this TU depends on or collaborates with. A viewer should be able to draw the Plan as a directed graph from these edges. -->
+
+- {{TU-02 — reason / interface / event — e.g., `TU-02 Session Store — injected token store`}}
+- {{External/package dependency — e.g., `postgres` / `jwt library`}}
 
 ## Public Surface
 
-- `{{public signature}}`
-- `{{public signature}}`
+<!-- Module public surface: the API other TUs depend on (re-exported types, service interface, events). -->
+
+- `{{public signature — e.g., class LoginService { login(...): Promise<Session> } }}`
+- `{{exported type / event / endpoint group}}`
 
 ## Key Internal Functions
 
-- `{{internal signature}}`
+- `{{internal signature — only those that constrain the module contract}}`
 - `{{internal signature}}`
 
 ## Contract Shapes

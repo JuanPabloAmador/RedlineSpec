@@ -7,6 +7,13 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 
 ## [Unreleased]
 
+## [0.5.2] - 2026-08-21
+
+### Changed
+
+- Moved `write-plan` TU granularity from per-file to per-module/capability. A Plan TU is now a cohesive module graph node that may own several tightly-coupled artifacts sharing responsibility and lifecycle. Updated `write-plan` skill, plan index template, and TU template to make the module dependency graph explicit. File-level atomicity remains the responsibility of `write-tasks` task decomposition.
+- Updated TU `type` values to `module | service | component-group | endpoint-group` for cohesive capabilities and clarified `Responsibility`, `Affected Artifacts`, `Dependencies`, and `Public Surface` at module level.
+
 ## [0.5.1] - 2026-08-16
 
 ### Added
