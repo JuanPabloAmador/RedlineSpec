@@ -6,7 +6,7 @@ print_help() {
 RedlineSpec installer
 
 Usage:
-  bash scripts/install.sh TARGET_PATH [--update] [--update-system] [--harness devin[,codex,opencode,pi,claude]]... [--update-harness]
+  bash scripts/install.sh TARGET_PATH [--update] [--update-system] [--harness devin[,codex,opencode,pi,claude,cursor,antigravity,copilot,vscode]]... [--update-harness]
 
 Behavior:
   - TARGET_PATH is required and must point to the destination project repository.
@@ -28,7 +28,8 @@ Options:
                     Does not install new harnesses.
   --update-system   Refresh .redline/system/templates/ and .redline/system/scripts/ from this RedlineSpec repo.
                     This may overwrite existing framework-managed files under .redline/system/.
-  --harness NAME    Install harness bindings. Supported values: devin, codex, claude, opencode, pi.
+  --harness NAME    Install harness bindings. Supported values: devin, codex, claude, opencode, pi,
+                    cursor, antigravity, copilot, vscode.
                     May be repeated or passed as a comma-separated list.
                     Harnesses in the shared .agents group install one copy to .agents/skills/.
                     Harnesses with private paths install to their own skills directory.
@@ -56,7 +57,7 @@ UPDATE_SYSTEM=0
 UPDATE_HARNESS=0
 TARGET_PATH=""
 SELECTED_HARNESSES=""
-SUPPORTED_HARNESSES="devin codex claude opencode pi"
+SUPPORTED_HARNESSES="devin codex claude opencode pi cursor antigravity copilot vscode"
 
 is_supported_harness() {
   local candidate supported
@@ -107,6 +108,10 @@ prompt_for_harness() {
   printf '  3) opencode (.agents/skills)\n'
   printf '  4) pi (.agents/skills)\n'
   printf '  5) claude (.claude/skills)\n'
+  printf '  6) cursor (.agents/skills)\n'
+  printf '  7) antigravity (.agents/skills)\n'
+  printf '  8) copilot (.agents/skills)\n'
+  printf '  9) vscode (.agents/skills)\n'
 
   while true; do
     printf 'Harnesses [1,4,5]: '
@@ -131,8 +136,20 @@ prompt_for_harness() {
         5|claude)
           add_harness claude
           ;;
+        6|cursor)
+          add_harness cursor
+          ;;
+        7|antigravity)
+          add_harness antigravity
+          ;;
+        8|copilot)
+          add_harness copilot
+          ;;
+        9|vscode)
+          add_harness vscode
+          ;;
         *)
-          printf 'Invalid selection: %s. Choose 1, 2, 3, 4, 5, or multiple values like 1,4.\n' "$item" >&2
+          printf 'Invalid selection: %s. Choose 1 through 9, or multiple values like 1,4.\n' "$item" >&2
           SELECTED_HARNESSES="$selected_before"
           continue 2
           ;;
@@ -162,7 +179,7 @@ while [[ $# -gt 0 ]]; do
       ;;
     --harness)
       if [[ $# -lt 2 ]]; then
-        fail "--harness requires a value: devin, codex, claude, opencode, or pi. Repeat the flag or use commas for multiple harnesses."
+        fail "--harness requires a value: devin, codex, claude, opencode, pi, cursor, antigravity, copilot, or vscode. Repeat the flag or use commas for multiple harnesses."
       fi
       add_harness_selection "$2"
       shift 2

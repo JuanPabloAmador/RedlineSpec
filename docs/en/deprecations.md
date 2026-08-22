@@ -94,4 +94,4 @@ Current behavior:
 Reason:
 
 - RedlineSpec is standardizing around portable Agent Skills for currently supported harnesses.
-- Current supported harness bindings are the shared `.agents/skills/` group (`devin`, `codex`, `opencode`, `pi`) plus Claude private path.
+- Current supported harness bindings are the shared `.agents/skills/` group (`devin`, `codex`, `opencode`, `pi`, `cursor`, `antigravity`, `copilot`, `vscode`) plus Claude private path.

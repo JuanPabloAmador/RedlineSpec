@@ -8,13 +8,17 @@ interface Props {
 
 const { t } = Astro.props;
 
-const harnesses = ['devin', 'codex', 'opencode', 'pi', 'claude'];
+const harnesses = ['devin', 'codex', 'opencode', 'pi', 'claude', 'cursor', 'antigravity', 'copilot', 'vscode'];
 const labels: Record<string, string> = {
   devin: 'Devin',
   codex: 'Codex',
   opencode: 'OpenCode',
   pi: 'Pi',
   claude: 'Claude',
+  cursor: 'Cursor',
+  antigravity: 'Antigravity',
+  copilot: 'Copilot',
+  vscode: 'VS Code',
 };
 
 const commands: Record<string, string> = Object.fromEntries(

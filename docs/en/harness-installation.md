@@ -6,7 +6,7 @@ The canonical RedlineSpec runtime surface is **Agent Skills**. Harness-specific 
 
 Supported harness bindings:
 
-- shared `.agents/skills/` group: `devin`, `codex`, `opencode`, `pi`
+- shared `.agents/skills/` group: `devin`, `codex`, `opencode`, `pi`, `cursor`, `antigravity`, `copilot`, `vscode`
 - private skill paths: `claude`
 
 ## Goal
@@ -40,8 +40,12 @@ Current harnesses in this group:
 - `codex`
 - `opencode`
 - `pi`
+- `cursor`
+- `antigravity`
+- `copilot`
+- `vscode`
 
-Selecting multiple harnesses in this group does not duplicate files. Devin does not use `.devin/skills/` as its primary RedlineSpec path.
+Selecting multiple harnesses in this group does not duplicate files. Devin does not use `.devin/skills/` as its primary RedlineSpec path. Cursor, Antigravity, GitHub Copilot, and VS Code agent mode discover project skills from `.agents/skills/` natively, so these bindings reuse the shared destination.
 
 ### Private-path harnesses
 
@@ -93,6 +97,10 @@ harnesses/codex/manifest.sh
 harnesses/claude/manifest.sh
 harnesses/opencode/manifest.sh
 harnesses/pi/manifest.sh
+harnesses/cursor/manifest.sh
+harnesses/antigravity/manifest.sh
+harnesses/copilot/manifest.sh
+harnesses/vscode/manifest.sh
 ```
 
 The installer reads the manifests, validates `HARNESS_ID`, resolves effective skill destinations, deduplicates destinations, and copies all RedlineSpec skills into each destination once.

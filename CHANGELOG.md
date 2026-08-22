@@ -7,6 +7,17 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 
 ## [Unreleased]
 
+## [0.6.0] - 2026-08-22
+
+### Added
+
+- Added harness bindings for Cursor, Antigravity, GitHub Copilot, and VS Code agent mode. All four discover project skills from the shared `.agents/skills/` destination natively, so they reuse the existing shared Agent Skills group with no installer changes and no file duplication.
+- Added interactive installer menu entries 6-9 for the new harnesses.
+
+### Changed
+
+- Updated installer usage text, supported-harness validation list, and installation documentation to cover the new bindings.
+
 ## [0.5.2] - 2026-08-21
 
 ### Changed
