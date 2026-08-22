@@ -1,0 +1,3 @@
+HARNESS_ID="cursor"
+HARNESS_SKILLS_GROUP="agents"
+HARNESS_SKILLS_PATH=".agents/skills"

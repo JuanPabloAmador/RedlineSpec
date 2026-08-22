@@ -15,7 +15,7 @@ The remote bootstrap installer lives in:
 Local usage:
 
 ```bash
-bash scripts/install.sh TARGET_PATH [--update] [--update-system] [--harness devin[,codex,opencode,pi,claude]]... [--update-harness]
+bash scripts/install.sh TARGET_PATH [--update] [--update-system] [--harness devin[,codex,opencode,pi,claude,cursor,antigravity,copilot,vscode]]... [--update-harness]
 ```
 
 Remote usage:
@@ -224,7 +224,7 @@ Using this framework repository as the source, the installation script should ap
 
 Skills are copied only when a harness is selected. The installer resolves selected harnesses to effective skill destinations and copies each destination once.
 
-Shared Agent Skills group (`devin`, `codex`, `opencode`, `pi`):
+Shared Agent Skills group (`devin`, `codex`, `opencode`, `pi`, `cursor`, `antigravity`, `copilot`, `vscode`):
 
 - `skills/redlinespec/` -> `.agents/skills/redlinespec/`
 - `skills/interview/` -> `.agents/skills/interview/`
@@ -248,6 +248,8 @@ Examples:
 - `--harness devin,codex` installs only one `.agents/skills/` copy.
 - `--harness devin,opencode` installs only one `.agents/skills/` copy.
 - `--harness opencode,pi` installs only one `.agents/skills/` copy.
+- `--harness cursor,copilot,vscode` installs only one `.agents/skills/` copy.
+- `--harness antigravity` installs only `.agents/skills/`.
 - `--harness claude` installs only `.claude/skills/`.
 
 If the framework adds new skills or templates, this map must be expanded through the source skill directories and harness adapter manifests.
@@ -355,6 +357,9 @@ bash scripts/install.sh ~/work/my-project --harness pi
 bash scripts/install.sh ~/work/my-project --harness claude
 bash scripts/install.sh ~/work/my-project --harness devin,opencode
 bash scripts/install.sh ~/work/my-project --harness opencode,pi
+bash scripts/install.sh ~/work/my-project --harness cursor
+bash scripts/install.sh ~/work/my-project --harness antigravity
+bash scripts/install.sh ~/work/my-project --harness copilot,vscode
 ```
 
 To refresh an already installed project, including templates and all detected harness bindings:
